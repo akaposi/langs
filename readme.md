@@ -18,6 +18,8 @@ below.
   - QIIT syntax
   - standard model
   - normalisation proof
+- typed-extensional-sk
+  - equivalence with stlc
 - stlc-minimal: simply typed lambda calculus with ⇒,ι (typesystems)
   - QIIT syntax, single substitution calculus
     - derive parallel stuff
