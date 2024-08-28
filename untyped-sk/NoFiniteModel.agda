@@ -1,11 +1,14 @@
 {-# OPTIONS --cubical #-}
 
 open import Agda.Primitive
+import Cubical.Data.Equality as E
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Transport
 open import Cubical.Data.Nat hiding (_·_)
+open import Cubical.Data.Nat.Order
 open import Cubical.Data.Vec
-open import Cubical.Data.FinData hiding (znots)
+open import Cubical.Data.FinData renaming (znots to znotsFin) 
+open import Cubical.Data.FinData.Base
 open import Cubical.Data.FinData.Order
 open import Cubical.Data.Empty renaming (rec to exfalso)
 open import Cubical.Data.Unit
@@ -13,6 +16,8 @@ open import Cubical.Data.Maybe
 open import Cubical.Data.Sigma
 open import Cubical.Relation.Nullary
 open import Cubical.Foundations.Function
+
+open import untyped-sk.pigeonhole
 
 module untyped-sk.NoFiniteModel where
 
@@ -60,7 +65,7 @@ noFin0 ()
 Fin1 : (x : Fin 1) → x ≡ zero
 Fin1 x = indFin (λ { {zero} _ → ⊥ ; {suc n} x → n ≡ 0 → x ≡ zero}) (λ _ → refl) (λ { {n}{x} _ e → exfalso (noFin0 (subst Fin e x))}) x refl
 
-module _
+module notfinite
   (m   : ℕ)
   (let n = suc (suc m))
   (_·'_ :  Fin n → Fin n → Fin n)
@@ -126,13 +131,31 @@ module _
      proj n x · u' ·s us
                                                             ≡⟨ projβ n x (u' ∷ us) ⟩
      lookup (suc x) (u ∷ u' ∷ us)
+                     
                                           ∎
 
   -- ∃ i≠j s.t. proj n i ≡ proj n j
   -- these we should get from PHP
-  postulate i j : Fin (suc n)
-  postulate i≠j : i ≡ j → ⊥
-  postulate e : proj n i ≡ proj n j
+
+  m≤sucm : {m : ℕ} → m <' (suc m)
+  m≤sucm {zero} = s≤s z≤
+  m≤sucm {suc m} = s≤s m≤sucm
+
+  f : Fin (suc n) → Fin n 
+  f x = proj n x
+
+  fromPigeon : Σ[ i ∈ Fin (suc n) ] Σ[ j ∈ Fin (suc n) ] (¬ i ≡ j) × (f i ≡ f j) 
+  fromPigeon = pigeonhole m≤sucm f
+
+  i j : Fin (suc n)
+  i = fst fromPigeon 
+  j = fst (snd (fromPigeon)) 
+
+  i≠j :  i ≡ j → ⊥
+  i≠j x = fst (snd (snd fromPigeon)) x 
+
+  e : proj n i ≡ proj n j
+  e = snd (snd (snd fromPigeon))
 
   -- we define a list of length (suc n) which is zero everywhere except at a given j
   -- first as a function
@@ -148,11 +171,14 @@ module _
   ... | eq e = exfalso (i≠j e)
   ... | gt _ = refl
 
+  to⊥ :  ∀ {n} → {m : Fin n} → m <'Fin m → ⊥ -- <Fin is a strict order, so nothing is less than itself
+  to⊥ {suc n} {suc m} (s≤s x) = to⊥ {n} {m} x 
+
   zerosExceptAtJFunAtJ : zerosExceptAtJFun j ≡ suc zero
   zerosExceptAtJFunAtJ with j ≟Fin j
-  ... | lt e = {!get a contra from e!} -- <Fin is a strict order, so nothing is less than itself
+  ... | lt e = exfalso (to⊥ e) 
   ... | eq _ = refl
-  ... | gt e = {!get a contra from e!}
+  ... | gt e = exfalso (to⊥ e)
 
   flatten : ∀{ℓ}{A : Set ℓ}{n : ℕ} → (Fin n → A) → Vec A n
   flatten {n = zero}  f = []
@@ -185,5 +211,10 @@ module _
     suc zero 
                                ∎
 
--- noFiniteModel : (M : Model {lzero})(n : ℕ) → Tm M ≡ Fin (2 + n) → ⊥
--- noFiniteModel = {!!}
+  bot : ⊥
+  bot = znotsFin contra
+
+
+noFiniteModel : (M : Model {lzero}){n : ℕ} → let module M = Model M in M.Tm ≡ Fin (2 + n) → ⊥
+noFiniteModel record { Tm = Tm ; TmSet = TmSet ; _·_ = _·_ ; K = K ; S = S ; Kβ = Kβ ; Sβ = Sβ } {n} x with E.pathToEq x 
+... | E.refl = notfinite.bot n _·_ K S Kβ Sβ 

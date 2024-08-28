@@ -13,28 +13,26 @@ record Model {i j} : Set (lsuc (i ⊔ j)) where
 
   field
     Ty  : Type i
-    TySet : isSet Ty
     ι   : Ty
     _⇒_ : Ty → Ty → Ty
     Tm  : Ty → Type j
-    TmSet : isSet (Tm ι)
+    TmSet : ∀{A} → isSet (Tm A)
     _·_ : ∀{A B}    → Tm (A ⇒ B) → Tm A → Tm B
     K   : ∀{A B}    → Tm (A ⇒ B ⇒ A)
     S   : ∀{A B C}  → Tm ((A ⇒ B ⇒ C) ⇒ (A ⇒ B) ⇒ A ⇒ C)
-    Kβ  : ∀{A B}{t : Tm A}{u : Tm B} → K · t · u ≡ t
-    Sβ  : ∀{A B C}{t : Tm (A ⇒ B ⇒ C)}{u : Tm (A ⇒ B)}{v : Tm A} →
+    Kβ  : ∀{A B}(t : Tm A)(u : Tm B) → K · t · u ≡ t
+    Sβ  : ∀{A B C}(t : Tm (A ⇒ B ⇒ C))(u : Tm (A ⇒ B))(v : Tm A) →
           S · t · u · v ≡ t · v · (u · v)
 
   ⟦_⟧T : I.Ty → Ty
-  ⟦ I.TySet t t' e e' i j ⟧T = TySet ⟦ t ⟧T ⟦ t' ⟧T (cong ⟦_⟧T e) (cong ⟦_⟧T e') i j
   ⟦ I.ι ⟧T = ι
   ⟦ A I.⇒ B ⟧T = ⟦ A ⟧T ⇒ ⟦ B ⟧T
 
   ⟦_⟧t  : ∀{A} → I.Tm A → Tm ⟦ A ⟧T 
-  ⟦ I.TmSet t t' e e' i j ⟧t = TmSet ⟦ t ⟧t ⟦ t' ⟧t (cong ⟦_⟧t e) (cong ⟦_⟧t e') i j
+  ⟦ I.TmSet {A} t t' e e' i j ⟧t = TmSet ⟦ t ⟧t ⟦ t' ⟧t (cong ⟦_⟧t e) (cong ⟦_⟧t e') i j
   ⟦ t I.· u ⟧t = ⟦ t ⟧t · ⟦ u ⟧t
   ⟦ I.K ⟧t = K
   ⟦ I.S ⟧t = S
-  ⟦ I.Kβ {u}{f} i ⟧t = {!   !} --Kβ {⟦ u ⟧T} {⟦ f ⟧T} i
-  ⟦ I.Sβ {f}{g}{u} i ⟧t = {!   !} --Sβ {⟦ f ⟧T}{⟦ g ⟧T}{⟦ u ⟧T} i
+  ⟦ I.Kβ u f i ⟧t = Kβ ⟦ u ⟧t ⟦ f ⟧t i
+  ⟦ I.Sβ f g u i ⟧t = Sβ ⟦ f ⟧t  ⟦ g ⟧t ⟦ u ⟧t i
 
