@@ -154,26 +154,124 @@ RTmSet = Discrete→isSet discrete
     ... | no ¬e | yes _ = no λ e → ¬e (inj·₁ e)
     ... | no ¬e | no  _ = no λ e → ¬e (inj·₁ e)
 
-Sval' : ∀{t} → S ↦ t → t ≡ S
-Sval' idR = refl
-Sval' (↦Prop St St' i) j = {!!}
+Sval : ∀{t} → S ↦ t → t ≡ S
+Sval idR = refl
+Sval {t} (↦Prop St St' i) j = isSet→isSet' RTmSet (Sval St) (Sval St') (λ _ → t) (λ _ → S) i j
+Sval* : ∀{t t'} → t ↦* t' → t ≡ S → t' ≡ S
+Sval* refl* e = e
+Sval* {t}{t''} (step {u₁ = t'} St t't'') tS = Sval* t't'' (Sval (subst (_↦ t') tS St))
 
-Sval : ∀{t} → S ↦* t → t ≡ S
-Sval refl* = refl
-Sval {t} (step St e) = {!!}
-
-Kval : ∀{t} → K ↦* t → t ≡ K
-Kval refl* = refl
-Kval (step idR e) = Kval e
+Kval : ∀{t} → K ↦ t → t ≡ K
+Kval idR = refl
+Kval {t} (↦Prop Kt Kt' i) j = isSet→isSet' RTmSet (Kval Kt) (Kval Kt') (λ _ → t) (λ _ → K) i j
+Kval* : ∀{t t'} → t ↦* t' → t ≡ K → t' ≡ K
+Kval* refl* e = e
+Kval* {t}{t''} (step {u₁ = t'} Kt t't'') tK = Kval* t't'' (Kval (subst (_↦ t') tK Kt))
 
 S≁K : S ~ K → ⊥
-S≁K (t , St , Kt) = S≠K (sym (Sval St) ∙ Kval Kt)
+S≁K (t , St , Kt) = S≠K (sym (Sval* St refl) ∙ Kval* Kt refl)
 
 sym~ : ∀{u v} → u ~ v → v ~ u
-sym~ e = {!!}
+sym~ (t , e , e') = t , e' , e
+
+-- _↦_, _↦*_ are confluent
+
+confl↦ : ∀{t u v} → t ↦ u → t ↦ v → isContr (Σ RTm λ t' → (u ↦ t') × (v ↦ t'))
+confl↦ {S} Su Sv = (S , subst (_↦ S) (sym (Sval Su)) idR , subst (_↦ S) (sym (Sval Sv)) idR) , λ (w , uw , vw) → {!!}
+confl↦ {K} Ku Kv = {!!}
+confl↦ {t · t'} tu tv = {!!}
+
+confl↦*₁ : ∀{t u v} → t ↦ u → t ↦* v → Σ RTm λ t' → (u ↦* t') × (v ↦ t')
+{-
+    t
+   / \*
+  u   v
+  *\ /
+    t'
+-}
+confl↦*₁ {u = u} tu refl* = u , refl* , tu
+confl↦*₁ tu (step tt' t'v) = t''' , step ut'' t''t''' , vt'''
+  where
+    t'' = fst (fst (confl↦ tu tt'))
+    ut'' = fst (snd (fst (confl↦ tu tt')))
+    t't'' = snd (snd (fst (confl↦ tu tt')))
+    t''' = fst (confl↦*₁ t't'' t'v)
+    t''t''' = fst (snd (confl↦*₁ t't'' t'v))
+    vt''' = snd (snd (confl↦*₁ t't'' t'v))
+{-
+    t
+   / \
+  u   t'
+   \ / \*
+   t''  v
+    *\ /
+     t'''
+-}
+
+confl↦*₂ : ∀{t u v} → t ↦* u → t ↦ v → Σ RTm λ t' → (u ↦ t') × (v ↦* t')
+{-
+    t
+  */ \
+  u   v
+   \ /*
+    t'
+-}
+confl↦*₂ {v = v} refl* tv = v , tv , refl*
+confl↦*₂ (step tt' t'u) tv = t''' , ut''' , step vt'' t''t'''
+  where
+    t'' = fst (fst (confl↦ tt' tv))
+    t't'' = fst (snd (fst (confl↦ tt' tv)))
+    vt'' = snd (snd (fst (confl↦ tt' tv)))
+    t''' = fst (confl↦*₂ t'u t't'')
+    ut''' = fst (snd (confl↦*₂ t'u t't''))
+    t''t''' = snd (snd (confl↦*₂ t'u t't''))
+{-
+    t
+   / \
+  t'  v
+*/ \ /
+u   t''
+ \ /*
+ t'''
+-}
+
+confl↦* : ∀{t u v} → t ↦* u → t ↦* v → Σ RTm λ t' → (u ↦* t') × (v ↦* t')
+confl↦* {v = v} refl* tv = v , tv , refl*
+confl↦* {u = u} (step tt' t'u) refl* = u , refl* , step tt' t'u
+confl↦* (step tt' t'u) (step tt'' t''v) = {!w'' , ? , ?!} -- we need to track the lengths of the reductions and do induction on those and not _↦*_
+  where
+    t''' = fst (fst (confl↦ tt' tt''))
+    t't''' = fst (snd (fst (confl↦ tt' tt'')))
+    t''t''' = snd (snd (fst (confl↦ tt' tt'')))
+    w = fst (confl↦*₂ t'u t't''')
+    uw = fst (snd (confl↦*₂ t'u t't'''))
+    t'''w = snd (snd (confl↦*₂ t'u t't'''))
+    w' = fst (confl↦*₁ t''t''' t''v)
+    t'''w' = fst (snd (confl↦*₁ t''t''' t''v))
+    vw' = snd (snd (confl↦*₁ t''t''' t''v))
+    w'' = fst (confl↦* t'''w t'''w')
+{-
+     t
+    / \
+  t'   t''
+*/  \ /  \*
+u  t'''   v
+ \ /* *\ /
+  w     w'
+  *\   /*
+    w'' 
+-}
+
+trans↦* : ∀{u v w} → u ↦* v → v ↦* w → u ↦* w
+trans↦* refl* vw = vw
+trans↦* (step uu' u'v) vw = step uu' (trans↦* u'v vw)
 
 trans~ : ∀{u v w} → u ~ v → v ~ w → u ~ w
-trans~ e e' = {!!}
+trans~ (t , ut , vt) (t' , vt' , wt') = t'' , trans↦* ut tt'' , trans↦* wt' t't''
+  where
+    t'' = fst (confl↦* vt vt')
+    tt'' = fst (snd (confl↦* vt vt'))
+    t't'' = snd (snd (confl↦* vt vt'))
 
 [S]≠[K] : [ RTm.S ] ≡ [ K ] → ⊥
 [S]≠[K] e = S≁K (effective {R = _~_} {!!} (BinaryRelation.equivRel (λ _ → ref~) (λ _ _ → sym~) λ _ _ _ → trans~) _ _ e)
