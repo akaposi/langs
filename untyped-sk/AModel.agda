@@ -8,6 +8,7 @@ open import Cubical.Data.Empty renaming (rec to exfalso) hiding (elim)
 open import Cubical.Data.Unit
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
+open import Cubical.HITs.PropositionalTruncation renaming (rec to rec∥; elim to elim∥)
 
 open import untyped-sk.Model
 
@@ -154,13 +155,6 @@ RTmSet = Discrete→isSet discrete
     ... | no ¬e | yes _ = no λ e → ¬e (inj·₁ e)
     ... | no ¬e | no  _ = no λ e → ¬e (inj·₁ e)
 
-Sval : ∀{t} → S ↦ t → t ≡ S
-Sval idR = refl
-Sval {t} (↦Prop St St' i) j = isSet→isSet' RTmSet (Sval St) (Sval St') (λ _ → t) (λ _ → S) i j
-Sval* : ∀{t t'} → t ↦* t' → t ≡ S → t' ≡ S
-Sval* refl* e = e
-Sval* {t}{t''} (step {u₁ = t'} St t't'') tS = Sval* t't'' (Sval (subst (_↦ t') tS St))
-
 Kval : ∀{t} → K ↦ t → t ≡ K
 Kval idR = refl
 Kval {t} (↦Prop Kt Kt' i) j = isSet→isSet' RTmSet (Kval Kt) (Kval Kt') (λ _ → t) (λ _ → K) i j
@@ -168,19 +162,77 @@ Kval* : ∀{t t'} → t ↦* t' → t ≡ K → t' ≡ K
 Kval* refl* e = e
 Kval* {t}{t''} (step {u₁ = t'} Kt t't'') tK = Kval* t't'' (Kval (subst (_↦ t') tK Kt))
 
+Sval : ∀{t} → S ↦ t → t ≡ S
+Sval idR = refl
+Sval {t} (↦Prop St St' i) j = isSet→isSet' RTmSet (Sval St) (Sval St') (λ _ → t) (λ _ → S) i j
+Sval* : ∀{t t'} → t ↦* t' → t ≡ S → t' ≡ S
+Sval* refl* e = e
+Sval* {t}{t''} (step {u₁ = t'} St t't'') tS = Sval* t't'' (Sval (subst (_↦ t') tS St))
+
+S·val : ∀{u t} → S · u ↦ t → ∃ RTm λ u' → t ≡ S · u'
+S·val {u} idR = ∣ u , refl ∣₁
+S·val (_·_ {u₁ = u'} St uu') = ∣ u' , cong (_· u') (Sval St) ∣₁
+S·val {u} {t} (↦Prop Sut Sut' i) = squash₁ (S·val Sut) (S·val Sut') i
+
 S≁K : S ~ K → ⊥
 S≁K (t , St , Kt) = S≠K (sym (Sval* St refl) ∙ Kval* Kt refl)
 
 sym~ : ∀{u v} → u ~ v → v ~ u
 sym~ (t , e , e') = t , e' , e
 
--- _↦_, _↦*_ are confluent
+-- _↦_ is confluent
 
-confl↦ : ∀{t u v} → t ↦ u → t ↦ v → isContr (Σ RTm λ t' → (u ↦ t') × (v ↦ t'))
-confl↦ {S} Su Sv = (S , subst (_↦ S) (sym (Sval Su)) idR , subst (_↦ S) (sym (Sval Sv)) idR) , λ (w , uw , vw) → {!!}
-confl↦ {K} Ku Kv = {!!}
-confl↦ {t · t'} tu tv = {!!}
+confl↦ : ∀{t u v} → t ↦ u → t ↦ v → ∥ (Σ RTm λ t' → (u ↦ t') × (v ↦ t')) ∥₁
 
+confl↦ {S} Su Sv = ∣ S , subst (_↦ S) (sym (Sval Su)) idR , subst (_↦ S) (sym (Sval Sv)) idR ∣₁
+
+confl↦ {K} Ku Kv = ∣ K , subst (_↦ K) (sym (Kval Ku)) idR , subst (_↦ K) (sym (Kval Kv)) idR ∣₁
+
+confl↦ {S · t}{v = v} idR Stv = ∣ v , Stv , idR ∣₁
+confl↦ {S · t}{u = u · u'}(Su · tu') idR = ∣ u · u' , idR , Su · tu' ∣₁
+confl↦ {S · t}(Su · tu')(Sv · tv') = rec∥ squash₁ (λ (t'' , u't'' , v't'') → ∣ S · t'' , subst (_↦ S) (sym (Sval Su)) idR · u't'' , subst (_↦ S) (sym (Sval Sv)) idR · v't'' ∣₁) (confl↦ tu' tv')
+confl↦ {S · t}(Su · tu')(↦Prop x y i) = squash₁ (confl↦ (Su · tu') x) (confl↦ (Su · tu') y) i
+confl↦ {S · t}(↦Prop x y i) Stv = squash₁ (confl↦ x Stv) (confl↦ y Stv) i
+
+confl↦ {K · t}{v = v} idR Ktv = ∣ v , Ktv , idR ∣₁
+confl↦ {K · t}{u = u · u'}(Ku · tu') idR = ∣ u · u' , idR , Ku · tu' ∣₁
+confl↦ {K · t}(Ku · tu')(Kv · tv') = rec∥ squash₁
+  (λ (t'' , u't'' , v't'') →
+    ∣ K · t'' , subst (_↦ K) (sym (Kval Ku)) idR · u't'' , subst (_↦ K) (sym (Kval Kv)) idR · v't'' ∣₁)
+  (confl↦ tu' tv')
+confl↦ {K · t}(Ku · tu')(↦Prop x y i) = squash₁ (confl↦ (Ku · tu') x) (confl↦ (Ku · tu') y) i
+confl↦ {K · t}(↦Prop x y i) Ktv = squash₁ (confl↦ x Ktv) (confl↦ y Ktv) i
+
+confl↦ {S · t · t'}{v = v} idR Stt'↦v = ∣ v , Stt'↦v , idR ∣₁
+confl↦ {S · t · t'}{u = u}(St↦u · t'↦u') idR = ∣ u , idR , St↦u · t'↦u' ∣₁
+confl↦ {S · t · t'}(St↦u · t'↦u') (St↦v · t'↦v') = rec∥ squash₁
+  (λ (w , uw , vw) → rec∥ squash₁
+    (λ (w' , u'w' , v'w') → ∣ w · w' , uw · u'w' , vw · v'w' ∣₁)
+    (confl↦ t'↦u' t'↦v'))
+  (confl↦ St↦u St↦v)
+{-
+   S·t·t'      S·t        t'
+   /   \       / \       / \
+ u·u'  v·v'   u   v     u'  v'
+   \   /       \ /       \ /
+    w·w'        w         w'
+-}
+confl↦ {S · t · t'}(St↦u · t'↦u') (↦Prop x y i) = squash₁ (confl↦ (St↦u · t'↦u') x) (confl↦ (St↦u · t'↦u') y) i
+confl↦ {S · t · t'}(↦Prop x y i) Stt'↦v = squash₁ (confl↦ x Stt'↦v) (confl↦ y Stt'↦v) i
+
+confl↦ {K · t · t'}{v = v} idR Ktt'↦v = ∣ v , Ktt'↦v , idR ∣₁
+confl↦ {K · t · t'} KβR idR = ∣ t , idR , KβR ∣₁
+confl↦ {K · t · t'} KβR KβR = ∣ t , idR , idR ∣₁
+confl↦ {K · t · t'} KβR (idR · t'↦v') = {!!}
+confl↦ {K · t · t'} KβR (Kt↦v · Kt↦v₁ · t'↦v') = {!!}
+confl↦ {K · t · t'} KβR (↦Prop x y i · z) = squash₁ (confl↦ KβR (x · z)) (confl↦ KβR (y · z)) i
+confl↦ {K · t · t'} KβR (↦Prop x y i) = squash₁ (confl↦ KβR x) (confl↦ KβR y) i
+confl↦ {K · t · t'}(Ktt'↦u · Ktt'↦u₁) Ktt'↦v = {!!}
+confl↦ {K · t · t'}(↦Prop x y i) Ktt'↦v = squash₁ (confl↦ x Ktt'↦v) (confl↦ y Ktt'↦v) i
+
+confl↦ {t · t₂ · t₁ · t'} tu tv = {!!}
+
+{-
 confl↦*₁ : ∀{t u v} → t ↦ u → t ↦* v → Σ RTm λ t' → (u ↦* t') × (v ↦ t')
 {-
     t
@@ -208,6 +260,7 @@ confl↦*₁ tu (step tt' t'v) = t''' , step ut'' t''t''' , vt'''
      t'''
 -}
 
+{-
 confl↦*₂ : ∀{t u v} → t ↦* u → t ↦ v → Σ RTm λ t' → (u ↦ t') × (v ↦* t')
 {-
     t
@@ -234,32 +287,26 @@ u   t''
  \ /*
  t'''
 -}
+-}
 
 confl↦* : ∀{t u v} → t ↦* u → t ↦* v → Σ RTm λ t' → (u ↦* t') × (v ↦* t')
 confl↦* {v = v} refl* tv = v , tv , refl*
-confl↦* {u = u} (step tt' t'u) refl* = u , refl* , step tt' t'u
-confl↦* (step tt' t'u) (step tt'' t''v) = {!w'' , ? , ?!} -- we need to track the lengths of the reductions and do induction on those and not _↦*_
+confl↦* {u = u} (step tt' t'u) tv = t'' , ut'' , step vv' v't''
   where
-    t''' = fst (fst (confl↦ tt' tt''))
-    t't''' = fst (snd (fst (confl↦ tt' tt'')))
-    t''t''' = snd (snd (fst (confl↦ tt' tt'')))
-    w = fst (confl↦*₂ t'u t't''')
-    uw = fst (snd (confl↦*₂ t'u t't'''))
-    t'''w = snd (snd (confl↦*₂ t'u t't'''))
-    w' = fst (confl↦*₁ t''t''' t''v)
-    t'''w' = fst (snd (confl↦*₁ t''t''' t''v))
-    vw' = snd (snd (confl↦*₁ t''t''' t''v))
-    w'' = fst (confl↦* t'''w t'''w')
+    v' = fst (confl↦*₁ tt' tv)
+    t'v' = fst (snd (confl↦*₁ tt' tv))
+    vv' = snd (snd (confl↦*₁ tt' tv))
+    t'' = fst (confl↦* t'u t'v')
+    ut'' = fst (snd (confl↦* t'u t'v'))
+    v't'' = snd (snd (confl↦* t'u t'v'))
 {-
-     t
-    / \
-  t'   t''
-*/  \ /  \*
-u  t'''   v
- \ /* *\ /
-  w     w'
-  *\   /*
-    w'' 
+    t
+   / \*
+  t'  v
+*/ \* /
+u    v'
+*\  /*
+  t''
 -}
 
 trans↦* : ∀{u v w} → u ↦* v → v ↦* w → u ↦* w
@@ -281,3 +328,4 @@ open import untyped-sk.Syntax
 -- K ≠ S in the syntax
 K≠S : Tm.K ≡ S → ⊥
 K≠S e = [S]≠[K] (sym (cong M.⟦_⟧ e))
+-}
