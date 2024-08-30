@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical -WnoUnsupportedIndexedMatch #-}
 
 open import Agda.Primitive
 import Cubical.Data.Equality as E
