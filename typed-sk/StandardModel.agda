@@ -21,3 +21,10 @@ St {l} A = record
        S = λ a b c → a c (b c); 
        Kβ =  λ t u i → t;
        Sβ = λ t u v i → t v (u v)}
+
+module St⊥ = Model (St (⊥ , isProp→isSet isProp⊥))
+
+open import typed-sk.Syntax
+
+consistency : Tm ι → ⊥
+consistency t = St⊥.⟦ t ⟧t
