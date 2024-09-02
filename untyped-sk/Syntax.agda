@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --safe --cubical #-}
 
 open import Cubical.Foundations.Prelude
 
