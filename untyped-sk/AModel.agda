@@ -69,6 +69,9 @@ refl* ·* refl* = refl*
 refl* ·* (y↝y′ ∷* y′↝*y″) = (refl↝ · y↝y′) ∷* (refl* ·* y′↝*y″)
 (x↝x′ ∷* x′↝x″) ·* y↝*y′ = (x↝x′ · refl↝) ∷* (x′↝x″ ·* y↝*y′)
 
+-- approach from PLFA
+-- https://plfa.github.io/Confluence/#parallel-reduction-satisfies-the-diamond-property
+-- maximum one-step parallel reduction
 step : RTm → RTm
 step K = K
 step S = S
@@ -146,8 +149,8 @@ infixl 10 _·ᴹ_
 _·ᴹ_ : Tmᴹ → Tmᴹ → Tmᴹ
 _·ᴹ_ =
   Q.setQuotBinOp (λ x → refl~) (λ y → refl~) _·_
-    λ x₀ x₁ y₀ y₁ (x′ , x₀↝* , x₁↝*) (y′ , y₀↝* , y₁↝*) →
-      x′ · y′ , x₀↝* ·* y₀↝* , x₁↝* ·* y₁↝*
+    λ x₀ x₁ y₀ y₁ (x′ , x₀↝*x′ , x₁↝*x′) (y′ , y₀↝*y′ , y₁↝*y′) →
+      x′ · y′ , x₀↝*x′ ·* y₀↝*y′ , x₁↝*x′ ·* y₁↝*y′
 
 Kβᴹ : ∀ x y → Kᴹ ·ᴹ x ·ᴹ y ≡ x
 Kβᴹ = Q.elimProp2 (λ x y → isSetTmᴹ _ _) λ x y →
@@ -184,14 +187,14 @@ S↝ S = refl
 
 K↝* : (x ↝* y) → x ≡ K → y ≡ K
 K↝* refl* p = p
-K↝* (x↝ ∷* x↝*) p = K↝* x↝* (K↝ (subst (_↝ _) p x↝))
+K↝* (x↝y ∷* y↝*z) p = K↝* y↝*z (K↝ (subst (_↝ _) p x↝y))
 
 S↝* : (x ↝* y) → x ≡ S → y ≡ S
 S↝* refl* p = p
-S↝* (x↝ ∷* x↝*) p = S↝* x↝* (S↝ (subst (_↝ _) p x↝))
+S↝* (x↝y ∷* y↝*z) p = S↝* y↝*z (S↝ (subst (_↝ _) p x↝y))
 
 K≁S : ¬ K ~ S
-K≁S (z , x↝* , y↝*) = K≢S (sym (K↝* x↝* refl) ∙ S↝* y↝* refl)
+K≁S (_ , x↝*z , y↝*z) = K≢S (sym (K↝* x↝*z refl) ∙ S↝* y↝*z refl)
 
 Kᴹ≢Sᴹ : ¬ Kᴹ ≡ Sᴹ
 Kᴹ≢Sᴹ p = T.rec isProp⊥ K≁S (Q.isEquivRel→TruncIso isEquiv~ _ _ .fun p)
