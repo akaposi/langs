@@ -12,7 +12,7 @@ below.
 - untyped-sk: untyped SK combinator calculus (Janet)
   - QIIT syntax
   - no finite model
-  - one-step rewriting model
+  - one-step parallel rewriting model, S ≠ K
   - Engeler's infinite model
 - typed-sk: Typed SK combinator calculus (Janet, copy from typesystems)
   - QIIT syntax
@@ -30,6 +30,7 @@ below.
   - strictification of _[_] and _∘_
     - canonicity
     - normalisation
+  - prefascist stricification
 - system-t
   - elaborator
   - normalisation
@@ -46,6 +47,8 @@ below.
   - QIIT syntax, parallel
   - definable quotient = strictification (no need for higher inductive types), double-contexts for the syntax, derive the usual one with two context extensions
   - Bool, Prop (Tarski), Kripke models, Beth models
+  - normalisation
+  - show that LEM is not derivable via normalisation
   - completeness of Kripke models
 - fol-big: first-order logic (Samy was working on this) with all the logical connectives
   - elaborator
@@ -58,7 +61,7 @@ below.
   - QIIT syntax, parallel, merged contexts
   - strictification
   - model with type-in-type
-- mltt-minimal: Π,U,El
+- mltt-minimal: Π,U,El,cd
   - elaborator
   - QIIT syntax, parallel
     - standard model
@@ -68,12 +71,13 @@ below.
     - setoid model
     - groupoid model
     - presheaf model
+    - ×Bool model
   - strictification of _[_] and _∘_
     - canonicity
-    - normalisation, injetivity of Π, injectivity and disjointness of constructors (externally)
+    - normalisation, injectivity of Π, injectivity and disjointness of constructors (externally)
     - gluing dependent/displayed model over the syntax
       - show parametricity as a special case
-- mltt-finite: Π,Σ,⊥,⊤,Bool
+- mltt-finite: Π,Σ,⊥,⊤,Bool, lots of η
   - elaborator
   - QIIT syntax, parallel
     - standard model
@@ -81,16 +85,18 @@ below.
   - strictification of _[_] and _∘_
     - canonicity
     - normalisation
-- mltt-big: Π,Σ,⊥,⊤,Bool,Id,W,M,U(Coquand)
+- mltt-big: Π,Σ,⊥,⊤,Bool,Id,W,M,U(Coquand)  <- basically Agda/predicative Coq
   - elaborator
   - QIIT syntax, parallel
     - standard model
   - strictification of _[_] and _∘_
     - canonicity
     - normalisation
-- sett: setoid type theory with symmetric inductive and coinductive types
+- sett: setoid type theory/OTT with symmetric inductive and coinductive types
   - elaborator
   - setoid model, justifies funext
 - sett-qiit: setoid type theory with all QIITs using ToS specification
   - elaborator
   - setoid model, justifies funext
+- cubical type theory
+- H.O.T.T.
