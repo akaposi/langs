@@ -47,6 +47,15 @@ discreteTy (u ⇒ u₁) (v ⇒ v₁) with discreteTy u v | discreteTy u₁ v₁
 isTySet : isSet Ty 
 isTySet = Discrete→isSet discreteTy
 
+⇒-cong : ∀{A₀ A₁ B₀ B₁} → A₀ ≡ A₁ → B₀ ≡ B₁ → A₀ ⇒ B₀ ≡ A₁ ⇒ B₁
+⇒-cong a b = λ i → a i ⇒ b i
+
+⇒-inj₁ : ∀{A₀ A₁ B₀ B₁} → A₀ ⇒ B₀ ≡ A₁ ⇒ B₁ → A₀ ≡ A₁
+⇒-inj₁ e = cong (λ { (A₀ ⇒ B₀) → A₀ ; _ → ι } ) e
+
+⇒-inj₂ : ∀{A₀ A₁ B₀ B₁} → A₀ ⇒ B₀ ≡ A₁ ⇒ B₁ → B₀ ≡ B₁
+⇒-inj₂ e = cong (λ { (A₀ ⇒ B₀) → B₀ ; _ → ι } ) e
+
 data Tm where
   TmSet : ∀{A} → isSet (Tm A)
   _·_ : ∀{A B} → Tm (A ⇒ B) → Tm A → Tm B
