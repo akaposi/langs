@@ -6,15 +6,11 @@ open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
 
-module typed-sk.Syntax where
+module stlc-minimal.Syntax where
 
-infixr 5 _⇒_
-infixl 5 _·_ 
 
 data Ty : Type 
 
-data Tm : Ty → Type
-    
 data Ty where
     ι   : Ty
     _⇒_ : Ty → Ty → Ty
@@ -47,12 +43,8 @@ discreteTy (u ⇒ u₁) (v ⇒ v₁) with discreteTy u v | discreteTy u₁ v₁
 isTySet : isSet Ty 
 isTySet = Discrete→isSet discreteTy
 
-data Tm where
-  TmSet : ∀{A} → isSet (Tm A)
-  _·_ : ∀{A B} → Tm (A ⇒ B) → Tm A → Tm B
-  K   : ∀{A B} → Tm (A ⇒ B ⇒ A)
-  S   : ∀{A B C} → Tm ((A ⇒ B ⇒ C) ⇒ (A ⇒ B) ⇒ A ⇒ C)
-  Kβ  : ∀{A B}(t : Tm A)(u : Tm B) → K · t · u ≡ t
-  Sβ  : ∀{A B C}(t : Tm (A ⇒ B ⇒ C))(u : Tm (A ⇒ B))(v : Tm A) → S · t · u · v ≡ t · v · (u · v)
- 
-   
+
+infixl 4 _▸_
+data Con : Type where
+  _▸_ : Con → Ty → Con
+  ◆ : Con

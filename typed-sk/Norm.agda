@@ -25,13 +25,6 @@ data Nf where
   S₁ : ∀{A B C t} → Nf (A I.⇒ B I.⇒ C) t → Nf ((A I.⇒ B) I.⇒ A I.⇒ C) (I.S I.· t) 
   S₂ : ∀{A B C t u} → Nf (A I.⇒ B I.⇒ C) t → Nf (A I.⇒ B) u → Nf (A I.⇒ C) (I.S I.· t I.· u) 
 
-
--- data Nf : (A : I.Ty) → I.Tm A → Set where
---   K₀ : ∀{A B} → Nf (A I.Ty.⇒ B I.Ty.⇒ A) I.K
---   K₁ : ∀{A B t} → Nf A t → Nf (B I.Ty.⇒ A) (I.K I.· t)
---   S₀ : ∀{A B C} → Nf ((A I.Ty.⇒ B I.Ty.⇒ C) I.Ty.⇒ (A I.Ty.⇒ B) I.Ty.⇒ A I.Ty.⇒ C) I.S
---   S₁ : ∀{A B C t} → Nf (A I.Ty.⇒ B I.Ty.⇒ C) t → Nf ((A I.Ty.⇒ B) I.Ty.⇒ A I.Ty.⇒ C) (I.S I.· t)
---   S₂ : ∀{A B C t u} → Nf (A I.Ty.⇒ B I.Ty.⇒ C) t → Nf (A I.Ty.⇒ B) u → Nf (A I.Ty.⇒ C) (I.S I.· t I.· u)
 Norm : D.DepModel
 Norm = record
       { Ty∙ = {!   !}
@@ -51,41 +44,19 @@ module Norm = D.DepModel Norm
 -- norm : ∀{A}(t : I.Tm A) → Nf A t
 -- norm {A} t = snd Norm.⟦ A ⟧T Norm.⟦ t ⟧t
 
-discreteNf : ∀ {y₁} {y₂} {t₁} {t₂} (u : Nf y₁ t₁) (v : Nf y₂ t₂)(e : y₁ ≡ y₂)(e' : PathP (λ i → I.Tm (e i)) t₁ t₂ ) → Dec (PathP (λ i → Nf (e i) (e' i)) u v) 
-discreteNf K₀ K₀ e e' = yes (transport (λ i₁ →   PathP (λ j → I.Tm (I.isTySet _ _ refl refl i₁ j)) I.K I.K → PathP (λ i → Nf (e i) (e' i)) K₀ K₀) (λ x i → {!   !}) {!   !})
-discreteNf K₀ (K₁ v) e e' = {!   !}
-discreteNf K₀ S₀ e e' = {!   !}
-discreteNf K₀ (S₁ v) e e' = {!   !}
-discreteNf K₀ (S₂ v v₁) e e' = {!   !}
-discreteNf (K₁ u) K₀ e e' = {!   !}
-discreteNf (K₁ u) (K₁ v) e e' = {!   !}
-discreteNf (K₁ u) S₀ e e' = {!   !}
-discreteNf (K₁ u) (S₁ v) e e' = {!   !}
-discreteNf (K₁ u) (S₂ v v₁) e e' = {!   !}
-discreteNf S₀ K₀ e e' = {!   !}
-discreteNf S₀ (K₁ v) e e' = {!   !}
-discreteNf S₀ S₀ e e' = {!   !}
-discreteNf S₀ (S₁ v) e e' = {!   !}
-discreteNf S₀ (S₂ v v₁) e e' = {!   !}
-discreteNf (S₁ u) K₀ e e' = {!   !}
-discreteNf (S₁ u) (K₁ v) e e' = {!   !}
-discreteNf (S₁ u) S₀ e e' = {!   !}
-discreteNf (S₁ u) (S₁ v) e e' = {!   !}
-discreteNf (S₁ u) (S₂ v v₁) e e' = {!   !}
-discreteNf (S₂ u u₁) K₀ e e' = {!   !}
-discreteNf (S₂ u u₁) (K₁ v) e e' = {!   !}
-discreteNf (S₂ u u₁) S₀ e e' = {!   !}
-discreteNf (S₂ u u₁) (S₁ v) e e' = {!   !}
-discreteNf (S₂ u u₁) (S₂ v v₁) e e' = {!   !}
--- discreteNf K₀ K₀ e e' = yes {! transport (λ i → PathP (λ j → I.Tm (I.isTySet _ _ refl ? i j  )) I.K I.K → PathP (λ i → Nf (e i) (e' i)) K₀ K₀) !}
+infix 4 _≟_ 
 
+
+discreteNf : ∀ {y₁} {y₂} {t₁} {t₂} (u : Nf y₁ t₁) (v : Nf y₂ t₂)(e : y₁ ≡ y₂)(e' : PathP (λ i → I.Tm (e i)) t₁ t₂ ) → Dec (PathP (λ i → Nf (e i) (e' i)) u v) 
+discreteNf = {!   !}
+-- discreteNf K₀ K₀ e e' = yes (transport (λ i₁ →   PathP (λ j → I.Tm (I.isTySet _ _ refl refl i₁ j)) I.K I.K → PathP (λ i → Nf (e i) (e' i)) K₀ K₀) (λ x i → {!   !}) {!   !})
 
 -- Norm : DepModel
 -- Norm = record
 --       { 
 --           Ty∙ = λ A → Σ ( I.Tm A → hSet lzero ) λ P → {t : I.Tm A} → fst (P t) → Nf A t; 
 --           ι∙ = (λ _ → ⊥ , λ {()}), λ {()};  
---           _⇒∙_ = λ {A}{B} A∙ B∙ → (λ t → (({u : I.Tm A} → fst (fst A∙ u) → fst (fst B∙ (t I.· u))) × Nf (A I.⇒ B) t ) , isSet× (isSetImplicitΠ λ u → isSet→ (snd ((fst B∙) (t I.· u)))) (Discrete→isSet λ x y → discreteNf x y refl refl)) , snd ;--(λ t → ({u : I.Tm A} → fst A∙ u → fst B∙ (t I.· u)) × Nf (A I.⇒ B) t) , snd; 
+--           _⇒∙_ = λ {A}{B} A∙ B∙ → (λ t → (({u : I.Tm A} → fst (fst A∙ u) → fst (fst B∙ (t I.· u))) × Nf (A I.⇒ B) t ) , isSet× (isSetImplicitΠ λ u → isSet→ (snd ((fst B∙) (t I.· u)))) (Discrete→isSet λ x y → discreteNf x y refl refl)) , snd ;
 --           Tm∙ =   λ f t → fst (fst f t); 
 --           TmSet· = {!   !}; --λ {A} {A∙} {u} → {! !} ; --λ x y e e' → λ i i₁ → {! isSet→ !} ; 
 --           _$∙_ = λ t u → fst t u;
@@ -112,4 +83,4 @@ discreteNf (S₂ u u₁) (S₂ v v₁) e e' = {!   !}
 --           S∙ = λ {_}{_}{_}{_}{_}{C∙} → (λ {u₁} t → (λ {u₂} u → (λ {u₃} v → transport (cong (fst C∙) (sym (I.Sβ u₁ u₂ u₃))) (fst (fst t v) (fst u v))) , (S₂ (snd t) (snd u))) , S₁ (snd t)) , S₀; 
 --           Kβ∙ =  λ {A}{B}{A∙}{B∙}(t)(u){t∙}{u∙} → toPathP (substSubst⁻ (λ y →  fst A∙ y)  (I.Kβ t u) t∙); 
 --           Sβ∙ = λ {A}{B}{C}{A∙}{B∙}{C∙}(t)(u)(v){t∙}{u∙}{v∙} → toPathP (substSubst⁻  (λ y → fst C∙ y) (I.Sβ t u v) (fst (fst t∙ v∙) (fst u∙ v∙)))
---         }         
+--         }          
