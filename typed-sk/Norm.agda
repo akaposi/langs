@@ -26,10 +26,33 @@ data Nf where
   S₁ : ∀{A B C t} → Nf (A I.⇒ B I.⇒ C) t → Nf ((A I.⇒ B) I.⇒ A I.⇒ C) (I.S I.· t) 
   S₂ : ∀{A B C t u} → Nf (A I.⇒ B I.⇒ C) t → Nf (A I.⇒ B) u → Nf (A I.⇒ C) (I.S I.· t I.· u) 
 
+data Maybe (A : Type) : Type where
+  nothing : Maybe A
+  just : A → Maybe A
+
+{-
+projt : (w : Σ I.Ty λ C → Σ (I.Tm C) λ t → Nf C t) → ∀{A B} → fst w ≡ B I.⇒ A  → Maybe (I.Tm A)
+projt (.(_ I.⇒ _ I.⇒ _) , .I.K , K₀) e = {!!}
+projt (.(_ I.⇒ _) , .(I.K I.· _) , K₁ {t = t} n) e = {!t!}
+projt (.((_ I.⇒ _ I.⇒ _) I.⇒ (_ I.⇒ _) I.⇒ _ I.⇒ _) , .I.S , S₀) e = {!!}
+projt (.((_ I.⇒ _) I.⇒ _ I.⇒ _) , .(I.S I.· _) , S₁ n) e = {!!}
+projt (.(_ I.⇒ _) , .(I.S I.· _ I.· _) , S₂ n n₁) e = {!!}
+-}
 
 -- K₀≢K₁ : ∀{A B t} → {! K₀ {A}{B} ≡ K₁ {A}{B}{t}    !} 
 -- K₀≢K₁ = {!   !}
-  
+
+-- disj0≠1 : 
+
+disjK₀-K₁ : ∀{A B A' B' t n} → _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) λ t → Nf A t} (A I.⇒ (B I.⇒ A) , I.K , K₀) (B' I.⇒ A' , I.K I.· t , K₁ n) → ⊥
+disjK₀-K₁ e = {!coe (cong P e) tt!}
+  where
+    P : (Σ I.Ty λ A → Σ (I.Tm A) λ t → Nf A t) → Type
+    P (.(_ I.⇒ _ I.⇒ _) , .I.K , K₀) = {!!}
+    P (.(_ I.⇒ _) , .(I.K I.· _) , K₁ n) = {!!}
+    P (.((_ I.⇒ _ I.⇒ _) I.⇒ (_ I.⇒ _) I.⇒ _ I.⇒ _) , .I.S , S₀) = {!!}
+    P (.((_ I.⇒ _) I.⇒ _ I.⇒ _) , .(I.S I.· _) , S₁ n) = {!!}
+    P (.(_ I.⇒ _) , .(I.S I.· _ I.· _) , S₂ n n₁) = {!!}
 
 
 K₀-cong : ∀{A₀ A₁ B₀ B₁} → A₀ ≡ A₁ → B₀ ≡ B₁ → 
@@ -59,7 +82,7 @@ K₁-inj₁ e = I.inj⇒₁ (cong fst e)
 K₁-inj₂ : ∀{A₀ A₁ B₀ B₁}{t₀ : I.Tm A₀}{t₁ : I.Tm A₁}{v₀ : Nf A₀ t₀}{v₁ : Nf A₁ t₁} →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (B₀ I.⇒ A₀ , I.K I.· t₀ , K₁ v₀) (B₁ I.⇒ A₁ , I.K I.· t₁ , K₁ v₁) →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ , t₀ , v₀) (A₁ , t₁ , v₁)
-K₁-inj₂ e = λ i → ((K₁-inj₀ e) i) , ({! (cong (snd ) e)!} , {!  !})
+K₁-inj₂ e i = K₁-inj₀ e i , ({!projt (e i)!} , {!  !})
 
 S₀-cong : ∀{A₀ A₁ B₀ B₁ C₀ C₁} → A₀ ≡ A₁ → B₀ ≡ B₁ → C₀ ≡ C₁ → 
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} ((A₀ I.⇒ B₀ I.⇒ C₀) I.⇒ (A₀ I.⇒ B₀) I.⇒ A₀ I.⇒ C₀ , I.S , S₀) ((A₁ I.⇒ B₁ I.⇒ C₁) I.⇒ (A₁ I.⇒ B₁) I.⇒ A₁ I.⇒ C₁ , I.S , S₀)
