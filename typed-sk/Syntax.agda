@@ -66,12 +66,3 @@ data Tm where
  
 ·-cong : ∀{A B}{B₀ B₁ : Tm (A ⇒ B)}{A₀ A₁ : Tm A} → B₀ ≡ B₁ → A₀ ≡ A₁ → B₀ · A₀ ≡  B₁ · A₁
 ·-cong a b = λ i → (a i) · (b i)
-
--- ·-inj₁ : ∀{A B}{B₀ B₁ : Tm (A ⇒ B)}{A₀ A₁ : Tm A} → B₀ · A₀ ≡  B₁ · A₁ → B₀ ≡ B₁
--- ·-inj₁ e  =  cong (λ { (B₀ · A₀) → {!   !} ; _ → {!   !} } ) e
-
--- ·-inj₂ : ∀{A B}{B₀ B₁ : Tm (A ⇒ B)}{A₀ A₁ : Tm A} → B₀ · A₀ ≡  B₁ · A₁ → A₀ ≡ A₁
--- ·-inj₂ e = {!   !}
-
--- ·-inj₃ : ∀{A B A₁}{B₀ B₁ : Tm (A ⇒ B)}{A₀ A₁ : Tm A} → B₀ · A₀ ≡  B₁ · A₁ → ?
--- ·-inj₃ e = {!   !}
