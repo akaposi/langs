@@ -161,24 +161,30 @@ S₁-inj₃ e = eqToPath (S₁-inj₃ᵢ (pathToEq e))
 fst≡Σ : ∀{T₁ T₂ : Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} → T₁ Ind≡ T₂ → fst T₁ Ind≡ fst T₂
 fst≡Σ _Ind≡_.refl = _Ind≡_.refl
 
-Σ≡₂ : ∀{A : Type}{B : A → Type}{T₁ T₂ : Σ A B}→ (e : (fst T₁) Ind≡ (fst T₂)) → indtransport (λ x → B x) e (snd T₁) Ind≡ (snd T₂) → T₁ Ind≡ T₂
-Σ≡₂ _Ind≡_.refl _Ind≡_.refl = _Ind≡_.refl
-S₂-congᵢ₁ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
- → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → (indtransport (I.Tm) (fst≡Σ e) u₀) Ind≡ u₁
-S₂-congᵢ₁ _Ind≡_.refl = _Ind≡_.refl
-S₂-congᵢ₂ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
- → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → indtransport (λ x → Nf (A₁ I.⇒ B₁) x) (S₂-congᵢ₁ e) (indtransport (λ (t , u) → Nf t u) (Σ≡₂ (fst≡Σ e) indrefl) w₀) Ind≡ w₁
-S₂-congᵢ₂ _Ind≡_.refl = _Ind≡_.refl
+from :  ∀{A₀ A₁ B₀ B₁ C₀ C₁ : I.Ty} → (A₀ I.⇒ B₀ I.⇒ C₀) Ind≡ (A₁ I.⇒ B₁ I.⇒ C₁) → A₀ I.⇒ B₀ Ind≡ A₁ I.⇒ B₁
+from indrefl = indrefl
+indcong : ∀{i j}{A : Set i}{B : Set j}(f : A → B){x y : A} → x Ind≡ y → f x Ind≡ f y
+indcong f indrefl = indrefl
+
+-- Σ≡₂ : ∀{A : Type}{B : A → Type}{T₁ T₂ : Σ A B}→ (e : (fst T₁) Ind≡ (fst T₂)) → indtransport (λ x → B x) e (snd T₁) Ind≡ (snd T₂) → T₁ Ind≡ T₂
+-- Σ≡₂ _Ind≡_.refl _Ind≡_.refl = _Ind≡_.refl
+-- S₂-congᵢ₁ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
+--  → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → (indtransport (I.Tm) (fst≡Σ e) u₀) Ind≡ u₁
+-- S₂-congᵢ₁ _Ind≡_.refl = _Ind≡_.refl
+-- S₂-congᵢ₂ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
+--  → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → indtransport (λ x → Nf (A₁ I.⇒ B₁) x) (S₂-congᵢ₁ e) (indtransport (λ (t , u) → Nf t u) (Σ≡₂ (fst≡Σ e) indrefl) w₀) Ind≡ w₁
+-- S₂-congᵢ₂ _Ind≡_.refl = _Ind≡_.refl
+
 S₂-congᵢ : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.⇒ C₀)}{t₁ : I.Tm (A₁ I.⇒ B₁ I.⇒ C₁)}{v₀ : Nf (A₀ I.⇒ B₀ I.⇒ C₀) t₀}{v₁ : Nf (A₁ I.⇒ B₁ I.⇒ C₁) t₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} →
-  _Ind≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ I.⇒ C₀ , t₀ , v₀) (A₁ I.⇒ B₁ I.⇒ C₁ , t₁ , v₁) →
-  _Ind≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁) →
+  (ee : _Ind≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ I.⇒ C₀ , t₀ , v₀) (A₁ I.⇒ B₁ I.⇒ C₁ , t₁ , v₁)) →
+  _Ind≡_ {A = Σ (I.Tm (A₁ I.⇒ B₁)) (Nf (A₁ I.⇒ B₁))} (indtransport (λ t → Σ (I.Tm t) (Nf t)) (from (indcong fst ee)) (u₀ , w₀)) (u₁ , w₁) → --(transport (Σ (I.Tm (_ => _)) (from (cong fst ee)) (Nf A)) (u₀ , w₀))
   _Ind≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ C₀ , I.S I.· t₀ I.· u₀ , S₂ v₀ w₀) (A₁ I.⇒ C₁ , I.S I.· t₁ I.· u₁ , S₂ v₁ w₁)
-S₂-congᵢ {A₀} {.A₀} {B₀} {.B₀} {C₀} {.C₀} {t₀} {.t₀} {v₀} {.v₀} {u₀} {u₁} _Ind≡_.refl e₁ = {! !}
+S₂-congᵢ indrefl indrefl = indrefl
 S₂-cong : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.⇒ C₀)}{t₁ : I.Tm (A₁ I.⇒ B₁ I.⇒ C₁)}{v₀ : Nf (A₀ I.⇒ B₀ I.⇒ C₀) t₀}{v₁ : Nf (A₁ I.⇒ B₁ I.⇒ C₁) t₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ I.⇒ C₀ , t₀ , v₀) (A₁ I.⇒ B₁ I.⇒ C₁ , t₁ , v₁) →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁) →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ C₀ , I.S I.· t₀ I.· u₀ , S₂ v₀ w₀) (A₁ I.⇒ C₁ , I.S I.· t₁ I.· u₁ , S₂ v₁ w₁)
-S₂-cong e₁ e₂ = {!   !}
+S₂-cong e₁ e₂ = eqToPath (S₂-congᵢ (pathToEq e₁) {!   !})
 S₂-inj₀ : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.⇒ C₀)}{t₁ : I.Tm (A₁ I.⇒ B₁ I.⇒ C₁)}{v₀ : Nf (A₀ I.⇒ B₀ I.⇒ C₀) t₀}{v₁ : Nf (A₁ I.⇒ B₁ I.⇒ C₁) t₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ C₀ , I.S I.· t₀ I.· u₀ , S₂ v₀ w₀) (A₁ I.⇒ C₁ , I.S I.· t₁ I.· u₁ , S₂ v₁ w₁) →
   A₀ ≡ A₁
@@ -278,4 +284,4 @@ S₂ v₀ v₂ ≟ K₀ = no λ (lift e) → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ K₁ v₁ = no λ (lift e) → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ S₀ = no λ (lift e) → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ S₁ v₁ = no λ (lift e) → transport (cong hDisjS₂ e) tt
-      
+       
