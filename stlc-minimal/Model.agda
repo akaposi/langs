@@ -77,9 +77,9 @@ record Model : Type₂ where
     ⇒-η : ∀ {Γ A B} (f : Tm Γ (A ⇒ B)) → lam (app (f [ p ]) q) ≡ f
 
     ι : Ty
-    ι-rec : ∀ {Γ A} → Tm Γ ι → Tm Γ A
-    ι-rec-[] :
-      ∀ {Γ Δ A} t (γ : Sub Δ Γ) → ι-rec {A = A} t [ γ ] ≡ ι-rec (t [ γ ])
+    -- ι-rec : ∀ {Γ A} → Tm Γ ι → Tm Γ A
+    -- ι-rec-[] :
+    --   ∀ {Γ Δ A} t (γ : Sub Δ Γ) → ι-rec {A = A} t [ γ ] ≡ ι-rec (t [ γ ])
 
 --Recursor 
 
@@ -121,5 +121,5 @@ record Model : Type₂ where
   ⟦ I.lam-[] a γ i ⟧t = lam-[] ⟦ a ⟧t ⟦ γ ⟧S i
   ⟦ I.⇒-β f a i ⟧t = ⇒-β ⟦ f ⟧t ⟦ a ⟧t i
   ⟦ I.⇒-η a i ⟧t = ⇒-η ⟦ a ⟧t i
-  ⟦ I.ι-rec t ⟧t = ι-rec ⟦ t ⟧t
-  ⟦ I.ι-rec-[] t γ i ⟧t = ι-rec-[] ⟦ t ⟧t ⟦ γ ⟧S i
+  -- ⟦ I.ι-rec t ⟧t = ι-rec ⟦ t ⟧t
+  -- ⟦ I.ι-rec-[] t γ i ⟧t = ι-rec-[] ⟦ t ⟧t ⟦ γ ⟧S i

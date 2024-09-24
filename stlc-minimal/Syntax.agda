@@ -137,8 +137,8 @@ data Tm where
   ⇒-β : ∀ (b : Tm (Γ ▸ A) B) a → app (lam b) a ≡ b [ ⟨ a ⟩ ]
   ⇒-η : (f : Tm Γ (A ⇒ B)) → lam (app (f [ p ]) q) ≡ f
 
-  ι-rec : Tm Γ ι → Tm Γ A
-  ι-rec-[] : ∀ t (γ : Sub Δ Γ) → ι-rec {A = A} t [ γ ] ≡ ι-rec (t [ γ ])
+  -- ι-rec : Tm Γ ι → Tm Γ A
+  -- ι-rec-[] : ∀ t (γ : Sub Δ Γ) → ι-rec {A = A} t [ γ ] ≡ ι-rec (t [ γ ])
 
 _[_]′ = _[_]
 q′ = q
