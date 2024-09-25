@@ -61,7 +61,7 @@ below.
   - QIIT syntax, parallel, merged contexts
   - strictification
   - model with type-in-type
-- mltt-minimal: Π,U,El,cd
+- mltt-minimal: Π,U,El, Ehrhard style
   - elaborator
   - QIIT syntax, parallel
     - standard model
