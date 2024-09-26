@@ -61,7 +61,8 @@ below.
   - QIIT syntax, parallel, merged contexts
   - strictification
   - model with type-in-type
-- mltt-minimal: Π,U,El, Ehrhard style
+- mltt-minimal-inconsistent: Π,U,El,cd Ehrhard style
+- mltt-minimal: Π,U,El, Ehrhard style, strictified _[_] and _∘_
   - elaborator
   - QIIT syntax, parallel
     - standard model
@@ -72,11 +73,10 @@ below.
     - groupoid model
     - presheaf model
     - ×Bool model
-  - strictification of _[_] and _∘_
-    - canonicity
-    - normalisation, injectivity of Π, injectivity and disjointness of constructors (externally)
-    - gluing dependent/displayed model over the syntax
-      - show parametricity as a special case
+  - canonicity
+  - normalisation, injectivity of Π, injectivity and disjointness of constructors (externally)
+  - gluing dependent/displayed model over the syntax
+    - show parametricity as a special case
 - mltt-finite: Π,Σ,⊥,⊤,Bool, lots of η, we cannot have large elim for Bool
   - elaborator
   - QIIT syntax, parallel

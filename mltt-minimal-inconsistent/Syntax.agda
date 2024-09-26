@@ -6,7 +6,7 @@ open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
 
-module mltt-minimal.Syntax where
+module mltt-minimal-inconsistent.Syntax where
 
 infixl 4 _▹_
 infixl 8 _∘_ _∘'_ _∘*_
@@ -37,30 +37,26 @@ p'     : Sub (Γ ▹ A) Γ
 _⁺'    : (γ : Sub Δ Γ) → Sub (Δ ▹ A [ γ ]T') (Γ ▹ A)
 _[_]t' : Tm Γ A → (γ : Sub Δ Γ) → Tm Δ (A [ γ ]T')
 U'     : Ty Γ
-_[_]U' : Tm Γ U' → (γ : Sub Δ Γ) → Tm Δ U'
-q'     : Tm (Γ ▹ A) (A [ p' ]T')
 
 data Ty where
-  TySet      : isSet (Ty Γ)
-  _[_]T      : Ty Γ → Sub Δ Γ → Ty Δ
-  [∘]T       : A [ γ ∘' δ ]T ≡ A [ γ ]T [ δ ]T
-  [id]T      : A [ id' ]T ≡ A
-  [p][⟨⟩]T   : {A : Ty Γ}{b : Tm Γ B} → A [ p' ]T [ ⟨ b ⟩' ]T ≡ A
-  [p][⁺]T    : A [ p' {A = B} ]T [ γ ⁺' ]T ≡ A [ γ ]T [ p' ]T
-  [p⁺][⟨q⟩]T : A ≡ A [ p' ⁺' ]T [ ⟨ q' ⟩' ]T
-  [⟨⟩][]T    : A [ ⟨ a ⟩' ]T [ γ ]T ≡ A [ γ ⁺' ]T [ ⟨ a [ γ ]t' ⟩' ]T
-
+  TySet    : isSet (Ty Γ)
+  _[_]T    : Ty Γ → Sub Δ Γ → Ty Δ
+  [∘]T     : A [ γ ∘' δ ]T ≡ A [ γ ]T [ δ ]T
+  [id]T    : A [ id' ]T ≡ A
+  [p][⟨⟩]T : {A : Ty Γ}{b : Tm Γ B} → A [ p' ]T [ ⟨ b ⟩' ]T ≡ A
+  [p][⁺]T  : A [ p' {A = B} ]T [ γ ⁺' ]T ≡ A [ γ ]T [ p' ]T
   
   U        : Ty Γ
   U[]      : U [ γ ]T ≡ U
   El       : Tm Γ U' → Ty Γ
-  El[]     : El Â [ γ ]T ≡ El (Â [ γ ]U')
   
   Π        : (A : Ty Γ) → Ty (Γ ▹ A) → Ty Γ
   Π[]      : Π A B [ γ ]T ≡ Π (A [ γ ]T') (B [ γ ⁺' ]T)
 
 _[_]T' = _[_]T
 U'      = U
+
+q'     : Tm (Γ ▹ A) (A [ p' ]T)
 
 data Sub where
   SubSet : isSet (Sub Δ Γ)
@@ -79,7 +75,7 @@ data Sub where
   p∘⁺    : p {A = A} ∘ γ ⁺ ≡ γ ∘ p
   p∘⟨⟩   : p ∘ ⟨ a ⟩ ≡ id
   ⟨⟩∘    : ⟨ a ⟩ ∘ γ ≡ γ ⁺ ∘ ⟨ a [ γ ]t' ⟩
-  p⁺∘⟨q⟩ : id {Γ ▹ A} ≡ p' ⁺ ∘ ⟨ q' ⟩
+  p⁺∘⟨q⟩ : p' ⁺ ∘ ⟨ q' ⟩ ≡ id {Γ ▹ A}
 
 _∘'_ = _∘_
 id'  = id
@@ -96,56 +92,31 @@ data Tm where
   [∘]t  : PathP (λ i → Tm Θ ([∘]T {A = A}{γ = γ}{δ = δ} i)) (a [ γ ∘ δ ]t) (a [ γ ]t [ δ ]t)
   [id]t : PathP (λ i → Tm Γ ([id]T {A = A} i)) (a [ id ]t) a
 
-  _[_]U : Tm Γ U → (γ : Sub Δ Γ) → Tm Δ U
-  []U   : PathP (λ i → Tm Δ (U[] {γ = γ} i)) (Â [ γ ]t) (Â [ γ ]U)
+  cd    : Ty Γ → Tm Γ U
+  cd[]  : PathP (λ i → Tm Δ (U[] {γ = γ} i)) (cd A [ γ ]t) (cd (A [ γ ]T))
 
-  _[_]Π : Tm Γ (Π A B) → (γ : Sub Δ Γ) → Tm Δ (Π (A [ γ ]T) (B [ γ ⁺ ]T))
   lam   : Tm (Γ ▹ A) B → Tm Γ (Π A B)
-  app   : Tm Γ (Π A B) → (a : Tm Γ A) → Tm Γ (B [ ⟨ a ⟩ ]T)
-  Πβ    : app (lam b) a ≡ b [ ⟨ a ⟩ ]t
-  Πη    : {t : Tm Γ (Π A B)} → PathP (λ i → Tm Γ (Π A ([p⁺][⟨q⟩]T {A = B} i))) t (lam (app (t [ p ]Π) q'))
+  app   : Tm Γ (Π A B) → Tm (Γ ▹ A) B
+  Πβ    : app (lam b) ≡ b
+  Πη    : lam (app t) ≡ t
   lam[] : PathP (λ i → Tm Γ (Π[] {B = B}{γ = γ} i)) (lam b [ γ ]t) (lam (b [ γ ⁺ ]t))
-  app[] : {t : Tm Γ (Π A B)} → PathP (λ i → Tm Γ ([⟨⟩][]T {A = B}{a = a}{γ = γ} i)) (app t a [ γ ]t') (app (t [ γ ]Π) (a [ γ ]t'))
 
 _[_]t' = _[_]t
 q'     = q
-_[_]U' = _[_]U
 
-_[_]T* : Ty Γ → Sub Δ Γ → Ty Δ
-_[_]T= : (A : Ty Γ)(γ : Sub Δ Γ) → A [ γ ]T ≡ A [ γ ]T*
-_[_]t* : Tm Γ A → (γ : Sub Δ Γ) → Tm Δ (A [ γ ]T*)
-_[_]t= : (a : Tm Γ A)(γ : Sub Δ Γ) → PathP (λ i → Tm Δ ((A [ γ ]T=) i)) (a [ γ ]t) (a [ γ ]t*)
-_∘*_   : Sub Δ Γ → Sub Θ Δ → Sub Θ Γ
-_∘=_   : (γ : Sub Δ Γ)(δ : Sub Θ Δ) → γ ∘ δ ≡ γ ∘* δ
+-- defined stuff
 
-_⁺*    : (γ : Sub Δ Γ) → Sub (Δ ▹ A [ γ ]T*) (Γ ▹ A)
-_⁺* {Δ = Δ}{Γ = Γ}{A = A} γ = subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (A [ γ ]T=) (γ ⁺)
+_[_]Π : Tm Γ (Π A B) → (γ : Sub Δ Γ) → Tm Δ (Π (A [ γ ]T) (B [ γ ⁺ ]T))
+t [ γ ]Π = subst (Tm _) Π[] (t [ γ ]t)
 
-TySet A A' e e' i i' [ γ ]T* = TySet (A [ γ ]T*) (A' [ γ ]T*) (λ i → e i [ γ ]T*) (λ i → e' i [ γ ]T*) i i'
-A [ γ ]T* = {!!}
+app[] : app t [ γ ⁺ ]t ≡ app (t [ γ ]Π)
+app[] = {!!}
+-- app t[γ⁺] =(β) app(lam(app t[γ⁺])) =(lam[]) app(lam(app t)[γ]) =(η) = app(t[γ])
 
-A [ γ ]T= = {!!}
+El[] : El Â [ γ ]T ≡ El (subst (Tm Δ) U[] (Â [ γ ]t))
+El[] = {!!}
 
-SubSet γ γ₁ x y i i₁ ∘* δ = {!!}
-γ ∘ δ ∘* θ = γ ∘* (δ ∘* θ)
-ass i ∘* δ = {!!}
-id ∘* δ = δ
-idl i ∘* δ = {!!}
-idr i ∘* δ = {!!}
-ε ∘* δ = ε
-◇η i ∘* δ = {!!}
-p ∘* δ = p ∘ δ
-γ ⁺ ∘* δ = γ ⁺ ∘ δ
-⟨ a ⟩ ∘* γ = γ ⁺* ∘ ⟨ a [ γ ]t* ⟩
-∘⁺ i ∘* δ = {!!}
-id⁺ i ∘* δ = {!!}
-p∘⁺ i ∘* δ = {!!}
-p∘⟨⟩ i ∘* δ = {!!}
-⟨⟩∘ i ∘* δ = {!!}
-p⁺∘⟨q⟩ i ∘* δ = {!!}
+-- CwF combinators:
 
-_∘=_ = {!!}
-
-a [ γ ]t* = {!!}
-
-a [ γ ]t= = {!!}
+-- TODO: γ ,Tm a := γ ⁺ ∘ ⟨ a ⟩
+-- TODO: prove the CwF laws ▹β₁, ▹β₂, ▹η
