@@ -1,19 +1,20 @@
 {-# OPTIONS --cubical #-}
 -- {-# OPTIONS --allow-unsolved-metas #-} 
 
+open import Agda.Primitive
 open import Cubical.Foundations.Prelude hiding (_,_; Sub)
 import stlc-minimal.Syntax as I
 
 module stlc-minimal.Model where
 
-record Model : Type₂ where
+record Model {ℓ}{ℓ'} : Type (lsuc (ℓ ⊔ ℓ')) where
   no-eta-equality
   infixl 40 _∘_ _[_]
   infixl 4 _▸_ _,_
 
   field
-    Con : Type₁
-    Sub : Con → Con → Type
+    Con : Type ℓ
+    Sub : Con → Con → Type ℓ'
     SubSet : ∀ {Δ Γ} → isSet (Sub Δ Γ)
 
     _∘_ : ∀ {Γ Δ Θ} → Sub Δ Γ → Sub Θ Δ → Sub Θ Γ
@@ -25,8 +26,8 @@ record Model : Type₂ where
     idr : ∀ {Γ Δ} (γ : Sub Δ Γ) → γ ∘ id ≡ γ
     idl : ∀ {Γ Δ} (γ : Sub Δ Γ) → id ∘ γ ≡ γ
 
-    Ty : Type₁
-    Tm : Con → Ty → Type
+    Ty : Type ℓ
+    Tm : Con → Ty → Type ℓ'
     TmSet : ∀ {Γ A} → isSet (Tm Γ A)
 
     _[_] : ∀ {Γ Δ A} → Tm Γ A → Sub Δ Γ → Tm Δ A
