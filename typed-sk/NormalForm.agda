@@ -11,7 +11,7 @@ open import Cubical.Data.Sigma
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Foundations.Function
-open import Cubical.Data.Equality renaming (_≡_ to _Ind≡_; transport to indtransport; refl to indrefl) hiding (_∙_; sym)
+open import Cubical.Data.Equality renaming (_≡_ to _Ind≡_; transport to indtransport; refl to indrefl; _∙_ to _Ind∙_; sym to Indsym; J to IndJ)
 open import Agda.Builtin.Unit
 import typed-sk.Syntax as I
 
@@ -288,3 +288,18 @@ S₂ v₀ v₂ ≟ K₀ = no λ e → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ K₁ v₁ = no λ e → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ S₀ = no λ e → transport (cong hDisjS₂ e) tt
 S₂ v₀ v₂ ≟ S₁ v₁ = no λ e → transport (cong hDisjS₂ e) tt
+
+transport-ap : ∀{ℓ}{ℓ'}{A : Type ℓ'}{B : Type ℓ'}(P : B → Type ℓ)(f : A → B){x y : A}(e : x Ind≡ y){u : P (f x)} → indtransport (P ∘ f) e u Ind≡ indtransport P (ap f e) u
+transport-ap P f indrefl = indrefl
+
+TyTmIsSet : isSet (Σ I.Ty I.Tm)
+TyTmIsSet = isSetΣ I.isTySet λ _ → I.TmSet
+
+NfDiscrete : ∀{A t} → Discrete (Nf A t)
+NfDiscrete {A}{t} n n' with n ≟ n'
+NfDiscrete {A}{t} n n' | yes p with pathToEq p
+NfDiscrete {A}{t} n n' | yes p | e = yes (eqToPath ((ap (λ z → indtransport (λ z → Nf (pr₁ z) (snd z)) z n) (pathToEq (sym (pathToEq-eqToPath indrefl) ∙ cong pathToEq (TyTmIsSet _ _ _ _) ∙ pathToEq-eqToPath (ap (λ z → pr₁ z , pr₁ (snd z)) e) )) Ind∙ Indsym (transport-ap (λ z → Nf (fst z) (snd z)) (λ z → (fst z , fst (snd z))) e)) Ind∙ apd (snd ∘ snd) e))
+NfDiscrete {A}{t} n n' | no ¬p = no λ e → ¬p (cong (λ z → (A , t , z)) e)
+
+NfSet : ∀{A t} → isSet (Nf A t)
+NfSet {A}{t} = Discrete→isSet NfDiscrete
