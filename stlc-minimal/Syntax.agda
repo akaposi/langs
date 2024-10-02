@@ -5,7 +5,7 @@ open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
--- open import Cubical.Foundations.Function
+open import Cubical.Foundations.Path
 
 module stlc-minimal.Syntax where
 
@@ -142,6 +142,7 @@ q′ = q
 γ ↑ = γ ∘ p , q
 ⟨_⟩ = id ,_
 
+
 _[_]* : Tm Γ A → Sub Δ Γ → Tm Δ A
 _[_]= : (a : Tm Γ A)(γ : Sub Δ Γ) → a [ γ ]* ≡ a [ γ ]
 
@@ -160,19 +161,18 @@ lam-[] t γ i [ δ ]* = (([]-∘ (lam t) γ δ) ∙ cong (_[ δ ]) (lam-[] t γ)
 
 
 
-(TmSet a a' e e' i j [ γ ]=) k = {!  TmSet ((a [ γ ]=) k) ((a' [ γ ]=) k) (cong (λ x → (x [ γ ]=) k) e) (cong (λ x → (x [ γ ]=) k) e') i j  !} 
-((a [ γ ]) [ δ ]=) i =  ((a [ γ ∘ δ ]=) ∙ ([]-∘ a γ δ)) i 
-([]-∘ a γ δ i [ θ ]=) j = {! ((a [ assoc γ δ θ (~ i) ]=) ∙ (?)) i !} -- []-∘ a (γ ∘ δ) θ  i 
-([]-id a i [ γ ]=) j = {!  !} -- ((a [ id ∘ γ ]=) ∙ []-∘ a id γ) j
+(TmSet a a' e e' i j [ γ ]=) = isProp→SquareP (λ i₁ j₁ → TmSet (TmSet (a [ γ ]*) (a' [ γ ]*) (cong _[ γ ]* e) (cong _[ γ ]* e') i₁ j₁)  ((TmSet a a' e e' i₁ j₁) [ γ ])) (λ i₁ → a [ γ ]=) (λ i₁ → a' [ γ ]=) (λ j₁ → e j₁ [ γ ]=) (λ j₁ → e' j₁ [ γ ]=) i j 
+((a [ γ ]) [ δ ]=) = (a [ γ ∘ δ ]=) ∙ ([]-∘ a γ δ) 
+([]-∘ a γ δ i [ θ ]=) = isProp→PathP (λ i₁ → TmSet (a [ assoc γ δ θ (~ i₁) ]*) ([]-∘ a γ δ i₁ [ θ ])) ((a [ (γ ∘ δ ∘ θ) ]=) ∙ ([]-∘ a (γ ∘ δ) θ))  {! (a [(γ ∘ (δ ∘ θ))]=) ∙ (cong (a [_]) (assoc γ δ θ)) ∙ ([]-∘ a (γ ∘ δ) θ) ∙ (cong (_[ θ ]) ([]-∘ a γ δ))!} i -- {!  TmSet _ _ ((a [ γ ∘ δ ∘ θ ]=) ∙ []-∘ a (γ ∘ δ) θ) (((a [ γ ∘ (δ ∘ θ) ]=) ∙ []-∘ a γ (δ ∘ θ)) ∙ []-∘ (a [ γ ]) δ θ)!} -- []-∘ a (γ ∘ δ) θ  i 
+([]-id a i [ γ ]=)  = {! ((a [ id ∘ γ ]=) ∙ []-∘ a id γ) j     !} 
 (q [ γ ]=) = refl
 (▸-β₂ γ₁ a i₁ [ γ ]=) i = {!   !}
 (app t a [ γ ]=) i = ((cong (λ x → app (t [ γ ]*) x) (a [ γ ]=)) ∙ (cong (λ x → app x (a [ γ ])) (t [ γ ]=)) ∙ (sym (app-[] t a γ))) i
 (app-[] a a₁ γ₁ i₁ [ γ ]=) i = {!   !}
-(lam a [ γ ]=) = refl 
 (lam-[] a γ₁ i₁ [ γ ]=) i = {!   !}
 (⇒-β a a₁ i₁ [ γ ]=) i = {!   !}
 (⇒-η a i₁ [ γ ]=) i = {!   !}
-
+(lam a [ γ ]=) = refl 
 -- (a ≡ b) =  (f : 𝕀 → A)        f i0 = a,  f i1 = b
 
-     
+
