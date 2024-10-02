@@ -11,7 +11,7 @@ open import Cubical.Data.Sigma
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Foundations.Function
-open import Cubical.Data.Equality renaming (_≡_ to _Ind≡_; transport to indtransport; refl to indrefl)
+open import Cubical.Data.Equality renaming (_≡_ to _Ind≡_; transport to indtransport; refl to indrefl) hiding (_∙_; sym)
 open import Agda.Builtin.Unit
 import typed-sk.Syntax as I
 
@@ -184,7 +184,11 @@ S₂-cong : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.�
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ I.⇒ C₀ , t₀ , v₀) (A₁ I.⇒ B₁ I.⇒ C₁ , t₁ , v₁) →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁) →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ C₀ , I.S I.· t₀ I.· u₀ , S₂ v₀ w₀) (A₁ I.⇒ C₁ , I.S I.· t₁ I.· u₁ , S₂ v₁ w₁)
-S₂-cong e₁ e₂ = eqToPath (S₂-congᵢ (pathToEq e₁) {!   !})
+S₂-cong {u₀ = u₀}{u₁ = u₁}{w₀ = w₀}{w₁ = w₁} e₁ e₂ = eqToPath (S₂-congᵢ (pathToEq e₁) (
+  subst {x = pathToEq (cong fst e₂)}{y = from (indcong (λ r → pr₁ r) (pathToEq e₁))}
+  (λ z → indtransport (λ t → Σ (I.Tm t) (Nf t)) z (u₀ , w₀) Ind≡ (u₁ , w₁))
+  (sym (pathToEq-eqToPath (pathToEq (λ i → pr₁ (e₂ i)))) ∙ cong pathToEq (I.isTySet _ _ (eqToPath (pathToEq (λ i → pr₁ (e₂ i)))) (eqToPath (from (indcong (λ r → pr₁ r) (pathToEq e₁))))) ∙ pathToEq-eqToPath (from (indcong (λ r → pr₁ r) (pathToEq e₁))))
+  (PathP→pathOver (λ t → Σ (I.Tm t) (Nf t)) (cong fst e₂) (cong snd e₂))))
 S₂-inj₀ : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.⇒ C₀)}{t₁ : I.Tm (A₁ I.⇒ B₁ I.⇒ C₁)}{v₀ : Nf (A₀ I.⇒ B₀ I.⇒ C₀) t₀}{v₁ : Nf (A₁ I.⇒ B₁ I.⇒ C₁) t₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} →
   _≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ C₀ , I.S I.· t₀ I.· u₀ , S₂ v₀ w₀) (A₁ I.⇒ C₁ , I.S I.· t₁ I.· u₁ , S₂ v₁ w₁) →
   A₀ ≡ A₁
@@ -224,64 +228,63 @@ S₂-inj₄ e = eqToPath (S₂-inj₄ᵢ (pathToEq e))
 
 infix 4 _≟_ 
 
-_≟_ : ∀{A₀ A₁ t₀ t₁}(v₀ : Nf A₀ t₀)(v₁ : Nf A₁ t₁) → Dec (Lift (_≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ , t₀ , v₀) (A₁ , t₁ , v₁)))
+_≟_ : ∀{A₀ A₁ t₀ t₁}(v₀ : Nf A₀ t₀)(v₁ : Nf A₁ t₁) → Dec (_≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ , t₀ , v₀) (A₁ , t₁ , v₁))
 K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} with I.discreteTy A₀ A₁ 
 K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | yes eA with I.discreteTy B₀ B₁ 
-K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | yes eA | yes eB = yes (lift (K₀-cong eA eB))
-K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | yes eA | no ne = no (λ e → ne (K₀-inj₁  (lower e)))
-K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | no ne = no λ e → ne (K₀-inj₀ (lower e))
+K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | yes eA | yes eB = yes (K₀-cong eA eB)
+K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | yes eA | no ne = no (λ e → ne (K₀-inj₁  e))
+K₀ {A₀}{B₀} ≟ K₀ {A₁}{B₁} | no ne = no λ e → ne (K₀-inj₀ e)
 K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ with I.discreteTy A₀ A₁ 
 K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA with I.discreteTy B₀ B₁  
 K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | yes eB with v₀ ≟ v₁ 
-K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | yes eB | yes (lift eV) = yes (lift (K₁-cong eB eV))
-K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | yes eB | no ne = no (λ (lift e) → ne (lift (K₁-inj₂ e)))
-K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | no ne = no (λ (lift e) → ne (K₁-inj₁ e))
-K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁  | no ne = no (λ (lift e) → ne (K₁-inj₀ e))
+K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | yes eB | yes eV = yes (K₁-cong eB eV)
+K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | yes eB | no ne = no (λ e → ne (K₁-inj₂ e))
+K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁ | yes eA | no ne = no (λ e → ne (K₁-inj₁ e))
+K₁ {A₀}{B₀} v₀ ≟ K₁ {A₁}{B₁} v₁  | no ne = no (λ e → ne (K₁-inj₀ e))
 S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} with I.discreteTy A₀ A₁ 
 S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA with I.discreteTy B₀ B₁
 S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | yes eB with I.discreteTy C₀ C₁
-S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | yes eB | yes eC = yes (lift (S₀-cong eA eB eC)) 
-S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | yes eB | no ne = no (λ e → ne (S₀-inj₂ (lower e)))
-S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | no ne = no (λ e → ne (S₀-inj₁ (lower e)))
-S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | no ne = no (λ e → ne (S₀-inj₀ (lower e)))
+S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | yes eB | yes eC = yes (S₀-cong eA eB eC)
+S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | yes eB | no ne = no (λ e → ne (S₀-inj₂ e))
+S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | yes eA | no ne = no (λ e → ne (S₀-inj₁ e))
+S₀ {A₀}{B₀}{C₀} ≟ S₀ {A₁}{B₁}{C₁} | no ne = no (λ e → ne (S₀-inj₀ e))
 S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ with I.discreteTy A₀ A₁ 
 S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA with I.discreteTy B₀ B₁
 S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB with I.discreteTy C₀ C₁
 S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | yes eC with v₀ ≟ v₁ 
-S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | yes eC | yes (lift eV) = yes (lift (S₁-cong eV)) 
-S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | yes eC | no ne = no (λ (lift e) → ne ((lift (S₁-inj₃ e))) )
-S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | no ne = no λ (lift e) → ne (S₁-inj₂ e) 
-S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | no ne = no (λ (lift e) → ne (S₁-inj₁ e))
-S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | no ne = no (λ (lift e) → ne (S₁-inj₀ e))
+S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | yes eC | yes eV = yes (S₁-cong eV)
+S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | yes eC | no ne = no (λ e → ne (S₁-inj₃ e))
+S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | yes eB | no ne = no λ e → ne (S₁-inj₂ e)
+S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | yes eA | no ne = no λ e → ne (S₁-inj₁ e)
+S₁ {A₀}{B₀}{C₀} v₀ ≟ S₁ {A₁}{B₁}{C₁} v₁ | no ne = no λ e → ne (S₁-inj₀ e)
 S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ with I.discreteTy A₀ A₁ 
 S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA with I.discreteTy B₀ B₁
 S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB with I.discreteTy C₀ C₁
 S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC with v₀ ≟ v₁ 
 S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | yes eV with w₀ ≟ w₁ 
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | yes (lift eV) | yes (lift eW) = yes (lift {!  !}) 
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | yes eV | no ne = no (λ (lift e) → ne (lift (S₂-inj₄ e)))
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | no ne = no (λ (lift e) → ne (lift (S₂-inj₃ e)))
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | no ne = no (λ (lift e) → ne (S₂-inj₂ e))
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | no ne = no (λ (lift e) → ne (S₂-inj₁ e))
-S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | no ne = no (λ (lift e) → ne (S₂-inj₀ e))
-K₀ ≟ K₁ _ = no λ (lift e) → transport (cong hDisjK₀ e) tt
-K₀ ≟ S₀ = no λ (lift e) → transport (cong hDisjK₀ e) tt
-K₀ ≟ S₁ v₁ = no λ (lift e) → transport (cong hDisjK₀ e) tt
-K₀ ≟ S₂ v₁ v₂ = no λ (lift e) → transport (cong hDisjK₀ e) tt
-K₁ v₀ ≟ K₀ = no λ (lift e) → transport (cong hDisjK₁ e) tt
-K₁ v₀ ≟ S₀ = no λ (lift e) → transport (cong hDisjK₁ e) tt
-K₁ v₀ ≟ S₁ v₁ = no λ (lift e) → transport (cong hDisjK₁ e) tt
-K₁ v₀ ≟ S₂ v₁ v₂ = no λ (lift e) → transport (cong hDisjK₁ e) tt 
-S₀ ≟ K₀ = no λ (lift e) → transport (cong hDisjS₀ e) tt
-S₀ ≟ K₁ v₁ = no λ (lift e) → transport (cong hDisjS₀ e) tt
-S₀ ≟ S₁ v₁ = no λ (lift e) → transport (cong hDisjS₀ e) tt
-S₀ ≟ S₂ v₁ v₂ = no λ (lift e) → transport (cong hDisjS₀ e) tt
-S₁ v₀ ≟ K₀ = no λ (lift e) → transport (cong hDisjS₁ e) tt
-S₁ v₀ ≟ K₁ v₁ = no λ (lift e) → transport (cong hDisjS₁ e) tt
-S₁ v₀ ≟ S₀ = no λ (lift e) → transport (cong hDisjS₁ e) tt
-S₁ v₀ ≟ S₂ v₁ v₂ = no λ (lift e) → transport (cong hDisjS₁ e) tt
-S₂ v₀ v₂ ≟ K₀ = no λ (lift e) → transport (cong hDisjS₂ e) tt
-S₂ v₀ v₂ ≟ K₁ v₁ = no λ (lift e) → transport (cong hDisjS₂ e) tt
-S₂ v₀ v₂ ≟ S₀ = no λ (lift e) → transport (cong hDisjS₂ e) tt
-S₂ v₀ v₂ ≟ S₁ v₁ = no λ (lift e) → transport (cong hDisjS₂ e) tt
-       
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | yes eV | yes eW = yes (S₂-cong eV eW)
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | yes eV | no ne = no λ e → ne (S₂-inj₄ e)
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | yes eC | no ne = no (λ e → ne (S₂-inj₃ e))
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | yes eB | no ne = no λ e → ne (S₂-inj₂ e)
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | yes eA | no ne = no λ e → ne (S₂-inj₁ e)
+S₂ {A₀}{B₀}{C₀} v₀ w₀ ≟ S₂ {A₁}{B₁}{C₁} v₁ w₁ | no ne = no λ e → ne (S₂-inj₀ e)
+K₀ ≟ K₁ _ = no λ e → transport (cong hDisjK₀ e) tt
+K₀ ≟ S₀ = no λ e → transport (cong hDisjK₀ e) tt
+K₀ ≟ S₁ v₁ = no λ e → transport (cong hDisjK₀ e) tt
+K₀ ≟ S₂ v₁ v₂ = no λ e → transport (cong hDisjK₀ e) tt
+K₁ v₀ ≟ K₀ = no λ e → transport (cong hDisjK₁ e) tt
+K₁ v₀ ≟ S₀ = no λ e → transport (cong hDisjK₁ e) tt
+K₁ v₀ ≟ S₁ v₁ = no λ e → transport (cong hDisjK₁ e) tt
+K₁ v₀ ≟ S₂ v₁ v₂ = no λ e → transport (cong hDisjK₁ e) tt 
+S₀ ≟ K₀ = no λ e → transport (cong hDisjS₀ e) tt
+S₀ ≟ K₁ v₁ = no λ e → transport (cong hDisjS₀ e) tt
+S₀ ≟ S₁ v₁ = no λ e → transport (cong hDisjS₀ e) tt
+S₀ ≟ S₂ v₁ v₂ = no λ e → transport (cong hDisjS₀ e) tt
+S₁ v₀ ≟ K₀ = no λ e → transport (cong hDisjS₁ e) tt
+S₁ v₀ ≟ K₁ v₁ = no λ e → transport (cong hDisjS₁ e) tt
+S₁ v₀ ≟ S₀ = no λ e → transport (cong hDisjS₁ e) tt
+S₁ v₀ ≟ S₂ v₁ v₂ = no λ e → transport (cong hDisjS₁ e) tt
+S₂ v₀ v₂ ≟ K₀ = no λ e → transport (cong hDisjS₂ e) tt
+S₂ v₀ v₂ ≟ K₁ v₁ = no λ e → transport (cong hDisjS₂ e) tt
+S₂ v₀ v₂ ≟ S₀ = no λ e → transport (cong hDisjS₂ e) tt
+S₂ v₀ v₂ ≟ S₁ v₁ = no λ e → transport (cong hDisjS₂ e) tt
