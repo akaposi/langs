@@ -47,8 +47,6 @@ St A = record
             ; ⇒-β = λ b a → refl
             ; ⇒-η = λ f → refl
             ; ι = A
-            -- ; ι-rec = λ  {Γ} {A} f t → {!  !}
-            -- ; ι-rec-[] = {!   !}
         }
 
 

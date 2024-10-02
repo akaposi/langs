@@ -28,20 +28,6 @@ data Nf where
   S₁ : ∀{A B C t} → Nf (A I.⇒ B I.⇒ C) t → Nf ((A I.⇒ B) I.⇒ A I.⇒ C) (I.S I.· t) 
   S₂ : ∀{A B C t u} → Nf (A I.⇒ B I.⇒ C) t → Nf (A I.⇒ B) u → Nf (A I.⇒ C) (I.S I.· t I.· u) 
 
--- data Maybe (A : Type) : Type where
---   nothing : Maybe A
---   just : A → Maybe A
-
-{-
-projt : (w : Σ I.Ty λ C → Σ (I.Tm C) λ t → Nf C t) → ∀{A B} → fst w ≡ B I.⇒ A  → Maybe (I.Tm A)
-projt (.(_ I.⇒ _ I.⇒ _) , .I.K , K₀) e = {!!}
-projt (.(_ I.⇒ _) , .(I.K I.· _) , K₁ {t = t} n) e = {!t!}
-projt (.((_ I.⇒ _ I.⇒ _) I.⇒ (_ I.⇒ _) I.⇒ _ I.⇒ _) , .I.S , S₀) e = {!!}
-projt (.((_ I.⇒ _) I.⇒ _ I.⇒ _) , .(I.S I.· _) , S₁ n) e = {!!}
-projt (.(_ I.⇒ _) , .(I.S I.· _ I.· _) , S₂ n n₁) e = {!!}
--}
-
-
 hDisjK₀ : (Σ I.Ty λ A → Σ (I.Tm A) λ t → Nf A t) → Type
 hDisjK₀ (.(_ I.⇒ _ I.⇒ _) , .I.K , K₀) = ⊤
 hDisjK₀ (.(_ I.⇒ _) , .(I.K I.· _) , K₁ n) = ⊥
@@ -165,15 +151,6 @@ from :  ∀{A₀ A₁ B₀ B₁ C₀ C₁ : I.Ty} → (A₀ I.⇒ B₀ I.⇒ C�
 from indrefl = indrefl
 indcong : ∀{i j}{A : Set i}{B : Set j}(f : A → B){x y : A} → x Ind≡ y → f x Ind≡ f y
 indcong f indrefl = indrefl
-
--- Σ≡₂ : ∀{A : Type}{B : A → Type}{T₁ T₂ : Σ A B}→ (e : (fst T₁) Ind≡ (fst T₂)) → indtransport (λ x → B x) e (snd T₁) Ind≡ (snd T₂) → T₁ Ind≡ T₂
--- Σ≡₂ _Ind≡_.refl _Ind≡_.refl = _Ind≡_.refl
--- S₂-congᵢ₁ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
---  → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → (indtransport (I.Tm) (fst≡Σ e) u₀) Ind≡ u₁
--- S₂-congᵢ₁ _Ind≡_.refl = _Ind≡_.refl
--- S₂-congᵢ₂ : ∀{A₀ A₁ B₀ B₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} 
---  → (e : _Ind≡_  {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ , u₀ , w₀) (A₁ I.⇒ B₁ , u₁ , w₁)) → indtransport (λ x → Nf (A₁ I.⇒ B₁) x) (S₂-congᵢ₁ e) (indtransport (λ (t , u) → Nf t u) (Σ≡₂ (fst≡Σ e) indrefl) w₀) Ind≡ w₁
--- S₂-congᵢ₂ _Ind≡_.refl = _Ind≡_.refl
 
 S₂-congᵢ : ∀{A₀ A₁ B₀ B₁ C₀ C₁}{t₀ : I.Tm (A₀ I.⇒ B₀ I.⇒ C₀)}{t₁ : I.Tm (A₁ I.⇒ B₁ I.⇒ C₁)}{v₀ : Nf (A₀ I.⇒ B₀ I.⇒ C₀) t₀}{v₁ : Nf (A₁ I.⇒ B₁ I.⇒ C₁) t₁}{u₀ : I.Tm (A₀ I.⇒ B₀)}{u₁ : I.Tm (A₁ I.⇒ B₁)}{w₀ : Nf (A₀ I.⇒ B₀) u₀}{w₁ : Nf (A₁ I.⇒ B₁) u₁} →
   (ee : _Ind≡_ {A = Σ I.Ty λ A → Σ (I.Tm A) (Nf A)} (A₀ I.⇒ B₀ I.⇒ C₀ , t₀ , v₀) (A₁ I.⇒ B₁ I.⇒ C₁ , t₁ , v₁)) →

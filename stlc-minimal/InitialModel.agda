@@ -4,7 +4,6 @@ open import Agda.Primitive
 open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Data.Unit renaming (Unit to ⊤)
 open import Cubical.Data.Empty renaming (rec to exfalso) 
--- open import Cubical.Data.Sigma
 open import Cubical.Foundations.HLevels
 module stlc-minimal.InitialModel where
 
@@ -63,28 +62,28 @@ InStrict = record
       ; Ty = Ty
       ; Tm = Tm
       ; TmSet = TmSet
-      ; _[_] = {!_[_]*!}
-      ; []-∘ = {!!}
-      ; []-id = {!!}
-      ; _▸_ = {!!}
-      ; p = {!!}
-      ; q = {!!}
-      ; _,_ = {!!}
-      ; ,-∘ = {!!}
-      ; ▸-β₁ = {!!}
-      ; ▸-β₂ = {!!}
-      ; ▸-η = {!!}
-      ; ◆ = {!!}
-      ; ε = {!!}
-      ; ε-∘ = {!!}
-      ; ◆-η = {!!}
-      ; _⇒_ = {!!}
-      ; app = {!!}
-      ; app-[] = {!refl!}
-      ; lam = {!!}
-      ; lam-[] = {!refl!}
-      ; ⇒-β = {!!}
-      ; ⇒-η = {!!}
-      ; ι = {!!}
+      ; _[_] = _[_]*
+      ; []-∘ = λ a γ δ → (a [ γ ∘ δ ]=) ∙ ([]-∘ a γ δ ) ∙ ((cong (_[ δ ]) (sym (a [ γ ]=)) ∙ sym ((a [ γ ]*) [ δ ]=)))
+      ; []-id = λ a → (a [ id ]=) ∙ []-id a
+      ; _▸_ = _▸_
+      ; p = p
+      ; q = q
+      ; _,_ = _,_
+      ; ,-∘ = {!   !}
+      ; ▸-β₁ = ▸-β₁
+      ; ▸-β₂ = ▸-β₂
+      ; ▸-η = ▸-η
+      ; ◆ = ◆
+      ; ε = ε
+      ; ε-∘ = ε-∘
+      ; ◆-η = ◆-η
+      ; _⇒_ = _⇒_
+      ; app = app
+      ; app-[] = λ f a γ → refl
+      ; lam = lam
+      ; lam-[] = λ b γ → (lam-[] b γ) ∙ cong lam (sym (b [ γ ∘ p , q ]=))
+      ; ⇒-β = λ b a → (⇒-β b a) ∙ sym (b [ id , a ]=)
+      ; ⇒-η = λ f → cong (λ x → lam (app x q)) (f [ p ]=) ∙ (⇒-η f)
+      ; ι = ι
       }
-  
+   

@@ -2,7 +2,6 @@
 
 open import Cubical.Foundations.Prelude hiding (Sub;_,_)
 open import Cubical.Foundations.Path
--- open import Cubical.Foundations.Transport
 open import Cubical.Foundations.HLevels
 open import Cubical.Data.Empty renaming (rec to exfalso)
 
@@ -16,9 +15,6 @@ private module M = DepModel M
 private variable
   Γ Δ : I.Con
   A : I.Ty
-
-
---Recursor 
 
 ⟦_⟧Tᵢ : ∀ A → M.Ty A
 ⟦ I.ι ⟧Tᵢ = M.ι

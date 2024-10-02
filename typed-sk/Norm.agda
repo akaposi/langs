@@ -10,7 +10,6 @@ open import Cubical.Data.Sigma
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Foundations.Function
--- open import Cubical.Data.Unit
 open import Agda.Builtin.Unit
 import typed-sk.Syntax as I
 import typed-sk.DepModel as D
