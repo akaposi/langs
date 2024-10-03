@@ -17,7 +17,7 @@ In = record
       ; Sub = Sub
       ; SubSet = λ {Δ Γ} → SubSet
       ; _∘_ = λ {Δ Γ Θ} → _∘_
-      ; assoc =  assoc
+      ; assoc = assoc
       ; id = id
       ; idr = idr
       ; idl = idl
@@ -69,7 +69,7 @@ InStrict = record
       ; p = p
       ; q = q
       ; _,_ = _,_
-      ; ,-∘ = {!   !}
+      ; ,-∘ = λ γ a δ → (,-∘ γ a δ) ∙ cong (λ z → γ ∘ δ , z)  (sym(a [ δ ]=))
       ; ▸-β₁ = ▸-β₁
       ; ▸-β₂ = ▸-β₂
       ; ▸-η = ▸-η
