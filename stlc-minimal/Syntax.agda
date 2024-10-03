@@ -154,10 +154,10 @@ q [ γ ]* = q [ γ ]
 ▸-β₂ γ a i [ δ ]* = (cong (q [_]) (,-∘ γ a δ) ∙ ▸-β₂ (γ ∘ δ) (a [ δ ]) ∙ sym (a [ δ ]=)) i
 app t a [ γ ]* = app (t [ γ ]*) (a [ γ ]*)
 app-[] t a γ i [ δ ]* = app (t [ γ ∘ δ ]*) (a [ γ ∘ δ ]*)
-lam t [ γ ]* = lam t [ γ ] 
-lam-[] t γ i [ δ ]* = (([]-∘ (lam t) γ δ) ∙ cong (_[ δ ]) (lam-[] t γ)) i
-⇒-β t a i [ γ ]* = ((t [ ⟨ a ⟩ ∘ γ ]=) ∙ ([]-∘ t (⟨ a ⟩) γ) ∙ (cong (_[ γ ]) (sym (⇒-β t a))) ∙ (app-[] (lam t) a γ ) ∙ (cong (λ x → app (lam t [ γ ]) x) (sym (a [ γ ]=)))) (~ i)
-⇒-η t i [ γ ]* = ((cong (_[ γ ]) (⇒-η t)) ∙ (sym (t [ γ ]=))  ) i
+lam t [ γ ]* = lam (t [ γ ∘ p , q ]*)
+lam-[] t γ i [ δ ]* = {!!}
+⇒-β t a i [ γ ]* = {!!}
+⇒-η t i [ γ ]* = {!!}
 
 
 
@@ -189,25 +189,10 @@ lam-[] t γ i [ δ ]* = (([]-∘ (lam t) γ δ) ∙ cong (_[ δ ]) (lam-[] t γ)
   (λ i → app (a [ δ ∘ γ ]*) (t [ δ ∘ γ ]*)) 
   (λ i → app-[] a t δ i [ γ ]) 
   i j
-(lam-[] a δ i [ γ ]=) j = isSet→isSet' TmSet  
-  ((λ _ → lam a [ δ ∘ γ ]) ∙ []-∘ (lam a) δ γ) 
-  (λ j → lam (a [ δ ↑ ]) [ γ ]) 
-  ([]-∘ (lam a) δ γ ∙ (λ i₁ → lam-[] a δ i₁ [ γ ])) 
-  (λ i → lam-[] a δ i [ γ ]) 
-  i j
-(⇒-β a t i [ γ ]=) j = isSet→isSet' TmSet 
-  ((λ i₁ → app (lam a [ γ ]) ((t [ γ ]=) i₁)) ∙  (λ i₁ → app (lam a [ γ ]) (t [ γ ])) ∙ (λ i₁ → app-[] (lam a) t γ (~ i₁))) 
-  ((a [ ⟨ t ⟩ ∘ γ ]=) ∙ []-∘ a ⟨ t ⟩ γ) (λ i → ((a [ ⟨ t ⟩ ∘ γ ]=) ∙ []-∘ a ⟨ t ⟩ γ ∙  (λ i₁ → ⇒-β a t (~ i₁) [ γ ]) ∙  app-[] (lam a) t γ ∙  (λ i₁ → app (lam a [ γ ]) 
-  ((t [ γ ]=) (~ i₁)))) (~ i)) 
-  (λ i → ⇒-β a t i [ γ ]) 
-  i j
-(⇒-η a i [ γ ]=) j = isSet→isSet' TmSet 
-  (λ j → lam (app (a [ p ]) q) [ γ ]) 
-  (a [ γ ]=)  
-  ((λ i₁ → ⇒-η a i₁ [ γ ]) ∙ (λ i₁ → (a [ γ ]=) (~ i₁))) 
-  (λ i → ⇒-η a i [ γ ]) 
-  i j
-(lam a [ γ ]=) = refl 
+(lam-[] a δ i [ γ ]=) j = {!!}
+(⇒-β a t i [ γ ]=) j = {!!}
+(⇒-η a i [ γ ]=) j = {!!}
+(lam a [ γ ]=) = {!!}
 
 
  
