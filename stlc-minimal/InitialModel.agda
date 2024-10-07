@@ -81,7 +81,7 @@ InStrict = record
       ; app = app
       ; app-[] = λ f a γ → refl
       ; lam = lam
-      ; lam-[] = ?
+      ; lam-[] =  λ b γ → refl
       ; ⇒-β = λ b a → (⇒-β b a) ∙ sym (b [ id , a ]=)
       ; ⇒-η = λ f → cong (λ x → lam (app x q)) (f [ p ]=) ∙ (⇒-η f)
       ; ι = ι

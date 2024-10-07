@@ -1,5 +1,4 @@
 {-# OPTIONS --cubical #-}
--- {-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Agda.Primitive
 open import Cubical.Foundations.Prelude hiding (_,_; Sub)
@@ -11,19 +10,19 @@ import stlc-minimal.DepModel as M
 
 module stlc-minimal.Strictification where
 --  ⟦_⟧ : I → ?
-
+  
 D : M.DepModel 
-M.DepModel.Con∙ D = λ x → {!   !}
-M.DepModel.Sub∙ D = {!   !}
-M.DepModel.Sub∙Set∙ D = {!   !}
+M.DepModel.Con∙ D Γ = Sub ◆ Γ → hSet lzero
+M.DepModel.Sub∙ D {Δˢ} {Γˢ} Δ∙ Γ∙ γ = {!  !} 
+M.DepModel.SubSet∙ D = {!   !}
 M.DepModel._∘∙_ D = {!   !}
 M.DepModel.assoc∙ D = {!   !}
 M.DepModel.id∙ D = {!   !}
 M.DepModel.idr∙ D = {!   !}
 M.DepModel.idl∙ D = {!   !}
-M.DepModel.Ty∙ D = λ x → {!   !}
-M.DepModel.Tm∙ D = {!   !}
-M.DepModel.TmSet∙ D = {!   !}
+M.DepModel.Ty∙ D A = Tm ◆ A → hSet lzero
+M.DepModel.Tm∙ D {Γ} {A} Γ∙ A∙ a  = {γₛ : Sub ◆ Γ } → fst (Γ∙ γₛ)  → fst (A∙ (a [ γₛ ]))
+M.DepModel.TmSet∙ D {Γ}{t}{u}{C∙}{t∙}  = {!   !} -- λ {A}{A∙}{u} → snd (fst A∙ u); 
 M.DepModel._[_]∙ D = {!   !}
 M.DepModel.[]-∘∙ D = {!   !}
 M.DepModel.[]-id∙ D = {!   !}
@@ -84,4 +83,4 @@ D* = {!   !}
 -- M.DepModel.lam-[] Str = {!   !}
 -- M.DepModel.⇒-β Str = {!   !}
 -- M.DepModel.⇒-η Str = {!   !}
--- M.DepModel.ι Str = tt  
+-- M.DepModel.ι Str = tt   

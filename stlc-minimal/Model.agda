@@ -1,5 +1,4 @@
 {-# OPTIONS --cubical #-}
--- {-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Agda.Primitive
 open import Cubical.Foundations.Prelude hiding (_,_; Sub)
@@ -8,7 +7,7 @@ import stlc-minimal.Syntax as I
 module stlc-minimal.Model where
 
 record Model {ℓ}{ℓ'} : Type (lsuc (ℓ ⊔ ℓ')) where
-  no-eta-equality
+  -- no-eta-equality
   infixl 40 _∘_ _[_]
   infixl 4 _▸_ _,_
 

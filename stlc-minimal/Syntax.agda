@@ -1,5 +1,4 @@
 {-# OPTIONS --cubical #-}
--- {-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Relation.Binary.Base
@@ -142,7 +141,6 @@ q′ = q
 γ ↑ = γ ∘ p , q
 ⟨_⟩ = id ,_
 
-
 _[_]* : Tm Γ A → Sub Δ Γ → Tm Δ A
 _[_]= : (a : Tm Γ A)(γ : Sub Δ Γ) → a [ γ ]* ≡ a [ γ ]
 
@@ -155,11 +153,27 @@ q [ γ ]* = q [ γ ]
 app t a [ γ ]* = app (t [ γ ]*) (a [ γ ]*)
 app-[] t a γ i [ δ ]* = app (t [ γ ∘ δ ]*) (a [ γ ∘ δ ]*)
 lam t [ γ ]* = lam (t [ γ ∘ p , q ]*)
-lam-[] t γ i [ δ ]* = {!!}
-⇒-β t a i [ γ ]* = {!!}
-⇒-η t i [ γ ]* = {!!}
-
-
+lam-[] t γ i [ δ ]* =  cong {x = (γ ∘ δ ∘ p , q)} {y = ((γ ↑) ∘ (δ ∘ p , q) )} (λ x → lam (t [ x ]*)) (sym ((,-∘ (γ ∘ p) q (δ ∘ p , q)) ∙ 
+                       (congS {x = q [ δ ∘ p , q ]}{y = q} (λ z → (γ ∘ p ∘ (δ ∘ p , q) , z)) (▸-β₂ (δ ∘ p)  q)) ∙ 
+                          congS (λ z → (z , q)) (sym (assoc γ p (δ ∘ p , q))) ∙ (congS (λ z → (γ ∘ z , q)) (▸-β₁ (δ ∘ p) q)) ∙ 
+                          congS (λ z → (z , q)) (assoc γ δ p))) i 
+⇒-β t a i [ γ ]* = ((cong (λ z → app (lam z) (a [ γ ]*)) ((t [ γ ↑ ]=) )) ∙ 
+                      (cong (λ z → app z (a [ γ ]*)) (sym (lam-[] t γ))) ∙ 
+                      ((cong (λ z → app (lam t [ γ ]) z) (a [ γ ]=))  ∙ 
+                        sym (app-[] (lam t) a γ) ∙ 
+                        cong (λ z → z [ γ ] ) (⇒-β t a)  ∙ 
+                        sym  ([]-∘ t (⟨ a ⟩)  γ)) ∙ 
+                      (sym (t [ ⟨ a ⟩ ∘ γ ]=))) i 
+⇒-η t i [ γ ]* = ((cong (λ z → lam (app (z) (q [ γ ∘ p , q ]))) (t [ p ∘ (γ ∘ p , q) ]=)) 
+                    ∙ (cong  (λ z → lam (app (t [ z ]) (q [ γ ∘ p , q ]))) (▸-β₁ (γ ∘ p ) q) 
+                        ∙ cong (λ z → lam (app (t [ γ ∘ p ]) z)) (▸-β₂ (γ ∘ p) q) 
+                        ∙ cong (λ z → lam z) (sym ((app-[] (t [ p ]) q (γ ∘ p , q)) 
+                    ∙ (cong (λ z → app ((t [ p ]) [ γ ∘ p , q ]) z) (▸-β₂ (γ ∘ p) q)) 
+                        ∙ cong (λ z → app z q) (sym ([]-∘ t p (γ ∘ p , q)) 
+                        ∙ cong (λ z → t [ z ]) (▸-β₁ (γ ∘ p) q)))) 
+                        ∙ (sym (lam-[]  (app (t [ p ]) q)  γ))) 
+                    ∙ (cong (_[ γ ]) (⇒-η t)) 
+                    ∙ (sym (t [ γ ]=))) i 
 
 (TmSet a a' e e' i j [ γ ]=) = isProp→SquareP (λ i₁ j₁ → TmSet (TmSet (a [ γ ]*) (a' [ γ ]*) (cong _[ γ ]* e) (cong _[ γ ]* e') i₁ j₁)  ((TmSet a a' e e' i₁ j₁) [ γ ])) (λ i₁ → a [ γ ]=) (λ i₁ → a' [ γ ]=) (λ j₁ → e j₁ [ γ ]=) (λ j₁ → e' j₁ [ γ ]=) i j 
 ((a [ γ ]) [ δ ]=) = (a [ γ ∘ δ ]=) ∙ ([]-∘ a γ δ) 
@@ -189,10 +203,26 @@ lam-[] t γ i [ δ ]* = {!!}
   (λ i → app (a [ δ ∘ γ ]*) (t [ δ ∘ γ ]*)) 
   (λ i → app-[] a t δ i [ γ ]) 
   i j
-(lam-[] a δ i [ γ ]=) j = {!!}
-(⇒-β a t i [ γ ]=) j = {!!}
-(⇒-η a i [ γ ]=) j = {!!}
-(lam a [ γ ]=) = {!!}
+(lam-[] a δ i [ γ ]=) j = isSet→isSet' TmSet
+  (((λ i₁ → lam ((a [ δ ∘ γ ∘ p , q ]=) i₁)) ∙ (λ i₁ → lam-[] a (δ ∘ γ) (~ i₁))) ∙ []-∘ (lam a) δ γ) 
+  ((λ i₁ → lam (((a [ (δ ↑) ∘ (γ ∘ p , q) ]=) ∙ []-∘ a (δ ↑) (γ ∘ p , q)) i₁))  ∙ (λ i₁ → lam-[] (a [ δ ↑ ]) γ (~ i₁))) 
+  (λ i → lam
+         (a [  (,-∘ (δ ∘ p) q (γ ∘ p , q) ∙ (λ i₁ → δ ∘ p ∘ (γ ∘ p , q) , ▸-β₂ (γ ∘ p) q i₁) ∙ (λ i₁ → assoc δ p (γ ∘ p , q) (~ i₁) , q) ∙ (λ i₁ → δ ∘ ▸-β₁ (γ ∘ p) q i₁ , q) ∙ (λ i₁ → assoc δ γ p i₁ , q)) (~ i)  ]*)) 
+  (λ i → lam-[] a δ i [ γ ]) 
+  i j
+(⇒-β a t i [ γ ]=) j = isSet→isSet' TmSet  
+  ((λ i₁ → app (lam (a [ γ ∘ p , q ]*)) ((t [ γ ]=) i₁)) ∙ (λ i₁ → app  (((λ i₂ → lam ((a [ γ ∘ p , q ]=) i₂)) ∙ (λ i₂ → lam-[] a γ (~ i₂))) i₁)  (t [ γ ]))  ∙ (λ i₁ → app-[] (lam a) t γ (~ i₁))) 
+  ((a [ ⟨ t ⟩ ∘ γ ]=) ∙ []-∘ a ⟨ t ⟩ γ)  
+  ((λ i₁ → app (lam ((a [ γ ↑ ]=) i₁)) (t [ γ ]*)) ∙(λ i₁ → app (lam-[] a γ (~ i₁)) (t [ γ ]*)) ∙ ((λ i₁ → app (lam a [ γ ]) ((t [ γ ]=) i₁)) ∙ (λ i₁ → app-[] (lam a) t γ (~ i₁)) ∙ (λ i₁ → ⇒-β a t i₁ [ γ ]) ∙ (λ i₁ → []-∘ a ⟨ t ⟩ γ (~ i₁)))  ∙ (λ i₁ → (a [ ⟨ t ⟩ ∘ γ ]=) (~ i₁)))
+  (λ i → ⇒-β a t i [ γ ]) 
+  i j
+(⇒-η a i [ γ ]=) j = isSet→isSet' TmSet 
+  (((λ i₁ → lam (((λ i₂ → app (a [ p ∘ (γ ∘ p , q) ]*) (q [ γ ∘ p , q ])) ∙ (λ i₂ →  app (((a [ p ∘ (γ ∘ p , q) ]=) ∙ []-∘ a p (γ ∘ p , q)) i₂)  (q [ γ ∘ p , q ])) ∙ (λ i₂ → app-[] (a [ p ]) q (γ ∘ p , q) (~ i₂))) i₁)) ∙ (λ i₁ → lam-[] (app (a [ p ]) q) γ (~ i₁))))
+  (a [ γ ]=) 
+  (((λ i₁ → lam (app ((a [ p ∘ (γ ∘ p , q) ]=) i₁) (q [ γ ∘ p , q ]))) ∙ ((λ i₁ → lam (app (a [ ▸-β₁ (γ ∘ p) q i₁ ]) (q [ γ ∘ p , q ]))) ∙ (λ i₁ → lam (app (a [ γ ∘ p ]) (▸-β₂ (γ ∘ p) q i₁))) ∙ (λ i₁ →   lam  ((app-[] (a [ p ]) q (γ ∘ p , q) ∙  (λ i₂ → app ((a [ p ]) [ γ ∘ p , q ]) (▸-β₂ (γ ∘ p) q i₂)) ∙  (λ i₂ →   app (((λ i₃ → []-∘ a p (γ ∘ p , q) (~ i₃)) ∙   (λ i₃ → a [ ▸-β₁ (γ ∘ p) q i₃ ]))  i₂) q)) (~ i₁))) ∙ (λ i₁ → lam-[] (app (a [ p ]) q) γ (~ i₁)))  ∙ (λ i₁ → ⇒-η a i₁ [ γ ]) ∙ (λ i₁ → (a [ γ ]=) (~ i₁)))) 
+  (λ i → ⇒-η a i [ γ ]) i j
+(lam a [ γ ]=) = (cong lam (a [ γ ∘ p , q ]=)) ∙ sym (lam-[] a γ)
 
 
  
+   
