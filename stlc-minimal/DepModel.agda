@@ -93,7 +93,7 @@ record DepModel {ℓ}{ℓ'} : Type (lsuc (ℓ ⊔ ℓ')) where
   ⟨_⟩ : ∀ {Γ A} → Tm∙ Γ A aˢ → Sub∙ Γ (Γ ▸∙ A) M.⟨ aˢ ⟩
   ⟨_⟩ = id∙ ,∙_
 
-  infixr 0 _⇒_
+  infixr 0 _⇒∙_
   field
     _⇒∙_ : Ty∙ Aˢ → Ty∙ Bˢ → Ty∙ (Aˢ M.⇒ Bˢ)
     app∙ : ∀ {Γ A B} → Tm∙ Γ (A ⇒∙ B) fˢ → Tm∙ Γ A aˢ → Tm∙ Γ B (M.app fˢ aˢ)
