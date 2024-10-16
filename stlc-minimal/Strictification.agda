@@ -6,49 +6,83 @@ open import Cubical.Foundations.HLevels
 open import Cubical.Data.Unit 
 open import Cubical.Data.Sigma hiding (Sub)
 open import stlc-minimal.Syntax as I
-import stlc-minimal.DepModel as M
-
+import stlc-minimal.DepModel as Mod
+open import stlc-minimal.InitialModel
 module stlc-minimal.Strictification where
---  ⟦_⟧ : I → ?
   
-D : M.DepModel 
-M.DepModel.Con∙ D Γ = Sub ◆ Γ → hSet lzero
-M.DepModel.Sub∙ D {Δˢ} {Γˢ} Δ∙ Γ∙ γ = {!  !} 
-M.DepModel.SubSet∙ D = {!   !}
-M.DepModel._∘∙_ D = {!   !}
-M.DepModel.assoc∙ D = {!   !}
-M.DepModel.id∙ D = {!   !}
-M.DepModel.idr∙ D = {!   !}
-M.DepModel.idl∙ D = {!   !}
-M.DepModel.Ty∙ D A = Tm ◆ A → hSet lzero
-M.DepModel.Tm∙ D {Γ} {A} Γ∙ A∙ a  = {γₛ : Sub ◆ Γ } → fst (Γ∙ γₛ)  → fst (A∙ (a [ γₛ ]))
-M.DepModel.TmSet∙ D {Γ}{t}{u}{C∙}{t∙}  = {!   !} -- λ {A}{A∙}{u} → snd (fst A∙ u); 
-M.DepModel._[_]∙ D = {!   !}
-M.DepModel.[]-∘∙ D = {!   !}
-M.DepModel.[]-id∙ D = {!   !}
-M.DepModel._▸∙_ D = {!   !}
-M.DepModel.p∙ D = {!   !}
-M.DepModel.q∙ D = {!   !}
-M.DepModel._,∙_ D = {!   !}
-M.DepModel.,-∘∙ D = {!   !}
-M.DepModel.▸-β₁∙ D = {!   !}
-M.DepModel.▸-β₂∙ D = {!   !}
-M.DepModel.▸-η∙ D = {!   !}
-M.DepModel.◆∙ D = {!   !}
-M.DepModel.ε∙ D = {!   !}
-M.DepModel.ε-∘∙ D = {!   !}
-M.DepModel.◆-η∙ D = {!   !}
-M.DepModel._⇒∙_ D = {!   !}
-M.DepModel.app∙ D = {!   !}
-M.DepModel.app-[]∙ D = {!   !}
-M.DepModel.lam∙ D = {!   !}
-M.DepModel.lam-[]∙ D = {!   !}
-M.DepModel.⇒-β∙ D = {!   !}
-M.DepModel.⇒-η∙ D = {!   !}
-M.DepModel.ι∙ D = {!   !}
+D : Mod.DepModel InStrict 
+Mod.DepModel.Con∙ D Γ = Sub ◆ Γ → hSet lzero
+Mod.DepModel.Sub∙ D {Δˢ} {Γˢ} Δ∙ Γ∙ γ = {! Δ∙  !}
+Mod.DepModel.SubSet∙ D = {!   !}
+Mod.DepModel._∘∙_ D = {!   !}
+Mod.DepModel.assoc∙ D = {!   !}
+Mod.DepModel.id∙ D = {!   !}
+Mod.DepModel.idr∙ D = {!   !}
+Mod.DepModel.idl∙ D = {!   !}
+Mod.DepModel.Ty∙ D A = Tm ◆ A → hSet lzero
+Mod.DepModel.Tm∙ D {Γ} {A} Γ∙ A∙ a  = {γₛ : Sub ◆ Γ } → fst (Γ∙ γₛ)  → fst (A∙ (a [ γₛ ]))
+Mod.DepModel.TmSet∙ D = {!   !}
+Mod.DepModel._[_]∙ D = {!   !}
+Mod.DepModel.[]-∘∙ D = {!   !}
+Mod.DepModel.[]-id∙ D = {!   !}
+Mod.DepModel._▸∙_ D = {!   !}
+Mod.DepModel.p∙ D = {!   !}
+Mod.DepModel.q∙ D = {!   !}
+Mod.DepModel._,∙_ D = {!   !}
+Mod.DepModel.,-∘∙ D = {!   !}
+Mod.DepModel.▸-β₁∙ D = {!   !}
+Mod.DepModel.▸-β₂∙ D = {!   !}
+Mod.DepModel.▸-η∙ D = {!   !}
+Mod.DepModel.◆∙ D = {!   !}
+Mod.DepModel.ε∙ D = {!   !}
+Mod.DepModel.ε-∘∙ D = {!   !}
+Mod.DepModel.◆-η∙ D = {!   !}
+Mod.DepModel._⇒∙_ D = {!   !}
+Mod.DepModel.app∙ D = {!   !}
+Mod.DepModel.app-[]∙ D = {!   !}
+Mod.DepModel.lam∙ D = {!   !}
+Mod.DepModel.lam-[]∙ D = {!   !}
+Mod.DepModel.⇒-β∙ D = {!   !}
+Mod.DepModel.⇒-η∙ D = {!   !}
+Mod.DepModel.ι∙ D = {!   !}
+--  
+-- M.DepModel.Con∙ D Γ = Sub ◆ Γ → hSet lzero
+-- M.DepModel.Sub∙ D {Δˢ} {Γˢ} Δ∙ Γ∙ γ = {!  !} 
+-- M.DepModel.SubSet∙ D = {!   !}
+-- M.DepModel._∘∙_ D = {!   !}
+-- M.DepModel.assoc∙ D = {!   !}
+-- M.DepModel.id∙ D = {!   !}
+-- M.DepModel.idr∙ D = {!   !}
+-- M.DepModel.idl∙ D = {!   !}
+-- M.DepModel.Ty∙ D A = Tm ◆ A → hSet lzero
+-- M.DepModel.Tm∙ D {Γ} {A} Γ∙ A∙ a  = {γₛ : Sub ◆ Γ } → fst (Γ∙ γₛ)  → fst (A∙ (a [ γₛ ]))
+-- M.DepModel.TmSet∙ D {Γ}{t}{u}{C∙}{t∙}  = {!   !} -- λ {A}{A∙}{u} → snd (fst A∙ u); 
+-- M.DepModel._[_]∙ D = {!   !}
+-- M.DepModel.[]-∘∙ D = {!   !}
+-- M.DepModel.[]-id∙ D = {!   !}
+-- M.DepModel._▸∙_ D = {!   !}
+-- M.DepModel.p∙ D = {!   !}
+-- M.DepModel.q∙ D = {!   !}
+-- M.DepModel._,∙_ D = {!   !}
+-- M.DepModel.,-∘∙ D = {!   !}
+-- M.DepModel.▸-β₁∙ D = {!   !}
+-- M.DepModel.▸-β₂∙ D = {!   !}
+-- M.DepModel.▸-η∙ D = {!   !}
+-- M.DepModel.◆∙ D = {!   !}
+-- M.DepModel.ε∙ D = {!   !}
+-- M.DepModel.ε-∘∙ D = {!   !}
+-- M.DepModel.◆-η∙ D = {!   !}
+-- M.DepModel._⇒∙_ D = {!   !}
+-- M.DepModel.app∙ D = {!   !}
+-- M.DepModel.app-[]∙ D = {!   !}
+-- M.DepModel.lam∙ D = {!   !}
+-- M.DepModel.lam-[]∙ D = {!   !}
+-- M.DepModel.⇒-β∙ D = {!   !}
+-- M.DepModel.⇒-η∙ D = {!   !}
+-- M.DepModel.ι∙ D = {!   !}
 
-D* : M.DepModel
-D* = {!   !}
+-- D* : M.DepModel
+-- D* = {!   !}
 -- Str : M.DepModel 
 -- M.DepModel.Con Str = λ x → Unit
 -- M.DepModel.Sub Str tt tt Γ = Unit
@@ -83,4 +117,4 @@ D* = {!   !}
 -- M.DepModel.lam-[] Str = {!   !}
 -- M.DepModel.⇒-β Str = {!   !}
 -- M.DepModel.⇒-η Str = {!   !}
--- M.DepModel.ι Str = tt   
+-- M.DepModel.ι Str = tt    

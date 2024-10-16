@@ -32,6 +32,7 @@ St A = record
             ; q = λ (γ , a) → a
             ; _,_ = λ γ a δ → (γ δ) , a δ
             ; ,-∘ = λ γ a δ → refl
+            
             ; ▸-β₁ = λ γ a → refl
             ; ▸-β₂ = λ γ a → refl
             ; ▸-η = refl
