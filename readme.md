@@ -55,7 +55,9 @@ below.
   - QIIT syntax, parallel
   - definable quotient here as well
   - same models as fol-minimal
-  - completeness for Beth models
+  - completeness of Beth models
+- fol-classical
+  - completeness for Tarski models (classical metatheory)
 - system-f
   - elaborator
   - QIIT syntax, parallel, merged contexts
