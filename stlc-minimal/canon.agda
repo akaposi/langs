@@ -27,29 +27,28 @@ open DepModel
 D : DepModel InStrict 
 D .Con∙ Γ = Σ (hSet lzero) λ Γ* → fst Γ* → Sub ◆ Γ
 D .Sub∙ {Δ} {Γ} ((Δ* , _) , πΔ) ((Γ* , _) , πΓ) γ = Σ (Δ* → Γ*) λ γ* → (δ* : Δ*) → πΓ (γ* δ*) ≡ γ ∘ πΔ δ*
-D .SubSet∙ = {!   !} --γ∙ δ∙ θ* y i j {δ◆} t = {!  (θ* j)  !}
-D ._∘∙_ {γˢ = γ} {δˢ = δ} {Γ} γ∙ δ∙ = {!!}
-D .assoc∙ = {!!}
-D .id∙ = {!!}
-D .idr∙ = {!!}
+D .SubSet∙ {γˢ = γˢ} {Δ = Δ} {Γ = Γ} = isSetΣ (isSet→ (snd (fst Γ))) λ x → isSetΠ λ Δ* → isOfHLevelPath' 1 (isProp→isSet (SubSet (snd Γ (x Δ*)) (γˢ ∘ snd Δ Δ*))) 
+D ._∘∙_ {γˢ = γ} {δˢ = δ} {Γ} {Δ} {Θ} γ∙ δ∙ = (λ Θ* →  fst γ∙ ((fst δ∙) Θ*)) , λ δ* → snd γ∙ (fst δ∙ δ*) ∙ cong (λ z → γ ∘ z) (snd δ∙ δ*) ∙ assoc γ δ (snd Θ δ*)
+D .assoc∙ {γˢ = γˢ} {δˢ = δˢ} {θˢ = θˢ} {Γ} {Δ} {Θ} {Ξ} γ δ θ = λ i → (λ Ξ* → fst γ (fst δ (fst θ Ξ*))) , λ δ* → SubSet (snd Γ (fst γ (fst δ (fst θ δ*)))) (assoc γˢ δˢ θˢ i ∘ snd Ξ δ*) {! snd γ ?  !} {!   !} i 
+D .id∙ {Γ} {Γ∙} = (λ Γ* → Γ*) , (λ δ*  → sym (idl (snd Γ∙ δ*)))
+D .idr∙ γ = {!   !} --? , λ δ* → {! (snd γ δ*)  !}
 D .idl∙ = {!!}
-
 D .Ty∙ A = Σ (hSet lzero) λ A* → fst A* → Tm ◆ A
 D .Tm∙ {Γ} {A} ((Γ* , _) , πΓ) ((A* , _) , πA) a = Σ (Γ* → A*) λ a* → (γ* : Γ*) → πA (a* γ*) ≡ a [ πΓ γ* ]
-D .TmSet∙  = {!   !} 
-D ._[_]∙ {aˢ = aˢ}{γˢ = γˢ}{A = A} γ δ = {!!}
-D .[]-∘∙ = {!   !}
+D .TmSet∙ {aˢ = aˢ}{Γ = Γ}{A = A} = isSetΣ (isSet→ (snd (fst A))) λ x → isSetΠ λ γ* → isOfHLevelPath' 1 (isProp→isSet (TmSet (snd A (x γ*)) (aˢ [ snd Γ γ* ])))
+D ._[_]∙ {aˢ = aˢ}{γˢ = γˢ}{Δ = Δ}{A = A} γ δ = (λ Δ* → fst γ (fst δ Δ*)) , λ γ* → (snd γ (fst δ γ*) ∙ cong (λ z → aˢ [ z ]) (snd δ γ*)) ∙ []-∘ aˢ γˢ (snd Δ γ*) ∙ cong (λ z → (z [ snd Δ γ* ])) (sym ( aˢ [  γˢ ]=))
+D .[]-∘∙ a γ δ = {!   !}
 D .[]-id∙ = {!   !}
-D ._▸∙_ = {!   !}
-D .p∙ = {!   !}
-D .q∙ = {!   !}
+D ._▸∙_ Γ∙ A∙ = ((fst (fst A∙) × fst (fst Γ∙)) , isSet× (snd (fst A∙)) (snd (fst Γ∙))) , λ (a , Γ) → snd Γ∙ Γ , snd A∙ a 
+D .p∙ = (λ x → snd x) , (λ δ* → sym (▸-β₁ _ _))
+D .q∙ = (λ x → fst x) , (λ γ* → sym (▸-β₂ _ _))
 D ._,∙_ = {!   !}
 D .,-∘∙ = {!   !}
 D .▸-β₁∙ = {!   !}
 D .▸-β₂∙ = {!   !}
 D .▸-η∙ = {!   !}
-D .◆∙ = {!!}
-D .ε∙ = {!!}
+D .◆∙ = (Unit , (λ tt tt e e' → refl)) , λ tt → ε 
+D .ε∙ = (λ Γ → tt) , (λ δ*  → sym (ε-∘ _))
 D .ε-∘∙ = {!   !}
 D .◆-η∙ = {!   !}
 D ._⇒∙_ = {!   !}
@@ -60,3 +59,4 @@ D .lam-[]∙ = {!   !}
 D .⇒-β∙ = {!   !}
 D .⇒-η∙ = {!   !}
 D .ι∙ =  {!   !}     
+ 
