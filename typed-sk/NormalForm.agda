@@ -1,5 +1,4 @@
 {-# OPTIONS --cubical #-}
-{-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Agda.Primitive
 open import Cubical.Foundations.Prelude

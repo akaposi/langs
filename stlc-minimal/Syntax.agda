@@ -1,10 +1,10 @@
 {-# OPTIONS --cubical #-}
-
 open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
 open import Cubical.Foundations.Path
+open import Cubical.Data.Equality renaming (_≡_ to _Ind≡_; transport to indtransport; refl to indrefl; _∙_ to _Ind∙_; sym to Indsym; J to IndJ) hiding (assoc; id)
 
 module stlc-minimal.Syntax where
 
@@ -141,21 +141,23 @@ q′ = q
 γ ↑ = γ ∘ p , q
 ⟨_⟩ = id ,_
 
--- _∘*_ : Sub Δ Γ → Sub Θ Δ → Sub Θ Γ
--- SubSet γ γ₁ x y i i₁ ∘* θ = {!   !}
--- (γ ∘ γ₁) ∘* θ = {!   !}
--- assoc γ γ₁ γ₂ i ∘* θ = {!   !}
--- id ∘* θ = {!   !}
--- idr γ i ∘* θ = {!   !}
--- idl γ i ∘* θ = {!   !}
--- p ∘* θ = {!   !}
--- (γ , x) ∘* θ = {!   !}
--- ,-∘ γ a γ₁ i ∘* θ = {!   !}
--- ▸-β₁ γ a i ∘* θ = {!   !}
--- ▸-η i ∘* θ = {!   !}
--- ε ∘* θ = {!   !}
--- ε-∘ γ i ∘* θ = {!   !}
--- ◆-η i ∘* θ = {!   !}
+↑-∘ :
+  (γ : Sub Δ Γ) (δ : Sub Θ Δ) →
+  Path (Sub (Θ ▸ A) (Γ ▸ A)) (γ ∘ δ ↑) ((γ ↑) ∘ (δ ↑))
+↑-∘ γ δ = eqToPath (ap (λ z → z , q) (Indsym (pathToEq (assoc γ δ p))) Ind∙ 
+            ((ap (λ z → (γ ∘ z , q)) (Indsym (pathToEq (▸-β₁ _ _))) Ind∙ 
+            ap (λ z → (z , q)) (pathToEq (assoc γ p (δ ↑)))) Ind∙ 
+            ap (λ z → (γ ∘ p ∘ (δ ↑) , z) ) (Indsym (pathToEq (▸-β₂ (δ ∘ p) q))))  Ind∙ 
+            (Indsym(pathToEq (,-∘ (γ ∘ p) q (δ ↑)))))  
+
+↑-id : (id ↑) ≡ id {Γ ▸ A}
+↑-id =  congS (λ z → (z , q)) (idl p) ∙ ▸-η
+
+↑-⟨⟩ : (γ : Sub Δ Γ) (a : Tm Δ A) → (γ ↑) ∘ ⟨ a ⟩ ≡ (γ , a)
+↑-⟨⟩ γ a = (,-∘ _ _ _) ∙ congS (λ z → (z , q [ ⟨ a ⟩ ]′)) (sym (assoc γ p ⟨ a ⟩)) ∙ 
+          (congS (λ z → (γ ∘ z , q [ ⟨ a ⟩ ]′)) (▸-β₁ _ _) ∙ 
+            congS (λ z →  (z , q [ ⟨ a ⟩ ]′))  (idr _)) ∙ 
+          congS (λ z → γ , z) (▸-β₂ _ _)
 
 _[_]* : Tm Γ A → Sub Δ Γ → Tm Δ A
 _[_]= : (a : Tm Γ A)(γ : Sub Δ Γ) → a [ γ ]* ≡ a [ γ ]
@@ -241,4 +243,4 @@ lam-[] t γ i [ δ ]* =  cong {x = (γ ∘ δ ∘ p , q)} {y = ((γ ↑) ∘ (δ
 
 
  
-   
+     

@@ -95,6 +95,7 @@ step (x · y) = step x · step y
 ↝step (Sβ x↝x′ y↝y′ z↝z′) =
   ↝step x↝x′ · ↝step z↝z′ · (↝step y↝y′ · ↝step z↝z′)
 
+
 ↝confl : (x ↝ y) → (x ↝ y′) → Σ[ z ∈ RTm ] (y ↝ z) × (y′ ↝ z)
 ↝confl x↝y x↝y′ = _ , ↝step x↝y , ↝step x↝y′
 
