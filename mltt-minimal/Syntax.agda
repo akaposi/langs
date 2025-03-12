@@ -8,8 +8,9 @@ open import Cubical.Data.Empty renaming (rec to exfalso)
 
 module mltt-minimal.Syntax where
 
-infixl 4 _▹_
+infixl 5 _▹_
 infixl 8 _∘_ _∘'_ _∘*_
+infixl 9 _[_]T _[_]T' _[_]t _[_]t' _[_]T* _[_]t* _[_]U _[_]U' _[_]T= _[_]t=
 infixl 10 _⁺ _⁺' _⁺*
 
 data Con : Type
@@ -122,11 +123,23 @@ _⁺*    : (γ : Sub Δ Γ) → Sub (Δ ▹ A [ γ ]T*) (Γ ▹ A)
 _⁺* {Δ = Δ}{Γ = Γ}{A = A} γ = subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (A [ γ ]T=) (γ ⁺)
 
 TySet A A' e e' i i' [ γ ]T* = TySet (A [ γ ]T*) (A' [ γ ]T*) (λ i → e i [ γ ]T*) (λ i → e' i [ γ ]T*) i i'
-A [ γ ]T* = {!!}
+(A [ γ ]T) [ δ ]T* = A [ γ ∘* δ ]T
+_[_]T* {Γ} {Δ} ([∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i) γ = (A [ θ ]T [ ψ ∘* γ ]T=) (~ i) -- [∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i [ γ ]T
+_[_]T* {Γ} {Δ} ([id]T {_} {A} i) γ =  (A [ γ ]T=) i
+[p][⟨⟩]T i [ γ ]T* = {!!}
+[p][⁺]T i [ γ ]T* = {!!}
+[p⁺][⟨q⟩]T i [ γ ]T* = {!!}
+[⟨⟩][]T i [ γ ]T* = {!!}
+U [ γ ]T* = U
+_[_]T* {Γ} {Δ} (U[] {_} {Θ} {γ₁} i) γ = {!((U[] {Γ} {Θ} {γ₁} i) [ γ ]T=) (~ i)!}
+El Â [ γ ]T* = El (Â [ γ ]t*)
+El[] i [ γ ]T* = {!!}
+Π A B [ γ ]T* = Π (A [ γ ]T*) (B [ γ ⁺* ]T*)
+Π[] i [ γ ]T* = {!!}
 
 A [ γ ]T= = {!!}
 
-SubSet γ γ₁ x y i i₁ ∘* δ = {!!}
+SubSet γ γ₁ x y i j ∘* δ = {!!}
 γ ∘ δ ∘* θ = γ ∘* (δ ∘* θ)
 ass i ∘* δ = {!!}
 id ∘* δ = δ
