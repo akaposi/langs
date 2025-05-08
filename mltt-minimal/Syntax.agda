@@ -2,11 +2,15 @@
 -- {-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Cubical.Foundations.Prelude hiding (Sub)
+open import Cubical.Functions.FunExtEquiv
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
 
 module mltt-minimal.Syntax where
+
+the : ∀{i}(A : Set i) → A → A
+the _ x = x
 
 infixl 5 _▹_
 infixl 8 _∘_ _∘'_ _∘*_
@@ -122,22 +126,42 @@ _∘=_   : (γ : Sub Δ Γ)(δ : Sub Θ Δ) → γ ∘ δ ≡ γ ∘* δ
 _⁺*    : (γ : Sub Δ Γ) → Sub (Δ ▹ A [ γ ]T*) (Γ ▹ A)
 _⁺* {Δ = Δ}{Γ = Γ}{A = A} γ = subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (A [ γ ]T=) (γ ⁺)
 
+∘-subst : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Θ' : Con}{δ : Sub Θ Δ}{e : Θ ≡ Θ'} → γ ∘ subst (λ z → Sub z Δ) e δ ≡ subst (λ z → Sub z Γ) e (γ ∘ δ)
+∘-subst {Γ} {Δ} {γ} {Θ} {Θ'} {δ} {e} = J {x = Θ} (λ a eq → γ ∘ subst (λ z → Sub z Δ) eq δ ≡ subst (λ z → Sub z Γ) eq (γ ∘ δ)) (cong (γ ∘_) (substRefl {B = λ z → Sub z Δ} δ) ∙ sym (substRefl {B = λ z → Sub z Γ} (γ ∘ δ))) e
+
 TySet A A' e e' i i' [ γ ]T* = TySet (A [ γ ]T*) (A' [ γ ]T*) (λ i → e i [ γ ]T*) (λ i → e' i [ γ ]T*) i i'
 (A [ γ ]T) [ δ ]T* = A [ γ ∘* δ ]T
 _[_]T* {Γ} {Δ} ([∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i) γ = (A [ θ ]T [ ψ ∘* γ ]T=) (~ i) -- [∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i [ γ ]T
-_[_]T* {Γ} {Δ} ([id]T {_} {A} i) γ =  (A [ γ ]T=) i
-_[_]T* {Γ} {Δ} ([p][⟨⟩]T {_} {A} {B} {t} i) γ = ([∘]T {Γ ▹ A} {B [ p ]T} {_} {γ ⁺*} {_} {⟨ t [ γ ]t* ⟩} ∙∙ {!cong _[ ⟨ t [ γ ]t* ⟩ ]t*!} ∙∙ {!!}) i -- [p][⁺]T
+_[_]T* {Γ} {Δ} ([id]T {_} {A} i) γ = (A [ γ ]T=) i
+_[_]T* {Γ} {Δ} ([p][⟨⟩]T {_} {A} {B} {t} i) γ = (the (B [ p' {A = A} ]T [ γ ⁺* ∘ ⟨ t [ γ ]t* ⟩ ]T ≡ B [ γ ]T*)
+  ([∘]T {Γ ▹ A} {B [ p ]T} {_} {γ ⁺*} {_} {⟨ t [ γ ]t* ⟩} ∙ congS _[ ⟨ t [ γ ]t* ⟩ ]T (sym [∘]T ∙ congS {_} {_} {Sub (Δ ▹ A [ γ ]T*) Γ} {p ∘' γ ⁺*} {γ ∘ subst (λ z → Sub (Δ ▹ z) Δ) (A [ γ ]T=) p} {Ty (Δ ▹ A [ γ ]T*)} (λ x → B [ x ]T) (∘-subst {Γ} {Γ ▹ A} {p} {Γ} {Δ ▹ A [ γ ]T*} {{!!}} {{!!}} ∙ {!!})) ∙ {!!}))
+  i
+  -- ()
+  -- (cong (λ x → B [ x ]T [ ⟨ t [ γ ]t* ⟩ ]T) (∘-subst {{!!}} {{!!}} {{!!}} {{!!}} {{!!}} {{!⟨ ? ⟩!}} {{!!}}))) ∙∙ {!!}) i -- [p][⁺]T
 _[_]T* {_} {Δ} ([p][⁺]T {Θ} {A} {B} {Γ} {θ} i) γ = ([∘]T ∙∙ cong _[ γ ]T ([p][⁺]T {Θ} {A} {B} {Γ} {θ}) ∙∙ sym [∘]T) i
 [p⁺][⟨q⟩]T i [ γ ]T* = {!!}
-[⟨⟩][]T i [ γ ]T* = {!!}
+_[_]T* {Γ} {Δ} ([⟨⟩][]T {Θ} {A} {B} {t} {_} {δ} i) γ = {!!}
 U [ γ ]T* = U
-_[_]T* {Γ} {Δ} (U[] {_} {Θ} {γ₁} i) γ = {!sym ((U[] {Γ} {Θ} {γ₁} i) [ γ ]T=) i!}
+_[_]T* {Γ} {Δ} (U[] {_} {Θ} {θ} i) γ = U[] {Δ} {Θ} {θ ∘* γ} i
 El Â [ γ ]T* = El (Â [ γ ]t*)
-El[] i [ γ ]T* = {!!}
+_[_]T* {Γ} {Δ} (El[] {Θ} {Â} {_} {θ} i) γ = {!!}
 Π A B [ γ ]T* = Π (A [ γ ]T*) (B [ γ ⁺* ]T*)
 Π[] i [ γ ]T* = {!!}
 
-A [ γ ]T= = {!!}
+TySet A A' e e' i j [ γ ]T= = {!!}
+A [ γ ]T [ δ ]T= = {!!}
+[∘]T i [ γ ]T= = {!!}
+[id]T i [ γ ]T= = {!!}
+[p][⟨⟩]T i [ γ ]T= = {!!}
+[p][⁺]T i [ γ ]T= = {!!}
+[p⁺][⟨q⟩]T i [ γ ]T= = {!!}
+[⟨⟩][]T i [ γ ]T= = {!!}
+U [ γ ]T= = {!!}
+U[] i [ γ ]T= = {!!}
+El t [ γ ]T= = {!!}
+El[] i [ γ ]T= = {!!}
+Π A B [ γ ]T= = {!!}
+Π[] i [ γ ]T= = {!!}
 
 SubSet γ γ₁ e₁ e₂ i j ∘* δ = SubSet (γ ∘* δ) (γ₁ ∘* δ) (λ i → e₁ i ∘* δ) (λ i → e₂ i ∘* δ) i j 
 γ ∘ δ ∘* θ = γ ∘* (δ ∘* θ)
@@ -150,14 +174,20 @@ idr {Γ} {Δ} {γ} i ∘* δ = γ ∘* δ
 p ∘* δ = p ∘ δ
 γ ⁺ ∘* δ = γ ⁺ ∘ δ
 ⟨ a ⟩ ∘* γ = γ ⁺* ∘ ⟨ a [ γ ]t* ⟩
-∘⁺ i ∘* δ = {!!}
-id⁺ i ∘* δ = {!!}
+_∘*_ {_} {_} {Θ} (∘⁺ {Δ} {Γ} {A} {Ξ} {γ} {ξ} i) δ = {!!}
+_∘*_ {_} {_} {Θ} (id⁺ {Δ} {A} i) = id⁺-helper i where
+  id⁺-helper : PathP (λ i → Sub Θ (Δ ▹ [id]T {Δ} {A} i) → Sub Θ (Δ ▹ A)) (λ z → id' ⁺ ∘ z) (λ z → z)
+  id⁺-helper = toPathP (funExt λ δ → {!!})
+-- transport refl ((id ⁺) ∘ transport (λ i₁ → Sub Θ (Δ) → Sub Θ (Δ)) (λ z → z))
+
+-- compPathP -- id⁺ i ∘ δ
+-- {A = ?} {B = ?} (λ j a → ? ∘ δ) {id ⁺} {id} id⁺ i
 p∘⁺ i ∘* δ = {!!}
 p∘⟨⟩ i ∘* δ = {!!}
 ⟨⟩∘ i ∘* δ = {!!}
 p⁺∘⟨q⟩ i ∘* δ = {!!}
 
-_∘=_ = {!!}
+_∘=_ {Δ} {Γ} {Θ} γ δ = {!!}
 
 a [ γ ]t* = {!!}
 
