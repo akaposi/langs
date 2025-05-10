@@ -1,5 +1,5 @@
 {-# OPTIONS --cubical #-}
--- {-# OPTIONS --allow-unsolved-metas #-} 
+{-# OPTIONS --allow-unsolved-metas #-} 
 
 open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Foundations.Path
