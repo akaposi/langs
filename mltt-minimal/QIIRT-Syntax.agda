@@ -20,10 +20,10 @@ infixl 9 _[_]T* _[_]t* _[_]T= _[_]t=
 infixl 10 _⁺*
 
 private variable
-  Γ Δ Θ Ξ : Con
-  γ δ θ ξ σ γa : Sub Δ Γ
-  A B C : Ty Γ
-  a b c Â t : Tm Γ A
+  Γ Δ Θ : Con
+  γ δ θ σ : Sub Δ Γ
+  A B : Ty Γ
+  a b Â t : Tm Γ A
 
 _[_]T* : Ty Γ → Sub Δ Γ → Ty Δ
 _[_]T= : (A : Ty Γ)(γ : Sub Δ Γ) → A [ γ ]T ≡ A [ γ ]T*

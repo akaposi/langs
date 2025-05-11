@@ -16,10 +16,10 @@ data Ty  : Con → Type
 data Tm  : (Γ : Con) → Ty Γ → Type
 
 private variable
-  Γ Δ Θ Ξ : Con
-  γ δ θ ξ σ γa : Sub Δ Γ
-  A B C : Ty Γ
-  a b c Â t : Tm Γ A
+  Γ Δ Θ : Con
+  γ δ θ σ : Sub Δ Γ
+  A B : Ty Γ
+  a b Â t : Tm Γ A
 
 data Con where
   _▹_ : (Γ : Con) → Ty Γ → Con
