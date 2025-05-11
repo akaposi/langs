@@ -1,10 +1,12 @@
 {-# OPTIONS --cubical #-}
-{-# OPTIONS --allow-unsolved-metas #-} 
-open import Agda.Primitive
-open import Cubical.Foundations.Prelude hiding (_,_; Sub)
-import mltt-minimal.Syntax as I
+{-# OPTIONS --allow-unsolved-metas #-}
 
 module mltt-minimal.Model where
+
+open import Agda.Primitive
+open import Cubical.Foundations.Prelude hiding (_,_; Sub)
+
+import mltt-minimal.Syntax as I
 
 record Sorts {ℓ}{ℓ'} : Type (lsuc (ℓ ⊔ ℓ')) where
   -- infixl 4 _▹_
@@ -24,8 +26,9 @@ record Cwf {ℓ}{ℓ'}(sorts : Sorts {ℓ}{ℓ'}) : Type (ℓ ⊔ ℓ') where
   open Sorts sorts
   infixl 10 _⁺
   infixl 8 _∘_
-  infixl 6 _[_]T _[_]t 
-  infixl 4 _,[_]_ _▹_
+  infixl 9 _[_]T _[_]t
+  infixl 5 _▹_
+  infixl 11 ⟨_⟩
   field
       SubSet : ∀ {Δ Γ} → isSet (Sub Δ Γ)
       _∘_    : ∀ {Γ Δ Θ} → Sub Δ Γ → Sub Θ Δ → Sub Θ Γ
@@ -59,9 +62,9 @@ record Cwf {ℓ}{ℓ'}(sorts : Sorts {ℓ}{ℓ'}) : Type (ℓ ⊔ ℓ') where
       [⟨⟩][]T    : ∀ {Γ Δ : Con}{γ : Sub Δ Γ}{A' : Ty Γ}{A : Ty (Γ ▹ A')}{a : Tm Γ A'} → (A [ ⟨ a ⟩ ]T [ γ ]T) ≡ (A [ γ ⁺ ]T [ ⟨ a [ γ ]t ⟩ ]T) 
       ∘⁺     : ∀ {Γ Δ Θ}{A : Ty Γ}{γ : Sub Δ Γ}{δ : Sub Θ Δ} → PathP (λ i → Sub (Θ ▹ [∘]T {A = A}{γ = γ}{δ = δ} i) (Γ ▹ A)) ((γ ∘ δ) ⁺) (γ ⁺ ∘ δ ⁺) 
       id⁺    : ∀ {Γ}{A : Ty Γ} → PathP (λ i → Sub (Γ ▹ [id]T {A = A} i) (Γ ▹ A)) (id ⁺) id
-      p∘⁺    : ∀ {Γ γ}{A : Ty Γ}{a : Tm Γ A} → p {A = A} ∘ γ ⁺ ≡ γ ∘ p -- γ ⁺
+      p∘⁺    : ∀ {Γ Δ}{γ : Sub Δ Γ}{A : Ty Γ}{a : Tm Γ A} → p {A = A} ∘ γ ⁺ ≡ γ ∘ p
       p∘⟨⟩   : ∀ {Γ}{A : Ty Γ}{a : Tm Γ A} → p ∘ ⟨ a ⟩ ≡ id
-      ⟨⟩∘    : ∀ {Γ γ}{A : Ty Γ}{a : Tm Γ A} → ⟨ a ⟩ ∘ γ ≡ γ ⁺ ∘ ⟨ a [ γ ]t ⟩ -- ∘ γ 
+      ⟨⟩∘    : ∀ {Γ Δ}{γ : Sub Δ Γ}{A : Ty Γ}{a : Tm Γ A} → ⟨ a ⟩ ∘ γ ≡ γ ⁺ ∘ ⟨ a [ γ ]t ⟩
       p⁺∘⟨q⟩ : ∀ {Γ}{A : Ty Γ} → id {Γ ▹ A} ≡ p ⁺ ∘ ⟨ q ⟩
       q[⟨⟩] : ∀ {Γ}{A : Ty Γ}{a : Tm Γ A} → PathP (λ i → Tm Γ ([p][⟨⟩]T {A = A}{b = a} i)) (q [ ⟨ a ⟩ ]t) a
       q[⁺]  : ∀ {Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ} → PathP (λ i → Tm (Δ ▹ A [ γ ]T) ([p][⁺]T {A = A} i)) (q [ γ ⁺ ]t) q
@@ -69,6 +72,7 @@ record Cwf {ℓ}{ℓ'}(sorts : Sorts {ℓ}{ℓ'}) : Type (ℓ ⊔ ℓ') where
 record TF {ℓ}{ℓ'}(sorts : Sorts {ℓ}{ℓ'})(cwf : Cwf {ℓ}{ℓ'}(sorts)) : Type (ℓ ⊔ ℓ') where
   open Sorts sorts
   open Cwf cwf
+  infixl 9 _[_]Π _[_]U
   field
       U        : ∀ {Γ} → Ty Γ
       U[]      : ∀ {Γ Δ}{γ : Sub Δ Γ} → (U [ γ ]T) ≡ U
@@ -86,7 +90,4 @@ record TF {ℓ}{ℓ'}(sorts : Sorts {ℓ}{ℓ'})(cwf : Cwf {ℓ}{ℓ'}(sorts)) :
       Πβ    : ∀ {Γ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{b : Tm (Γ ▹ A) B} → (a : Tm Γ A) → app (lam b) a ≡ b [ ⟨ a ⟩ ]t
       Πη    : ∀ {Γ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{t : Tm Γ (Π A B)} →  PathP (λ i → Tm Γ (Π A ([p⁺][⟨q⟩]T {A = A}{B = B} i))) t (lam (app (t [ p ]Π) q))
       lam[] : ∀ {Γ Δ}{A : Ty Δ}{B : Ty (Δ ▹ A)}{γ : Sub Γ Δ}{b : Tm (Δ ▹ A) B}  → PathP (λ i → Tm Γ (Π[] {B = B}{γ = γ} i)) (lam b [ γ ]t) (lam (b [ γ ⁺ ]t))
-      app[] : ∀ {Γ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{a : Tm Γ A}{γ : Sub Γ Γ}{t : Tm Γ (Π A B)} →  PathP (λ i → Tm Γ ([⟨⟩][]T {γ = γ}{A = B}{a = a} i)) (app t a [ γ ]t) (app (t [ γ ]Π) (a [ γ ]t))  
- 
-
-       
+      app[] : ∀ {Γ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{a : Tm Γ A}{γ : Sub Γ Γ}{t : Tm Γ (Π A B)} →  PathP (λ i → Tm Γ ([⟨⟩][]T {γ = γ}{A = B}{a = a} i)) (app t a [ γ ]t) (app (t [ γ ]Π) (a [ γ ]t))
