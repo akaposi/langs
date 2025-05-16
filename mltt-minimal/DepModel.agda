@@ -61,9 +61,9 @@ record DepModel {ℓ₁ ℓ₂ ℓ₃ ℓ₄} : Type (lsuc (ℓ₁ ⊔ ℓ₂ �
     -- [p⁺][⟨q⟩]T and [⟨⟩][]T rules are lower, q and _[_]t are needed for these.
     U∙        : {Γ∙ : Con∙ Γ} → Ty∙ Γ∙ U
     U[]∙      : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → PathP (λ i → Ty∙ Δ∙ (U[] {γ = γ} i)) (U∙ [ γ∙ ]T∙) U∙
-    El∙       : {Γ∙ : Con∙ Γ} → Tm∙ Γ∙ U∙ Â → Ty∙ Γ∙ (El Â)
+    El∙       : {Γ∙ : Con∙ Γ}(Â∙ : Tm∙ Γ∙ U∙ Â) → Ty∙ Γ∙ (El Â)
     -- El[]∙ is below Tm stuff
-    Π∙        : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A} → Ty∙ Γ∙ A → Ty∙ (Γ∙ ▹∙ A∙) B → Ty∙ Γ∙ (Π A B)
+    Π∙        : {Γ∙ : Con∙ Γ}(A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B) → Ty∙ Γ∙ (Π A B)
     -- Π[]∙ needs _⁺∙
 
     -- Tm
