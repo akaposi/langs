@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --no-postfix-projection #-}
 
 module mltt-minimal.QIIRT-Syntax where
 
@@ -9,8 +9,10 @@ open import Cubical.Functions.FunExtEquiv
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
 open import Cubical.Data.Empty renaming (rec to exfalso)
+open import Cubical.Data.Unit renaming (Unit to ⊤)
 
 open import mltt-minimal.Syntax
+open import mltt-minimal.DepModel
 
 the : ∀{i}(A : Set i) → A → A
 the _ x = x
@@ -50,6 +52,70 @@ subst-p {Γ} {A} {B} {e} = J (λ _ eq → subst (λ z → Sub (Γ ▹ z) Γ) eq 
 subst-cong-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub z Γ) (congS (Γ ▹_) e) p ≡ p
 subst-cong-p {Γ} {A} {B} {e} = subst-p {Γ} {A} {B} {e}
 
+subst-⁺ : ∀{Γ Δ}{γ : Sub Δ Γ}{A : Ty Γ}{e : {!!}} → subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e (γ ⁺) ≡ γ ⁺
+subst-⁺ {Γ} {Δ} {γ} {A} {e} = {!!}
+
+D : DepModel {ℓ-zero} {ℓ-zero} {ℓ-zero} {ℓ-zero}
+Con∙ D _ = ⊤
+Sub∙ D {Δ} {Γ} _ _ γ = ∀ {Θ} → (δ : Sub Θ Δ) → Σ (Sub Θ Γ) (λ θ → γ ∘ δ ≡ θ)
+Ty∙ D {Γ} _ A = ∀ {Δ} → (γ : Sub Δ Γ) → Σ (Ty Δ) (λ A[γ]T* → A [ γ ]T ≡ A[γ]T*)
+Tm∙ D {Γ} {A} _ s t = ∀ {Δ} → (a : Tm Γ A) → (γ : Sub Δ Γ) → Σ (Tm Δ (fst (s γ))) (λ a[γ]t* → PathP (λ i → Tm Δ (snd (s γ) i)) (a [ γ ]t) a[γ]t*)
+_▹∙_ D _ _ = tt
+◇∙ D = tt
+SubSet∙ D = isSetImplicitΠ λ Θ → isSetΠ λ δ → isContr→isOfHLevel 2 (isContrSingl (_ ∘ δ))
+TySet∙ D = isSetImplicitΠ λ Δ → isSetΠ λ γ → isContr→isOfHLevel 2 (isContrSingl (_ [ γ ]T))
+TmSet∙ D {A∙ = A∙} = isSetImplicitΠ λ Δ → isSetΠ λ t → isSetΠ λ γ → isContr→isOfHLevel 2 (isContrSinglP (λ i → Tm Δ (snd (A∙ γ) i)) (t [ γ ]t))
+_∘∙_ D {γ = γ} {δ} γ∘* δ∘* {Ξ} θ = let (δ∘*θ    , δ∘*θ≡   ) = δ∘* θ
+                                       (γ∘*δ∘*θ , γ∘*δ∘*θ≡) = γ∘* δ∘*θ
+                                   in γ∘*δ∘*θ , ass ∙ congS (γ ∘_) δ∘*θ≡ ∙ γ∘*δ∘*θ≡
+ass∙ D = {!!}
+id∙ D γ = γ , idl
+idl∙ D = {!!}
+idr∙ D = {!!}
+ε∙ D γ = ε , ◇η
+◇η∙ D = {!!}
+p∙ D γ = p ∘ γ , refl
+_⁺∙ D {γ = γ} γ∙ δ = γ ⁺ ∘ δ , refl
+⟨_⟩∙ D {Γ = Γ} {A} {t} {A∙ = A∙} tₛ {Δ} γ = let (t[γ]t* , e) = tₛ t γ in subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (snd (A∙ γ)) (γ ⁺) ∘ ⟨ t[γ]t* ⟩ , ⟨⟩∘ {a = t} {γ = γ} ∙ {!!} -- γ ⁺* ∘ ⟨ a [ γ ]t* ⟩
+∘⁺∙ D = {!!}
+id⁺∙ D = {!!}
+p∘⁺∙ D = {!!}
+p∘⟨⟩∙ D = {!!}
+_[_]T∙ D {Δ} {Γ} {A} {γ} A∙ γ∙ {Θ} δ = let (γ∘δ , e) = γ∙ δ in A [ γ∘δ ]T , sym [∘]T ∙ congS (A [_]T) e
+[∘]T∙ D = {!!}
+[id]T∙ D = {!!}
+[p][⟨⟩]T∙ D = {!!}
+[p][⁺]T∙ D = {!!}
+U∙ D _ = U , U[]
+U[]∙ D = {!!}
+El∙ D uₛ γ = {!!}
+Π∙ D = {!!}
+Π[]∙ D = {!!}
+_[_]t∙ D = {!!}
+q∙ D = {!!}
+q[⟨⟩]∙ D = {!!}
+q[⁺]∙ D = {!!}
+[∘]t∙ D = {!!}
+[id]t∙ D = {!!}
+_[_]U∙ D = {!!}
+[]U∙ D = {!!}
+_[_]Π∙ D = {!!}
+lam∙ D = {!!}
+app∙ D = {!!}
+Πβ∙ D = {!!}
+Πη∙ D = {!!}
+lam[]∙ D = {!!}
+app[]∙ D = {!!}
+⟨⟩∘∙ D = {!!}
+p⁺∘⟨q⟩∙ D = {!!}
+[p⁺][⟨q⟩]T∙ D = {!!}
+[⟨⟩][]T∙ D = {!!}
+El[]∙ D = {!!}
+
+module D = DepModel D
+
+A [ γ ]T* = {!!}
+{-
 TySet A A' e e' i i' [ γ ]T* = TySet (A [ γ ]T*) (A' [ γ ]T*) (λ i → e i [ γ ]T*) (λ i → e' i [ γ ]T*) i i'
 (A [ γ ]T) [ δ ]T* = A [ γ ∘* δ ]T
 _[_]T* {Γ} {Δ} ([∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i) γ = (A [ θ ]T [ ψ ∘* γ ]T=) (~ i) -- [∘]T {Θ} {A} {Ψ} {θ} {_} {ψ} i [ γ ]T
@@ -82,14 +148,6 @@ _[_]T* {Γ} {Δ} (El[] {Θ} {Â} {_} {θ} i) γ = {!!}
 Π A B [ γ ]T* = Π (A [ γ ]T*) (B [ γ ⁺* ]T*)
 Π[] i [ γ ]T* = {!!}
 
-{-
-hcomp (λ l → λ { (i = i0) → {!!}
-                                                 ; (i = i1) → {!!}
-                                                 ; (j = i0) → {!!}
-                                                 ; (j = i1) → {!!}
-                                                 ; (k = i0) → TySet A A' e e' i j [ γ ]T
-                                                 ; (k = i1) → {!!}}) {!!}
--}
 
 TySet A A' e e' i j [ γ ]T= = {!!}
 A [ γ ]T [ δ ]T= = {!!}
@@ -182,6 +240,11 @@ _∘*_ {Δ} {_} {Θ} (⟨⟩∘ {Γ} {A} {t} {.Δ} {γ} i) δ = ⟨⟩∘-helper
 _∘*_ {_} {_} {Θ} (p⁺∘⟨q⟩ {Δ} {A} i) δ = p⁺∘⟨q⟩-helper i where
   p⁺∘⟨q⟩-helper : p ⁺ ∘ (δ ⁺* ∘ ⟨ q [ δ ]t* ⟩) ≡ δ
   p⁺∘⟨q⟩-helper = {!!}
+-}
+
+A [ γ ]T= = {!!}
+
+_∘*_ γ δ = {!!}
 
 _∘=_ {Δ} {Γ} {Θ} γ δ = {!!}
 
