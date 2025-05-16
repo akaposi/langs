@@ -26,7 +26,7 @@ record DepModel {ℓ₁ ℓ₂ ℓ₃ ℓ₄} : Type (lsuc (ℓ₁ ⊔ ℓ₂ �
   infixl 9 _[_]T∙ _[_]t∙ _[_]U∙ _[_]Π∙
   infixl 10 _⁺∙
   infixl 11 ⟨_⟩∙
-  infixl 20 ⟦_⟧L ⟦_⟧Sort ⟦_⟧
+  infixl 20 ⟦_⟧L {- Dubious cheating, it is fine in this case. Don't use Level with Setω. -} ⟦_⟧Sort ⟦_⟧
   field
     Con∙ : Con → Type ℓ₁
     Sub∙ : {Δ Γ : Con}(Δ∙ : Con∙ Δ)(Γ∙ : Con∙ Γ)(γ : Sub Δ Γ) → Type ℓ₂ -- (ℓ₁ ⊔ ℓ₂)
@@ -61,7 +61,7 @@ record DepModel {ℓ₁ ℓ₂ ℓ₃ ℓ₄} : Type (lsuc (ℓ₁ ⊔ ℓ₂ �
     -- [p⁺][⟨q⟩]T and [⟨⟩][]T rules are lower, q and _[_]t are needed for these.
     U∙        : {Γ∙ : Con∙ Γ} → Ty∙ Γ∙ U
     U[]∙      : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → PathP (λ i → Ty∙ Δ∙ (U[] {γ = γ} i)) (U∙ [ γ∙ ]T∙) U∙
-    El∙       : {Γ∙ : Con∙ Γ} → Tm∙ Γ∙ U∙ u → Ty∙ Γ∙ (El Â)
+    El∙       : {Γ∙ : Con∙ Γ} → Tm∙ Γ∙ U∙ Â → Ty∙ Γ∙ (El Â)
     -- El[]∙ is below Tm stuff
     Π∙        : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A} → Ty∙ Γ∙ A → Ty∙ (Γ∙ ▹∙ A∙) B → Ty∙ Γ∙ (Π A B)
     -- Π[]∙ needs _⁺∙
