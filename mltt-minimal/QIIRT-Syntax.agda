@@ -4,7 +4,9 @@ module mltt-minimal.QIIRT-Syntax where
 
 open import Cubical.Foundations.Prelude hiding (Sub)
 open import Cubical.Foundations.Path
+open import Cubical.Foundations.GroupoidLaws
 open import Cubical.Foundations.HLevels
+open import Cubical.Foundations.Transport
 open import Cubical.Functions.FunExtEquiv
 open import Cubical.Relation.Binary.Base
 open import Cubical.Relation.Nullary
@@ -37,34 +39,17 @@ _∘=_   : (γ : Sub Δ Γ)(δ : Sub Θ Δ) → γ ∘ δ ≡ γ ∘* δ
 _⁺*    : (γ : Sub Δ Γ) → Sub (Δ ▹ A [ γ ]T*) (Γ ▹ A)
 _⁺* {Δ = Δ}{Γ = Γ}{A = A} γ = subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (A [ γ ]T=) (γ ⁺)
 
-∘-substᵣ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Θ' : Con}{δ : Sub Θ Δ}{e : Θ ≡ Θ'} → γ ∘ subst (λ z → Sub z Δ) e δ ≡ subst (λ z → Sub z Γ) e (γ ∘ δ)
-∘-substᵣ {Γ} {Δ} {γ} {Θ} {Θ'} {δ} {e} = J {x = Θ} (λ a eq → γ ∘ subst (λ z → Sub z Δ) eq δ ≡ subst (λ z → Sub z Γ) eq (γ ∘ δ)) (cong (γ ∘_) (substRefl {B = λ z → Sub z Δ} δ) ∙ sym (substRefl {B = λ z → Sub z Γ} (γ ∘ δ))) e
-
-∘-substₘ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Δ' : Con}{δ : Sub Θ Δ'}{e : Δ ≡ Δ'} → γ ∘ subst (λ z → Sub Θ z) (sym e) δ ≡ subst (λ z → Sub z Γ) e γ ∘ δ
-∘-substₘ {Γ} {Δ} {γ} {Θ} {Δ'} {δ} {e} = J (λ a eq → ∀ δ → γ ∘ subst (λ z → Sub Θ z) (sym eq) δ ≡ subst (λ z → Sub z Γ) eq γ ∘ δ) (λ δ' → congS (γ ∘_) (transportRefl δ') ∙ congS (_∘ δ') (sym (transportRefl γ))) e δ
-
-∘-substₗ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Γ' : Con}{δ : Sub Θ Δ}{e : Γ ≡ Γ'} → subst (λ z → Sub Δ z) e γ ∘ δ ≡ subst (λ z → Sub Θ z) e (γ ∘ δ)
-∘-substₗ {Γ} {Δ} {γ} {Θ} {Γ'} {δ} {e} = J (λ a eq → subst (λ z → Sub Δ z) eq γ ∘ δ ≡ subst (λ z → Sub Θ z) eq (γ ∘ δ)) (congS (_∘ δ) (substRefl {B = λ z → Sub z Γ} γ) ∙ sym (substRefl {B = λ z → Sub Θ z} (γ ∘ δ))) e
-
-subst-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub (Γ ▹ z) Γ) e p ≡ p
-subst-p {Γ} {A} {B} {e} = J (λ _ eq → subst (λ z → Sub (Γ ▹ z) Γ) eq p ≡ p) (transportRefl p) e
-
-subst-cong-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub z Γ) (congS (Γ ▹_) e) p ≡ p
-subst-cong-p {Γ} {A} {B} {e} = subst-p {Γ} {A} {B} {e}
-
-subst-⁺ : ∀{Γ Δ}{γ : Sub Δ Γ}{A : Ty Γ}{e : {!!}} → subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e (γ ⁺) ≡ γ ⁺
-subst-⁺ {Γ} {Δ} {γ} {A} {e} = {!!}
-
+-- _[_]T* _[_]T= _[_]t* _[_]t= _∘*_ _∘=_ defined at the same time in D
 D : DepModel {ℓ-zero} {ℓ-zero} {ℓ-zero} {ℓ-zero}
 Con∙ D _ = ⊤
 Sub∙ D {Δ} {Γ} _ _ γ = ∀ {Θ} → (δ : Sub Θ Δ) → Σ (Sub Θ Γ) (λ θ → γ ∘ δ ≡ θ)
 Ty∙ D {Γ} _ A = ∀ {Δ} → (γ : Sub Δ Γ) → Σ (Ty Δ) (λ A[γ]T* → A [ γ ]T ≡ A[γ]T*)
-Tm∙ D {Γ} {A} _ s t = ∀ {Δ} → (a : Tm Γ A) → (γ : Sub Δ Γ) → Σ (Tm Δ (fst (s γ))) (λ a[γ]t* → PathP (λ i → Tm Δ (snd (s γ) i)) (a [ γ ]t) a[γ]t*)
+Tm∙ D {Γ} {A} _ s t = ∀ {Δ} → (γ : Sub Δ Γ) → Σ (Tm Δ (fst (s γ))) (λ a[γ]t* → PathP (λ i → Tm Δ (snd (s γ) i)) (t [ γ ]t) a[γ]t*)
 _▹∙_ D _ _ = tt
 ◇∙ D = tt
 SubSet∙ D = isSetImplicitΠ λ Θ → isSetΠ λ δ → isContr→isOfHLevel 2 (isContrSingl (_ ∘ δ))
 TySet∙ D = isSetImplicitΠ λ Δ → isSetΠ λ γ → isContr→isOfHLevel 2 (isContrSingl (_ [ γ ]T))
-TmSet∙ D {A∙ = A∙} = isSetImplicitΠ λ Δ → isSetΠ λ t → isSetΠ λ γ → isContr→isOfHLevel 2 (isContrSinglP (λ i → Tm Δ (snd (A∙ γ) i)) (t [ γ ]t))
+TmSet∙ D {A∙ = A∙} = isSetImplicitΠ λ Δ → isSetΠ λ γ → isContr→isOfHLevel 2 (isContrSinglP (λ i → Tm Δ (snd (A∙ γ) i)) (_ [ γ ]t))
 _∘∙_ D {γ = γ} {δ} γ∘* δ∘* {Ξ} θ = let (δ∘*θ    , δ∘*θ≡   ) = δ∘* θ
                                        (γ∘*δ∘*θ , γ∘*δ∘*θ≡) = γ∘* δ∘*θ
                                    in γ∘*δ∘*θ , ass ∙ congS (γ ∘_) δ∘*θ≡ ∙ γ∘*δ∘*θ≡
@@ -76,7 +61,12 @@ idr∙ D = {!!}
 ◇η∙ D = {!!}
 p∙ D γ = p ∘ γ , refl
 _⁺∙ D {γ = γ} γ∙ δ = γ ⁺ ∘ δ , refl
-⟨_⟩∙ D {Γ = Γ} {A} {t} {A∙ = A∙} tₛ {Δ} γ = let (t[γ]t* , e) = tₛ t γ in subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (snd (A∙ γ)) (γ ⁺) ∘ ⟨ t[γ]t* ⟩ , ⟨⟩∘ {a = t} {γ = γ} ∙ {!!} -- γ ⁺* ∘ ⟨ a [ γ ]t* ⟩
+⟨_⟩∙ D {Γ = Γ} {A} {t} {A∙ = A∙} tₛ {Δ} γ = let (t[γ]t* , e) = tₛ γ
+                                            in subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) (snd (A∙ γ)) (γ ⁺) ∘ ⟨ t[γ]t* ⟩
+                                             , ⟨⟩∘ {a = t} {γ = γ}
+                                             ∙ congS (γ ⁺ ∘_) (congS ⟨_⟩ (fromPathP⁻ e)
+                                             ∙ sym (subst-⟨⟩ {t = t[γ]t*} {e = sym (snd (A∙ γ))}))
+                                             ∙ (subst-∘ₘ {γ = γ ⁺} {e = congS (Δ ▹_) (snd (A∙ γ))})
 ∘⁺∙ D = {!!}
 id⁺∙ D = {!!}
 p∘⁺∙ D = {!!}
@@ -88,19 +78,37 @@ _[_]T∙ D {Δ} {Γ} {A} {γ} A∙ γ∙ {Θ} δ = let (γ∘δ , e) = γ∙ δ 
 [p][⁺]T∙ D = {!!}
 U∙ D _ = U , U[]
 U[]∙ D = {!!}
-El∙ D {Γ = Γ} {Â} Âₛ γ = let (Â[γ]U* , e) = Âₛ Â γ in {!!}
-Π∙ D = {!!}
+El∙ D {Γ = Γ} {Â} Âₛ {Δ} γ = let (Â[γ]t* , e) = Âₛ γ in El Â[γ]t* , El[] ∙ cong El (sym (fromPathP []U) ∙ fromPathP e)
+Π∙ D {Γ = Γ} {A} {B} A∙ B∙ {Δ} γ = let (A[γ]T* , e1) = A∙ γ
+                                       (B[γ⁺]T* , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
+                                   in Π A[γ]T* B[γ⁺]T* , Π[] ∙ cong₂ Π e1 (toPathP (subst-[]T {A = B} {γ = γ ⁺} {e = congS (Δ ▹_) e1} ∙ e2))
 Π[]∙ D = {!!}
-_[_]t∙ D = {!!}
-q∙ D = {!!}
+_[_]t∙ D {A = A} {a = a} {γ = γ} {A∙ = A∙} a∙ γ∙ {Θ} δ =
+  let
+    (A[γ]T* , e1) = A∙ γ
+    (a[γ]t* , e2) = a∙ γ
+    (γ∘*δ , e3) = γ∙ δ
+  in a [ γ∘*δ ]t , toPathP (substComposite (Tm Θ) (sym ([∘]T {A = A} {γ = γ})) (λ i → A [ e3 i ]T) (a [ γ ]t [ δ ]t) ∙ cong (transport (λ i → Tm Θ (A [ e3 i ]T))) (sym (fromPathP⁻ ([∘]t {a = a}))) ∙ fromPathP (cong (a [_]t) e3))
+q∙ D {Γ = Γ} {A} {A∙ = A∙} {Δ} γ = subst (Tm Δ) (sym ([∘]T {A = A} {γ = p})) (q [ γ ]t) , toPathP (subst (λ x → subst (Tm Δ) x (q [ γ ]t) ≡ subst (Tm Δ) (λ i → [∘]T {A = A} {γ = p} {δ = γ} (~ i)) (q [ γ ]t)) (rUnit (sym ([∘]T {A = A} {γ = p} {δ = γ}))) refl)
 q[⟨⟩]∙ D = {!!}
 q[⁺]∙ D = {!!}
 [∘]t∙ D = {!!}
 [id]t∙ D = {!!}
-_[_]U∙ D = {!!}
+_[_]U∙ D {Δ = Δ} {Γ} {Â} {γ} Â∙ γ∙ {Θ} δ =
+  let (γ∘*δ , e) = γ∙ δ
+  in Â [ γ∘*δ ]U , toPathP (fromPathP ([]U {γ = δ} {Â = Â [ γ ]U}) ∙ [∘]U {Â = Â} {γ} {δ} ∙ cong (Â [_]U) e)
 []U∙ D = {!!}
-_[_]Π∙ D = {!!}
-lam∙ D = {!!}
+_[_]Π∙ D {Δ = Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {f} f∙ γ∙ {Θ} δ =
+  let (γ∘*δ , e1) = γ∙ δ
+      (f[γ∘*δ] , e2) = f∙ γ∘*δ
+  in {!!} -- f [ γ ]Π [ δ ]t = f [ γ ∘ δ ]Π
+[]Π∙ D = {!!}
+lam∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} t∙ {Δ} γ =
+  let
+    (A[γ]T , e1) = A∙ γ
+    (B[γ⁺]T , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
+    (t[γ⁺]t , e3) = t∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
+  in lam t[γ⁺]t , toPathP {!!}
 app∙ D = {!!}
 Πβ∙ D = {!!}
 Πη∙ D = {!!}

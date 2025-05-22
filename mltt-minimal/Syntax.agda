@@ -3,6 +3,10 @@
 module mltt-minimal.Syntax where
 
 open import Cubical.Foundations.Prelude hiding (Sub)
+open import Cubical.Foundations.Path
+open import Cubical.Foundations.GroupoidLaws
+open import Cubical.Foundations.HLevels
+open import Cubical.Foundations.Transport
 
 infixl 5 _▹_
 infixl 8 _∘_
@@ -106,9 +110,57 @@ data EL where
   q[⁺]  : PathP (λ i → Tm (Δ ▹ A [ γ ]T) ([p][⁺]T {A = A} i)) (q [ γ ⁺ ]t) q
 
   _[_]Π : (f : Tm Γ (Π A B))(γ : Sub Δ Γ) → Tm Δ (Π (A [ γ ]T) (B [ γ ⁺ ]T))
+  []Π   : PathP (λ i → Tm Δ (Π[] {A = A} {B = B} {γ = γ} i)) (t [ γ ]t) (t [ γ ]Π)
   lam   : (t : Tm (Γ ▹ A) B) → Tm Γ (Π A B)
   app   : (f : Tm Γ (Π A B))(a : Tm Γ A) → Tm Γ (B [ ⟨ a ⟩ ]T)
   Πβ    : app (lam b) a ≡ b [ ⟨ a ⟩ ]t
   Πη    : {t : Tm Γ (Π A B)} → PathP (λ i → Tm Γ (Π A ([p⁺][⟨q⟩]T {A = B} i))) (lam (app (t [ p ]Π) q)) t
   lam[] : PathP (λ i → Tm Γ (Π[] {B = B}{γ = γ} i)) (lam b [ γ ]t) (lam (b [ γ ⁺ ]t))
   app[] : {t : Tm Γ (Π A B)} → PathP (λ i → Tm Δ ([⟨⟩][]T {A = B}{a = a}{γ = γ} i)) (app t a [ γ ]t) (app (t [ γ ]Π) (a [ γ ]t))
+
+subst-∘ᵣ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Θ' : Con}{δ : Sub Θ Δ}{e : Θ ≡ Θ'} → γ ∘ subst (λ z → Sub z Δ) e δ ≡ subst (λ z → Sub z Γ) e (γ ∘ δ)
+subst-∘ᵣ {Γ} {Δ} {γ} {Θ} {Θ'} {δ} {e} = J {x = Θ} (λ a eq → γ ∘ subst (λ z → Sub z Δ) eq δ ≡ subst (λ z → Sub z Γ) eq (γ ∘ δ)) (cong (γ ∘_) (substRefl {B = λ z → Sub z Δ} δ) ∙ sym (substRefl {B = λ z → Sub z Γ} (γ ∘ δ))) e
+
+subst-∘ₘ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Δ' : Con}{δ : Sub Θ Δ'}{e : Δ ≡ Δ'} → γ ∘ subst (λ z → Sub Θ z) (sym e) δ ≡ subst (λ z → Sub z Γ) e γ ∘ δ
+subst-∘ₘ {Γ} {Δ} {γ} {Θ} {Δ'} {δ} {e} = J (λ a eq → ∀ δ → γ ∘ subst (λ z → Sub Θ z) (sym eq) δ ≡ subst (λ z → Sub z Γ) eq γ ∘ δ) (λ δ' → congS (γ ∘_) (transportRefl δ') ∙ congS (_∘ δ') (sym (transportRefl γ))) e δ
+
+subst-∘ₗ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Γ' : Con}{δ : Sub Θ Δ}{e : Γ ≡ Γ'} → subst (λ z → Sub Δ z) e γ ∘ δ ≡ subst (λ z → Sub Θ z) e (γ ∘ δ)
+subst-∘ₗ {Γ} {Δ} {γ} {Θ} {Γ'} {δ} {e} = J (λ a eq → subst (λ z → Sub Δ z) eq γ ∘ δ ≡ subst (λ z → Sub Θ z) eq (γ ∘ δ)) (congS (_∘ δ) (substRefl {B = λ z → Sub z Γ} γ) ∙ sym (substRefl {B = λ z → Sub Θ z} (γ ∘ δ))) e
+
+subst-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub (Γ ▹ z) Γ) e p ≡ p
+subst-p {Γ} {A} {B} {e} = J (λ _ eq → subst (λ z → Sub (Γ ▹ z) Γ) eq p ≡ p) (transportRefl p) e
+
+subst-cong-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub z Γ) (congS (Γ ▹_) e) p ≡ p
+subst-cong-p {Γ} {A} {B} {e} = subst-p {Γ} {A} {B} {e}
+
+subst-⟨⟩ : {t : Tm Δ A}{e : A ≡ B} → subst (λ z → Sub Δ (Δ ▹ z)) e ⟨ t ⟩ ≡ ⟨ subst (Tm Δ) e t ⟩
+subst-⟨⟩ {Δ = Δ} {A = A} {B = B} {t} {e} = J (λ _ eq → subst (λ z → Sub Δ (Δ ▹ z)) eq ⟨ t ⟩ ≡ ⟨ subst (Tm Δ) eq t ⟩) (transportRefl ⟨ t ⟩ ∙ congS ⟨_⟩ (sym (transportRefl t))) e
+
+subst-[]T : ∀{Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → subst Ty e (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) e γ ]T
+subst-[]T {Γ} {Δ} {A} {γ} {Δ'} {e} = J (λ _ eq → subst Ty eq (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) eq γ ]T) (transportRefl (A [ γ ]T) ∙ congS (A [_]T) (sym (transportRefl γ))) e
+
+-- subst-lam : ∀{Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ} →
+{-
+subst-Sub-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e} i)) (transport (λ i → Tm (e i) (transp (λ j → Ty (e (i ∧ j))) (~ i) (A [ γ ]T))) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e γ ]t)
+subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = {!!}
+-}
+
+subst-Ty-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{B}{e : A ≡ B} → subst (λ z → Tm Δ (z [ γ ]T)) e (t [ γ ]t) ≡ subst (Tm Γ) e t [ γ ]t
+subst-Ty-[]t {Γ} {Δ} {A} {t} {γ} {B} {e} = J (λ _ eq → subst (λ z → Tm Δ (z [ γ ]T)) eq (t [ γ ]t) ≡ subst (Tm Γ) eq t [ γ ]t) (transportRefl (t [ γ ]t) ∙ sym (congS (_[ γ ]t) (transportRefl t))) e
+
+[∘]U : ∀{Γ Δ Θ}{Â : Tm Γ U}{γ : Sub Δ Γ}{δ : Sub Θ Δ} →  Â [ γ ]U [ δ ]U ≡ Â [ γ ∘ δ ]U
+[∘]U {Γ} {Δ} {Θ} {Â} {γ} {δ} = sym (fromPathP ([]U {γ = δ} {Â = Â [ γ ]U}))
+                             ∙ cong (λ x → transport (λ i → Tm Θ (U[] {γ = δ} i)) (x [ δ ]t)) (sym (fromPathP ([]U {γ = γ} {Â = Â})))
+                             ∙ cong (λ x → transport (λ i → Tm Θ (U[] {γ = δ} i)) x) (sym (subst-Ty-[]t {t = Â [ γ ]t} {e = U[] {γ = γ}}))
+                             ∙ sym (substComposite (Tm Θ) (cong _[ δ ]T (U[] {γ = γ})) (U[] {γ = δ}) (Â [ γ ]t [ δ ]t))
+                             ∙ cong (λ x → subst (Tm Θ) x (Â [ γ ]t [ δ ]t)) (TySet (U [ γ ]T [ δ ]T) U (cong _[ δ ]T (U[] {γ = γ}) ∙ U[] {γ = δ}) (sym ([∘]T {A = U} {γ = γ} {δ = δ}) ∙ U[] {γ = γ ∘ δ}))
+                             ∙ substComposite (Tm Θ) (sym ([∘]T {A = U} {γ = γ} {δ = δ})) (U[] {γ = γ ∘ δ}) (Â [ γ ]t [ δ ]t)
+                             ∙ cong (transport (λ i → Tm Θ (U[] {γ = γ ∘ δ} i))) (sym (fromPathP⁻ ([∘]t {γ = γ} {δ = δ} {a = Â})))
+                             ∙ fromPathP ([]U {γ = γ ∘ δ} {Â = Â})
+{-
+[∘]Π : ∀ {Γ Δ Θ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{t : Tm Γ (Π A B)}{γ : Sub Δ Γ}{δ : Sub Θ Δ} → t [ γ ]Π [ δ ]Π ≡ t [ γ ∘ δ ]Π
+[∘]Π {Γ} {Δ} {Θ} {A} {B} {t} {γ} {δ} = ?
+-}
+-- Szumi's heterogeneous equality DSL
+_≡Ty[_]_ : ∀{Γ Δ} → Ty Γ → Γ ≡ Δ → Ty Δ → Type
+A ≡Ty[ e ] B = PathP (λ i → Ty (e i)) A B
