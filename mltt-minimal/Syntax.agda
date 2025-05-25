@@ -148,19 +148,29 @@ subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = {!!}
 subst-Ty-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{B}{e : A ≡ B} → subst (λ z → Tm Δ (z [ γ ]T)) e (t [ γ ]t) ≡ subst (Tm Γ) e t [ γ ]t
 subst-Ty-[]t {Γ} {Δ} {A} {t} {γ} {B} {e} = J (λ _ eq → subst (λ z → Tm Δ (z [ γ ]T)) eq (t [ γ ]t) ≡ subst (Tm Γ) eq t [ γ ]t) (transportRefl (t [ γ ]t) ∙ sym (congS (_[ γ ]t) (transportRefl t))) e
 
-[∘]U : ∀{Γ Δ Θ}{Â : Tm Γ U}{γ : Sub Δ Γ}{δ : Sub Θ Δ} →  Â [ γ ]U [ δ ]U ≡ Â [ γ ∘ δ ]U
-[∘]U {Γ} {Δ} {Θ} {Â} {γ} {δ} = sym (fromPathP ([]U {γ = δ} {Â = Â [ γ ]U}))
+[∘]U : ∀{Γ Δ Θ}{Â : Tm Γ U}{γ : Sub Δ Γ}{δ : Sub Θ Δ} →  Â [ γ ∘ δ ]U ≡ Â [ γ ]U [ δ ]U
+[∘]U {Γ} {Δ} {Θ} {Â} {γ} {δ} = sym (sym (fromPathP ([]U {γ = δ} {Â = Â [ γ ]U}))
                              ∙ cong (λ x → transport (λ i → Tm Θ (U[] {γ = δ} i)) (x [ δ ]t)) (sym (fromPathP ([]U {γ = γ} {Â = Â})))
                              ∙ cong (λ x → transport (λ i → Tm Θ (U[] {γ = δ} i)) x) (sym (subst-Ty-[]t {t = Â [ γ ]t} {e = U[] {γ = γ}}))
                              ∙ sym (substComposite (Tm Θ) (cong _[ δ ]T (U[] {γ = γ})) (U[] {γ = δ}) (Â [ γ ]t [ δ ]t))
                              ∙ cong (λ x → subst (Tm Θ) x (Â [ γ ]t [ δ ]t)) (TySet (U [ γ ]T [ δ ]T) U (cong _[ δ ]T (U[] {γ = γ}) ∙ U[] {γ = δ}) (sym ([∘]T {A = U} {γ = γ} {δ = δ}) ∙ U[] {γ = γ ∘ δ}))
                              ∙ substComposite (Tm Θ) (sym ([∘]T {A = U} {γ = γ} {δ = δ})) (U[] {γ = γ ∘ δ}) (Â [ γ ]t [ δ ]t)
                              ∙ cong (transport (λ i → Tm Θ (U[] {γ = γ ∘ δ} i))) (sym (fromPathP⁻ ([∘]t {γ = γ} {δ = δ} {a = Â})))
-                             ∙ fromPathP ([]U {γ = γ ∘ δ} {Â = Â})
-{-
-[∘]Π : ∀ {Γ Δ Θ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{t : Tm Γ (Π A B)}{γ : Sub Δ Γ}{δ : Sub Θ Δ} → t [ γ ]Π [ δ ]Π ≡ t [ γ ∘ δ ]Π
-[∘]Π {Γ} {Δ} {Θ} {A} {B} {t} {γ} {δ} = ?
--}
+                             ∙ fromPathP ([]U {γ = γ ∘ δ} {Â = Â}))
+
+[∘]Π : ∀ {Γ Δ Θ}{A : Ty Γ}{B : Ty (Γ ▹ A)}{t : Tm Γ (Π A B)}{γ : Sub Δ Γ}{δ : Sub Θ Δ} → PathP (λ i → Tm Θ (Π ([∘]T {A = A} {γ = γ} {δ = δ} i) (toPathP {A = λ i → Ty (Θ ▹ [∘]T {A = A} i)} {x = B [ (γ ∘ δ) ⁺ ]T} (subst-[]T {γ = (γ ∘ δ) ⁺} {e = congS (Θ ▹_) [∘]T} ∙ congS (B [_]T) (fromPathP (∘⁺ {Θ = Θ} {Γ = Γ} {A = A} {γ = γ} {δ = δ})) ∙ [∘]T {A = B} {γ = γ ⁺} {δ = δ ⁺}) i))) (t [ γ ∘ δ ]Π) (t [ γ ]Π [ δ ]Π)
+[∘]Π {Γ} {Δ} {Θ} {A} {B} {t} {γ} {δ} = toPathP ( cong (transport (λ i → Tm Θ (Π ([∘]T {A = A} {γ = γ} {δ = δ} i) (toPathP {A = λ i → Ty (Θ ▹ [∘]T {A = A} i)} {x = B [ (γ ∘ δ) ⁺ ]T} (subst-[]T {A = B} {γ = (γ ∘ δ) ⁺} {e = congS (Θ ▹_) ([∘]T {A = A} {γ = γ} {δ = δ})} ∙ congS (B [_]T) (fromPathP (∘⁺ {A = A} {γ = γ} {δ = δ})) ∙ [∘]T {A = B} {γ = γ ⁺} {δ = δ ⁺}) i)))) (sym (fromPathP ([]Π {γ = γ ∘ δ} {t = t})))
+                                               ∙ sym (substComposite (Tm Θ) (Π[] {A = A} {B = B} {γ = γ ∘ δ}) (cong₂ Π ([∘]T {A = A} {γ = γ} {δ = δ}) (toPathP {A = λ i → Ty (Θ ▹ [∘]T {A = A} i)} {x = B [ (γ ∘ δ) ⁺ ]T} (subst-[]T {A = B} {γ = (γ ∘ δ) ⁺} {e = congS (Θ ▹_) ([∘]T {A = A} {γ = γ} {δ = δ})} ∙ congS (B [_]T) (fromPathP (∘⁺ {A = A} {γ = γ} {δ = δ})) ∙ [∘]T {A = B} {γ = γ ⁺} {δ = δ ⁺}))) (t [ γ ∘ δ ]t))
+                                               ∙ cong (λ x → subst (Tm Θ) x (t [ γ ∘ δ ]t)) (TySet (Π A B [ γ ∘ δ ]T) (Π (A [ γ ]T [ δ ]T) (B [ γ ⁺ ]T [ δ ⁺ ]T)) (Π[] {A = A} {B = B} {γ = γ ∘ δ} ∙ (cong₂ Π ([∘]T {A = A} {γ = γ} {δ = δ}) (toPathP {A = λ i → Ty (Θ ▹ [∘]T {A = A} i)} {x = B [ (γ ∘ δ) ⁺ ]T} (subst-[]T {A = B} {γ = (γ ∘ δ) ⁺} {e = congS (Θ ▹_) ([∘]T {A = A} {γ = γ} {δ = δ})} ∙ congS (B [_]T) (fromPathP (∘⁺ {A = A} {γ = γ} {δ = δ})) ∙ [∘]T {A = B} {γ = γ ⁺} {δ = δ ⁺})))) ([∘]T {A = Π A B} {γ = γ} {δ = δ} ∙ congS _[ δ ]T Π[] ∙ Π[]))
+                                               ∙ substComposite (Tm Θ) ([∘]T {A = Π A B} {γ = γ} {δ = δ}) (congS _[ δ ]T Π[] ∙ Π[]) (t [ γ ∘ δ ]t)
+                                               ∙ cong (subst (Tm Θ) (congS _[ δ ]T (Π[]) ∙ Π[])) (fromPathP ([∘]t {γ = γ} {a = t}))
+                                               ∙ substComposite (Tm Θ) (congS _[ δ ]T Π[]) Π[] (t [ γ ]t [ δ ]t)
+                                               ∙ congS (subst (Tm Θ) (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ})) (subst-Ty-[]t {t = t [ γ ]t} {δ} {e = Π[] {A = A} {B = B} {γ = γ}})
+                                               ∙ congS (λ x → transport (λ i → Tm Θ (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ} i)) (x [ δ ]t)) (fromPathP ([]Π {γ = γ} {t = t}))
+                                               ∙ fromPathP ([]Π {γ = δ} {t = t [ γ ]Π}))
+
 -- Szumi's heterogeneous equality DSL
+{-
 _≡Ty[_]_ : ∀{Γ Δ} → Ty Γ → Γ ≡ Δ → Ty Δ → Type
 A ≡Ty[ e ] B = PathP (λ i → Ty (e i)) A B
+-}
