@@ -169,6 +169,57 @@ subst-Ty-[]t {Γ} {Δ} {A} {t} {γ} {B} {e} = J (λ _ eq → subst (λ z → Tm 
                                                ∙ congS (λ x → transport (λ i → Tm Θ (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ} i)) (x [ δ ]t)) (fromPathP ([]Π {γ = γ} {t = t}))
                                                ∙ fromPathP ([]Π {γ = δ} {t = t [ γ ]Π}))
 
+---------------
+-- isSet Con --
+---------------
+{-
+open import Cubical.Data.Empty renaming (rec to exfalso)
+open import Cubical.Data.Unit renaming (Unit to ⊤)
+
+infix 4 _≡ꟲᵒⁿ_
+
+_≡ꟲᵒⁿ_ : Con → Con → Type
+decode : {Γ Δ : Con} → Γ ≡ꟲᵒⁿ Δ → Γ ≡ Δ
+
+◇ ≡ꟲᵒⁿ ◇ = ⊤
+◇ ≡ꟲᵒⁿ _ ▹ _ = ⊥
+_ ▹ _ ≡ꟲᵒⁿ ◇ = ⊥
+Γ ▹ A ≡ꟲᵒⁿ Δ ▹ B = Σ (Γ ≡ꟲᵒⁿ Δ) λ e → PathP (λ i → Ty (decode {Γ} {Δ} e i)) A B
+
+-- decode {Γ} {Δ} e = ?
+
+decode {◇} {◇} _ = refl
+decode {Γ ▹ A} {Δ ▹ B} (e , eT) = cong₂ _▹_ (decode {Γ} {Δ} e) eT
+
+reflCode : {Γ : Con} → Γ ≡ꟲᵒⁿ Γ
+decodeRefl : {Γ : Con} → decode (reflCode {Γ}) ≡ refl
+
+reflCode {◇} = tt
+reflCode {Γ ▹ A} = reflCode {Γ} , filler i1
+  module reflCode-▹ where
+  filler : (i : I) → PathP (λ j → Ty (decodeRefl {Γ} (~ i) j)) A A
+  filler i = transport⁻-filler (λ i → PathP (λ j → Ty (decodeRefl {Γ} i j)) A A) refl i
+
+decodeRefl {◇} i = refl
+decodeRefl {Γ ▹ A} i = cong₂ _▹_ (decodeRefl {Γ} i) (reflCode-▹.filler Γ A (~ i))
+
+encode : {Γ Δ : Con} → Γ ≡ Δ → Γ ≡ꟲᵒⁿ Δ
+encode {Γ} {Δ} e = transport (λ i → Γ ≡ꟲᵒⁿ e i) (reflCode {Γ})
+
+decodeEncode : {Γ Δ : Con} (e : Γ ≡ Δ) → decode {Γ} {Δ} (encode {Γ} {Δ} e) ≡ e
+decodeEncode {Γ} {Δ} e =
+  J (λ Δ e → decode {Γ} {Δ} (encode {Γ} {Δ} e) ≡ e)
+    (cong (decode {Γ} {Γ}) (transportRefl _) ∙ decodeRefl {Γ})
+    e
+
+isProp≡ꟲᵒⁿ : (Γ Δ : Con) → isProp (Γ ≡ꟲᵒⁿ Δ)
+isProp≡ꟲᵒⁿ ◇ ◇ = isPropUnit
+isProp≡ꟲᵒⁿ (Γ ▹ A) (Δ ▹ B) =
+  isPropΣ (isProp≡ꟲᵒⁿ Γ Δ) λ e → isOfHLevelPathP' 1 (TySet {Γ = Δ}) A B
+
+ConSet : isSet Con
+ConSet Γ Δ = isPropRetract (encode {Γ} {Δ}) (decode {Γ} {Δ}) (decodeEncode {Γ} {Δ}) (isProp≡ꟲᵒⁿ Γ Δ)
+-}
 -- Szumi's heterogeneous equality DSL
 {-
 _≡Ty[_]_ : ∀{Γ Δ} → Ty Γ → Γ ≡ Δ → Ty Δ → Type
