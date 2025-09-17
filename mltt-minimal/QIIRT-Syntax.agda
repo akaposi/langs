@@ -98,33 +98,42 @@ _[_]U∙ D {Δ = Δ} {Γ} {Â} {γ} Â∙ γ∙ {Θ} δ =
 []U∙ D = {!!}
 _[_]Π∙ D {Δ = Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {f} f∙ γ∙ {Θ} δ =
   let (γ∘*δ , e1) = γ∙ δ
-  in subst (λ z → Tm Θ (Π (A [ γ∘*δ ]T) (B [ z ]T))) (fromPathP⁻ (cong _⁺ (sym e1)) ∙ cong (transport⁻ (λ i → Sub (Θ ▹ A [ snd (γ∙ δ) (~ i) ]T) (Γ ▹ A))) (fromPathP⁻ (∘⁺ {Θ = Θ} {Γ = Γ} {A = A} {γ = γ} {δ = δ})) ∙ sym (substComposite (λ z → Sub z (Γ ▹ A)) (congS (Θ ▹_) (sym [∘]T)) (congS (λ x → Θ ▹ A [ x ]T) e1) (γ ⁺ ∘ δ ⁺)) ∙ sym (cong (λ x → subst (λ z → Sub z (Γ ▹ A)) x (γ ⁺ ∘ δ ⁺)) (cong-∙ (Θ ▹_) (sym ([∘]T {A = {!!}} {γ = {!!}} {δ = {!!}})) (congS (A [_]T) e1))) ∙ sym (subst-∘ᵣ {γ = γ ⁺} {δ = δ ⁺} {e = congS (Θ ▹_) (sym ([∘]T {γ = γ} {δ = δ}) ∙ congS (A [_]T) e1)})) (f [ γ∘*δ ]Π)
-   , let e2 = Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ} ∙ (λ i₁ → Π (((λ i₂ → [∘]T {A = A} {γ = γ} {δ = δ} (~ i₂)) ∙ (λ i₂ → A [ e1 i₂ ]T)) i₁)
-              (toPathP {A = λ i → Ty (Θ ▹ (sym ([∘]T {A = A} {γ = γ} {δ = δ}) ∙ congS (A [_]T) e1) i)} {x = B [ γ ⁺ ]T [ δ ⁺ ]T}
-                (subst-[]T {A = B [ γ ⁺ ]T} {γ = δ ⁺} {e = congS (Θ ▹_) (sym ([∘]T {A = A} {γ = γ} {δ = δ}) ∙ congS (A [_]T) e1)}
-                ∙ sym ([∘]T {A = B} {γ = γ ⁺} {δ = subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) (sym ([∘]T {A = A} {γ = γ} {δ = δ}) ∙ (λ i₃ → A [ e1 i₃ ]T)) (δ ⁺)})
-                ∙ refl {x = B [ γ ⁺ ∘ subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) ((sym ([∘]T {A = A} {γ = γ} {δ = δ})) ∙ (λ i₃ → A [ e1 i₃ ]T)) (δ ⁺) ]T}
+      eq0 : A [ γ ]T [ δ ]T ≡ A [ γ∘*δ ]T
+      eq0 = sym ([∘]T {A = A} {γ = γ} {δ = δ}) ∙ congS (A [_]T) e1
+
+      eq1 : Θ ▹ A [ γ ]T [ δ ]T ≡ Θ ▹ A [ γ∘*δ ]T
+      eq1 = congS (Θ ▹_) eq0
+
+      e0 : γ∘*δ ⁺ ≡ γ ⁺ ∘ subst (λ z → Sub z (Δ ▹ A [ γ ]T)) eq1 (δ ⁺)
+      e0 = fromPathP⁻ (cong _⁺ (sym e1)) ∙ cong (transport⁻ (λ i → Sub (Θ ▹ A [ e1 (~ i) ]T) (Γ ▹ A))) (fromPathP⁻ (∘⁺ {Θ = Θ} {Γ = Γ} {A = A} {γ = γ} {δ = δ})) ∙ sym (substComposite (λ z → Sub z (Γ ▹ A)) (congS (Θ ▹_) (sym ([∘]T {A = A} {γ = γ} {δ = δ}))) (congS (λ x → Θ ▹ A [ x ]T) e1) (γ ⁺ ∘ δ ⁺)) ∙ sym (cong (λ x → subst (λ z → Sub z (Γ ▹ A)) x (γ ⁺ ∘ δ ⁺)) (cong-∙ (Θ ▹_) (sym ([∘]T {A = A} {γ = γ} {δ = δ})) (congS (A [_]T) e1))) ∙ sym (subst-∘ᵣ {γ = γ ⁺} {δ = δ ⁺} {e = eq1})
+  in subst (λ z → Tm Θ (Π (A [ γ∘*δ ]T) (B [ z ]T))) e0 (f [ γ∘*δ ]Π)
+   , let symΠ[] : Π (A [ γ ]T [ δ ]T) (B [ γ ⁺ ]T [ δ ⁺ ]T) ≡ Π (A [ γ ]T) (B [ γ ⁺ ]T) [ δ ]T
+         symΠ[] = sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ})
+
+         e2 : Π (A [ γ ]T) (B [ γ ⁺ ]T) [ δ ]T ≡ Π (A [ γ∘*δ ]T) (B [ γ ⁺ ∘ subst (λ z → Sub z (Δ ▹ A [ γ ]T)) eq1 (δ ⁺) ]T)
+         e2 = Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ} ∙ (λ i₁ → Π (((λ i₂ → [∘]T {A = A} {γ = γ} {δ = δ} (~ i₂)) ∙ (λ i₂ → A [ e1 i₂ ]T)) i₁)
+              (toPathP {A = λ i → Ty (Θ ▹ eq0 i)} {x = B [ γ ⁺ ]T [ δ ⁺ ]T}
+                (subst-[]T {A = B [ γ ⁺ ]T} {γ = δ ⁺} {e = eq1}
+                ∙ sym ([∘]T {A = B} {γ = γ ⁺} {δ = subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) eq0 (δ ⁺)})
+                ∙ refl {x = B [ γ ⁺ ∘ subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) eq0 (δ ⁺) ]T}
                 ) i₁))
+
+         e3 : Π (A [ γ ∘ δ ]T) (B [ (γ ∘ δ) ⁺ ]T) ≡ Π (A [ γ ]T [ δ ]T) (B [ γ ⁺ ]T [ δ ⁺ ]T)
          e3 = (λ i → Π ([∘]T {A = A} {γ = γ} {δ = δ} i) (toPathP {A = λ i → Ty (Θ ▹ [∘]T {A = A} {γ = γ} {δ = δ} i)} {x = B [ (γ ∘ δ) ⁺ ]T} (subst-[]T {A = B} {γ = (γ ∘ δ) ⁺} {e = congS (Θ ▹_) ([∘]T {A = A} {γ = γ} {δ = δ})} ∙ congS (B [_]T) (fromPathP (∘⁺ {Θ = Θ} {Γ = Γ} {A = A} {γ = γ} {δ = δ})) ∙ [∘]T {A = B} {γ = γ ⁺} {δ = δ ⁺}) i))
      in toPathP (congS (subst (Tm Θ) e2) (fromPathP⁻ ([]Π {γ = δ} {t = f [ γ ]Π}))
-              ∙ sym (substComposite (Tm Θ) (sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ})) e2 (f [ γ ]Π [ δ ]Π))
-              ∙ congS (subst (Tm Θ) (sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ}) ∙ e2)) (sym (fromPathP ([∘]Π {t = f} {γ} {δ})))
-              ∙ sym (substComposite (Tm Θ) e3 (sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ}) ∙ e2) (f [ γ ∘ δ ]Π))
-              ∙ congS (subst (Tm Θ) (e3 ∙ sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ}) ∙ e2)) (fromPathP⁻ (cong (f [_]Π) e1))
-              ∙ sym (substComposite (Tm Θ) (λ i → (Π (A [ e1 (~ i) ]T) (B [ e1 (~ i) ⁺ ]T))) (e3 ∙ sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ}) ∙ e2) (f [ γ∘*δ ]Π))
-              ∙ congS (λ e → subst (Tm Θ) e (f [ γ∘*δ ]Π)) (TySet (Π (A [ γ∘*δ ]T) (B [ γ∘*δ ⁺ ]T)) (Π (A [ γ∘*δ ]T) (B [ γ ⁺ ∘ subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) ((sym ([∘]T {A = A} {γ = γ} {δ = δ})) ∙ (λ i₃ → A [ e1 i₃ ]T)) (δ ⁺) ]T)) ((λ i → (Π (A [ e1 (~ i) ]T) (B [ e1 (~ i) ⁺ ]T))) ∙ e3 ∙ sym (Π[] {A = A [ γ ]T} {B = B [ γ ⁺ ]T} {γ = δ}) ∙ e2) (congS (λ x → Π (A [ γ∘*δ ]T) (B [ x ]T)) (fromPathP⁻ (λ i → e1 (~ i) ⁺)
-                                                        ∙ (λ i → transport⁻ (λ i₁ → Sub (Θ ▹ A [ e1 (~ i₁) ]T) (Γ ▹ A)) (fromPathP⁻ (∘⁺ {Θ = Θ} {Γ = Γ} {A = A} {γ = γ} {δ = δ}) i))
-                                                        ∙ (λ i → substComposite (λ z → Sub z (Γ ▹ A)) (λ i₁ → Θ ▹ [∘]T {A = A} {γ = γ} {δ = δ} (~ i₁)) (λ i₁ → Θ ▹ A [ e1 i₁ ]T) (γ ⁺ ∘ δ ⁺) (~ i))
-                                                        ∙ (λ i → subst (λ z → Sub z (Γ ▹ A)) (cong-∙ (Θ ▹_) (λ i₁ → [∘]T {A = A} {γ = γ} {δ = δ} (~ i₁)) (λ i₁ → A [ e1 i₁ ]T) (~ i)) (γ ⁺ ∘ δ ⁺))
-                                                        ∙ (λ i → subst-∘ᵣ {γ = γ ⁺} {δ = {!!}} {e = {!!}} (~ i))
-                                                        ))))
-[]Π∙ D = {!refl!}
+              ∙ sym (substComposite (Tm Θ) symΠ[] e2 (f [ γ ]Π [ δ ]Π))
+              ∙ congS (subst (Tm Θ) (symΠ[] ∙ e2)) (sym (fromPathP ([∘]Π {t = f} {γ} {δ})))
+              ∙ sym (substComposite (Tm Θ) e3 (symΠ[] ∙ e2) (f [ γ ∘ δ ]Π))
+              ∙ congS (subst (Tm Θ) (e3 ∙ symΠ[] ∙ e2)) (fromPathP⁻ (cong (f [_]Π) e1))
+              ∙ sym (substComposite (Tm Θ) (λ i → (Π (A [ e1 (~ i) ]T) (B [ e1 (~ i) ⁺ ]T))) (e3 ∙ symΠ[] ∙ e2) (f [ γ∘*δ ]Π))
+              ∙ congS (λ e → subst (Tm Θ) e (f [ γ∘*δ ]Π)) (TySet (Π (A [ γ∘*δ ]T) (B [ γ∘*δ ⁺ ]T)) (Π (A [ γ∘*δ ]T) (B [ γ ⁺ ∘ subst (λ z → Sub (Θ ▹ z) (Δ ▹ A [ γ ]T)) eq0 (δ ⁺) ]T)) ((λ i → (Π (A [ e1 (~ i) ]T) (B [ e1 (~ i) ⁺ ]T))) ∙ e3 ∙ symΠ[] ∙ e2) (congS (λ x → Π (A [ γ∘*δ ]T) (B [ x ]T)) e0)))
+[]Π∙ D = {!!}
 lam∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} t∙ {Δ} γ =
   let
     (A[γ]T , e1) = A∙ γ
     (B[γ⁺]T , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
     (t[γ⁺]t , e3) = t∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
-  in lam t[γ⁺]t , toPathP {!!}
+  in lam t[γ⁺]t , toPathP ({!subst-lam-out {}!} ∙ congS lam (fromPathP e3))
 app∙ D = {!!}
 Πβ∙ D = {!!}
 Πη∙ D = {!!}

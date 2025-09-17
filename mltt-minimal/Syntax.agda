@@ -118,14 +118,19 @@ data EL where
   lam[] : PathP (λ i → Tm Γ (Π[] {B = B}{γ = γ} i)) (lam b [ γ ]t) (lam (b [ γ ⁺ ]t))
   app[] : {t : Tm Γ (Π A B)} → PathP (λ i → Tm Δ ([⟨⟩][]T {A = B}{a = a}{γ = γ} i)) (app t a [ γ ]t) (app (t [ γ ]Π) (a [ γ ]t))
 
+substd₂ : ∀{i j k}{A : Set i}{B : A → Set j}(P : (a : A) → B a → Set k){x x' : A}{y : B x}{y' : B x'}(e : x ≡ x') → PathP (λ i → B (e i)) y y' → P x y → P x' y'
+substd₂ P e1 e2 pxy = transport (λ i → P (e1 i) (e2 i)) pxy
+-- _◁_▷_
+--
+
 subst-∘ᵣ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Θ' : Con}{δ : Sub Θ Δ}{e : Θ ≡ Θ'} → γ ∘ subst (λ z → Sub z Δ) e δ ≡ subst (λ z → Sub z Γ) e (γ ∘ δ)
-subst-∘ᵣ {Γ} {Δ} {γ} {Θ} {Θ'} {δ} {e} = J {x = Θ} (λ a eq → γ ∘ subst (λ z → Sub z Δ) eq δ ≡ subst (λ z → Sub z Γ) eq (γ ∘ δ)) (cong (γ ∘_) (substRefl {B = λ z → Sub z Δ} δ) ∙ sym (substRefl {B = λ z → Sub z Γ} (γ ∘ δ))) e
+subst-∘ᵣ {Γ} {Δ} {γ} {Θ} {Θ'} {δ} {e} = J {x = Θ} (λ _ eq → γ ∘ subst (λ z → Sub z Δ) eq δ ≡ subst (λ z → Sub z Γ) eq (γ ∘ δ)) (cong (γ ∘_) (substRefl {B = λ z → Sub z Δ} δ) ∙ sym (substRefl {B = λ z → Sub z Γ} (γ ∘ δ))) e
 
 subst-∘ₘ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Δ' : Con}{δ : Sub Θ Δ'}{e : Δ ≡ Δ'} → γ ∘ subst (λ z → Sub Θ z) (sym e) δ ≡ subst (λ z → Sub z Γ) e γ ∘ δ
-subst-∘ₘ {Γ} {Δ} {γ} {Θ} {Δ'} {δ} {e} = J (λ a eq → ∀ δ → γ ∘ subst (λ z → Sub Θ z) (sym eq) δ ≡ subst (λ z → Sub z Γ) eq γ ∘ δ) (λ δ' → congS (γ ∘_) (transportRefl δ') ∙ congS (_∘ δ') (sym (transportRefl γ))) e δ
+subst-∘ₘ {Γ} {Δ} {γ} {Θ} {Δ'} {δ} {e} = J (λ _ eq → ∀ δ → γ ∘ subst (λ z → Sub Θ z) (sym eq) δ ≡ subst (λ z → Sub z Γ) eq γ ∘ δ) (λ δ' → congS (γ ∘_) (transportRefl δ') ∙ congS (_∘ δ') (sym (transportRefl γ))) e δ
 
 subst-∘ₗ : {Γ Δ : Con}{γ : Sub Δ Γ}{Θ Γ' : Con}{δ : Sub Θ Δ}{e : Γ ≡ Γ'} → subst (λ z → Sub Δ z) e γ ∘ δ ≡ subst (λ z → Sub Θ z) e (γ ∘ δ)
-subst-∘ₗ {Γ} {Δ} {γ} {Θ} {Γ'} {δ} {e} = J (λ a eq → subst (λ z → Sub Δ z) eq γ ∘ δ ≡ subst (λ z → Sub Θ z) eq (γ ∘ δ)) (congS (_∘ δ) (substRefl {B = λ z → Sub z Γ} γ) ∙ sym (substRefl {B = λ z → Sub Θ z} (γ ∘ δ))) e
+subst-∘ₗ {Γ} {Δ} {γ} {Θ} {Γ'} {δ} {e} = J (λ _ eq → subst (λ z → Sub Δ z) eq γ ∘ δ ≡ subst (λ z → Sub Θ z) eq (γ ∘ δ)) (congS (_∘ δ) (substRefl {B = λ z → Sub z Γ} γ) ∙ sym (substRefl {B = λ z → Sub Θ z} (γ ∘ δ))) e
 
 subst-p : {Γ : Con}{A B : Ty Γ}{e : A ≡ B} → subst (λ z → Sub (Γ ▹ z) Γ) e p ≡ p
 subst-p {Γ} {A} {B} {e} = J (λ _ eq → subst (λ z → Sub (Γ ▹ z) Γ) eq p ≡ p) (transportRefl p) e
@@ -139,11 +144,24 @@ subst-⟨⟩ {Δ = Δ} {A = A} {B = B} {t} {e} = J (λ _ eq → subst (λ z → 
 subst-[]T : ∀{Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → subst Ty e (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) e γ ]T
 subst-[]T {Γ} {Δ} {A} {γ} {Δ'} {e} = J (λ _ eq → subst Ty eq (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) eq γ ]T) (transportRefl (A [ γ ]T) ∙ congS (A [_]T) (sym (transportRefl γ))) e
 
--- subst-lam : ∀{Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ} →
+-- (transport (λ i → Tm (e i) (transport (λ j → Ty (e (i ∧ j))) (A [ γ ]T))) {!t [ γ ]t!})
+-- PathP (λ i → Tm (e i) (toPathP {A = λ i → Ty (e i)} {x = A [ γ ]T} (subst-[]T {A = A} {γ} {e = e}) i)) (t [ γ ]t) (t [ subst (λ z → Sub z Γ) e γ ]t)
+-- (substd₂ Tm e (subst-filler Ty e (A [ γ ]T)) (t [ γ ]t))
+subst-Sub-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e} i)) (transport (λ i → Tm (e i) (subst-filler Ty e (A [ γ ]T) i)) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e γ ]t)
+subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = J (λ Δ' e1 → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e1} i)) (transport (λ i → Tm (e1 i) (subst-filler Ty e1 (A [ γ ]T) i)) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e1 γ ]t)) (toPathP (sym (substComposite (Tm Δ) (subst-filler Ty (refl {x = Δ}) (A [ γ ]T)) (subst-[]T {A = A} {γ} {e = refl}) (t [ γ ]t)) ∙ cong (λ x → subst (Tm Δ) x (t [ γ ]t)) (TySet (A [ γ ]T) (A [ subst (λ z → Sub z Γ) (λ i → Δ) γ ]T) (subst-filler Ty (λ _ → Δ) (A [ γ ]T) ∙ subst-[]T {A = A} {γ}) (congS (A [_]T) (sym (transportRefl γ))) ) ∙ fromPathP (cong (t [_]t) (sym (transportRefl γ))))) e
+
 {-
 subst-Sub-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e} i)) (transport (λ i → Tm (e i) (transp (λ j → Ty (e (i ∧ j))) (~ i) (A [ γ ]T))) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e γ ]t)
 subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = {!!}
 -}
+
+{-
+subst-lam-in : ∀{Γ}{A B : Ty Γ}{C : Ty (Γ ▹ A)}{t : Tm (Γ ▹ A) C}{e : A ≡ B} → lam (transport (λ i → Tm (Γ ▹ e i) C) t) ≡ ?
+subst-lam-in = ?
+-}
+
+subst-lam-out : ∀{Γ}{A : Ty Γ}{B C : Ty (Γ ▹ A)}{t : Tm (Γ ▹ A) B}{e : B ≡ C} → subst (Tm Γ) (congS (Π A) e) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) e t)
+subst-lam-out {Γ} {A} {B} {C} {t} {e} = J (λ _ eq → subst (Tm Γ) (congS (Π A) eq) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) eq t)) (transportRefl (lam t) ∙ congS lam (sym (transportRefl t))) e
 
 subst-Ty-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{B}{e : A ≡ B} → subst (λ z → Tm Δ (z [ γ ]T)) e (t [ γ ]t) ≡ subst (Tm Γ) e t [ γ ]t
 subst-Ty-[]t {Γ} {Δ} {A} {t} {γ} {B} {e} = J (λ _ eq → subst (λ z → Tm Δ (z [ γ ]T)) eq (t [ γ ]t) ≡ subst (Tm Γ) eq t [ γ ]t) (transportRefl (t [ γ ]t) ∙ sym (congS (_[ γ ]t) (transportRefl t))) e
