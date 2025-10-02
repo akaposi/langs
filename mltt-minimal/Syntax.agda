@@ -239,7 +239,7 @@ ConSet : isSet Con
 ConSet Γ Δ = isPropRetract (encode {Γ} {Δ}) (decode {Γ} {Δ}) (decodeEncode {Γ} {Δ}) (isProp≡ꟲᵒⁿ Γ Δ)
 -}
 -- Szumi's heterogeneous equality DSL
-{-
+
 _≡Ty[_]_ : ∀{Γ Δ} → Ty Γ → Γ ≡ Δ → Ty Δ → Type
 A ≡Ty[ e ] B = PathP (λ i → Ty (e i)) A B
--}
+
