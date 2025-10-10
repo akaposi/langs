@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --guardedness #-}
 
 module mltt-minimal.Syntax where
 
@@ -144,24 +144,11 @@ subst-⟨⟩ {Δ = Δ} {A = A} {B = B} {t} {e} = J (λ _ eq → subst (λ z → 
 subst-[]T : ∀{Γ Δ}{A : Ty Γ}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → subst Ty e (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) e γ ]T
 subst-[]T {Γ} {Δ} {A} {γ} {Δ'} {e} = J (λ _ eq → subst Ty eq (A [ γ ]T) ≡ A [ subst (λ z → Sub z Γ) eq γ ]T) (transportRefl (A [ γ ]T) ∙ congS (A [_]T) (sym (transportRefl γ))) e
 
--- (transport (λ i → Tm (e i) (transport (λ j → Ty (e (i ∧ j))) (A [ γ ]T))) {!t [ γ ]t!})
--- PathP (λ i → Tm (e i) (toPathP {A = λ i → Ty (e i)} {x = A [ γ ]T} (subst-[]T {A = A} {γ} {e = e}) i)) (t [ γ ]t) (t [ subst (λ z → Sub z Γ) e γ ]t)
--- (substd₂ Tm e (subst-filler Ty e (A [ γ ]T)) (t [ γ ]t))
 subst-Sub-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e} i)) (transport (λ i → Tm (e i) (subst-filler Ty e (A [ γ ]T) i)) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e γ ]t)
 subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = J (λ Δ' e1 → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e1} i)) (transport (λ i → Tm (e1 i) (subst-filler Ty e1 (A [ γ ]T) i)) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e1 γ ]t)) (toPathP (sym (substComposite (Tm Δ) (subst-filler Ty (refl {x = Δ}) (A [ γ ]T)) (subst-[]T {A = A} {γ} {e = refl}) (t [ γ ]t)) ∙ cong (λ x → subst (Tm Δ) x (t [ γ ]t)) (TySet (A [ γ ]T) (A [ subst (λ z → Sub z Γ) (λ i → Δ) γ ]T) (subst-filler Ty (λ _ → Δ) (A [ γ ]T) ∙ subst-[]T {A = A} {γ}) (congS (A [_]T) (sym (transportRefl γ))) ) ∙ fromPathP (cong (t [_]t) (sym (transportRefl γ))))) e
 
-{-
-subst-Sub-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{Δ'}{e : Δ ≡ Δ'} → PathP (λ i → Tm Δ' (subst-[]T {A = A} {γ} {e = e} i)) (transport (λ i → Tm (e i) (transp (λ j → Ty (e (i ∧ j))) (~ i) (A [ γ ]T))) (t [ γ ]t)) (t [ subst (λ z → Sub z Γ) e γ ]t)
-subst-Sub-[]t {Γ} {Δ} {A} {t} {γ} {Δ'} {e} = {!!}
--}
-
-{-
-subst-lam-in : ∀{Γ}{A B : Ty Γ}{C : Ty (Γ ▹ A)}{t : Tm (Γ ▹ A) C}{e : A ≡ B} → lam (transport (λ i → Tm (Γ ▹ e i) C) t) ≡ ?
-subst-lam-in = ?
--}
-
-subst-lam-out : ∀{Γ}{A : Ty Γ}{B C : Ty (Γ ▹ A)}{t : Tm (Γ ▹ A) B}{e : B ≡ C} → subst (Tm Γ) (congS (Π A) e) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) e t)
-subst-lam-out {Γ} {A} {B} {C} {t} {e} = J (λ _ eq → subst (Tm Γ) (congS (Π A) eq) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) eq t)) (transportRefl (lam t) ∙ congS lam (sym (transportRefl t))) e
+subst-lam : ∀{Γ}{A : Ty Γ}{B C : Ty (Γ ▹ A)}{t : Tm (Γ ▹ A) B}{e : B ≡ C} → subst (Tm Γ) (congS (Π A) e) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) e t)
+subst-lam {Γ} {A} {B} {C} {t} {e} = J (λ _ eq → subst (Tm Γ) (congS (Π A) eq) (lam t) ≡ lam (subst (Tm (Γ ▹ A)) eq t)) (transportRefl (lam t) ∙ congS lam (sym (transportRefl t))) e
 
 subst-Ty-[]t : ∀{Γ Δ}{A : Ty Γ}{t : Tm Γ A}{γ : Sub Δ Γ}{B}{e : A ≡ B} → subst (λ z → Tm Δ (z [ γ ]T)) e (t [ γ ]t) ≡ subst (Tm Γ) e t [ γ ]t
 subst-Ty-[]t {Γ} {Δ} {A} {t} {γ} {B} {e} = J (λ _ eq → subst (λ z → Tm Δ (z [ γ ]T)) eq (t [ γ ]t) ≡ subst (Tm Γ) eq t [ γ ]t) (transportRefl (t [ γ ]t) ∙ sym (congS (_[ γ ]t) (transportRefl t))) e

@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --no-postfix-projection #-}
+{-# OPTIONS --cubical --no-postfix-projections --guardedness #-}
 
 module mltt-minimal.QIIRT-Syntax where
 
@@ -133,7 +133,7 @@ lam∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} t∙ {Δ} γ =
     (A[γ]T , e1) = A∙ γ
     (B[γ⁺]T , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
     (t[γ⁺]t , e3) = t∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
-  in lam t[γ⁺]t , toPathP ({!subst-lam-out {}!} ∙ congS lam (fromPathP e3))
+  in lam t[γ⁺]t , toPathP ({!!} ∙ subst-lam {Δ} {A[γ]T} {t = t [ subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺) ]t} {e2} ∙ congS lam (fromPathP e3))
 app∙ D = {!!}
 Πβ∙ D = {!!}
 Πη∙ D = {!!}
