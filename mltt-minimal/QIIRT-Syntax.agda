@@ -133,7 +133,16 @@ lam∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} t∙ {Δ} γ =
     (A[γ]T , e1) = A∙ γ
     (B[γ⁺]T , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
     (t[γ⁺]t , e3) = t∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
-  in lam t[γ⁺]t , toPathP ({!!} ∙ subst-lam {Δ} {A[γ]T} {t = t [ subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺) ]t} {e2} ∙ congS lam (fromPathP e3))
+  in lam t[γ⁺]t
+   , toPathP (
+     congS (subst (Tm Δ) (Π[] ∙ (λ i₁ → Π (snd (A∙ γ) i₁) (toPathP {A = λ i → Ty (Δ ▹ e1 i)} {x = B [ γ ⁺ ]T} (subst-[]T {Γ = Γ ▹ A} {Δ = Δ ▹ A [ γ ]T} {A = B} {γ = γ ⁺} {e = congS (Δ ▹_) e1} ∙ e2) i₁)))) (fromPathP⁻ (lam[] {b = t}))
+   ∙ sym (substComposite (Tm Δ) (sym Π[]) (Π[] ∙ (λ i₁ → Π (snd (A∙ γ) i₁) (toPathP {A = λ i → Ty (Δ ▹ e1 i)} {x = B [ γ ⁺ ]T} (subst-[]T {Γ = Γ ▹ A} {Δ = Δ ▹ A [ γ ]T} {A = B} {γ = γ ⁺} {e = congS (Δ ▹_) e1} ∙ e2) i₁))) (lam (t [ γ ⁺ ]t)))
+   ∙ {!!}
+   ∙ congS (subst (Tm Δ) (congS (Π A[γ]T) e2)) (subst-lam {Γ = Δ} {A = A[γ]T} {t = transport (λ i → Tm (Δ ▹ snd (A∙ γ) i) (subst-filler Ty (λ i₁ → Δ ▹ snd (A∙ γ) i₁) (B [ γ ⁺ ]T) i)) (t [ γ ⁺ ]t)} {e = subst-[]T {Γ = Γ ▹ A} {Δ = Δ ▹ A [ γ ]T} {A = B} {γ = γ ⁺} {e = congS (Δ ▹_) e1}})
+   ∙ congS (λ x → subst (Tm Δ) (congS (Π A[γ]T) e2) (lam x)) (fromPathP (subst-Sub-[]t {Γ = Γ ▹ A} {A = B} {t = t} {γ = γ ⁺} {e = congS (Δ ▹_) e1}))
+   ∙ subst-lam {Δ} {A[γ]T} {t = t [ subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺) ]t} {e2}
+   ∙ congS lam (fromPathP e3)
+   )
 app∙ D = {!!}
 Πβ∙ D = {!!}
 Πη∙ D = {!!}
