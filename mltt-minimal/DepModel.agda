@@ -72,7 +72,6 @@ record DepModel {ℓ₁ ℓ₂ ℓ₃ ℓ₄} : Type (lsuc (ℓ₁ ⊔ ℓ₂ �
     q[⟨⟩]∙ : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a∙ : Tm∙ Γ∙ A∙ a} → PathP (λ i → Tm∙ Γ∙ ([p][⟨⟩]T∙ {A∙ = A∙}{b∙ = a∙} i) (q[⟨⟩] i)) (q∙ [ ⟨ a∙ ⟩∙ ]t∙) a∙
     [∘]t∙  : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{Θ∙ : Con∙ Θ}{A∙ : Ty∙ Γ∙ A}{γ∙ : Sub∙ Δ∙ Γ∙ γ}{δ∙ : Sub∙ Θ∙ Δ∙ δ}{a∙ : Tm∙ Γ∙ A∙ a} → PathP (λ i → Tm∙ Θ∙ ([∘]T∙ {A∙ = A∙}{γ∙ = γ∙}{δ∙ = δ∙} i) ([∘]t {a = a} i)) (a∙ [ γ∙ ∘∙ δ∙ ]t∙) (a∙ [ γ∙ ]t∙ [ δ∙ ]t∙)
     [id]t∙ : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a∙ : Tm∙ Γ∙ A∙ a} → PathP (λ i → Tm∙ Γ∙ ([id]T∙ {A∙ = A∙} i) ([id]t {a = a} i)) (a∙ [ id∙ ]t∙) a∙
-
     _[_]U∙ : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}(u∙ : Tm∙ Γ∙ U∙ u)(γ∙ : Sub∙ Δ∙ Γ∙ γ) → Tm∙ Δ∙ U∙ (u [ γ ]U)
     []U∙   : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}{Â∙ : Tm∙ Γ∙ U∙ Â} → PathP (λ i → Tm∙ Δ∙ (U[]∙ {γ∙ = γ∙} i) ([]U {Â = Â} i)) (Â∙ [ γ∙ ]t∙) (Â∙ [ γ∙ ]U∙)
 
@@ -93,7 +92,6 @@ record DepModel {ℓ₁ ℓ₂ ℓ₃ ℓ₄} : Type (lsuc (ℓ₁ ⊔ ℓ₂ �
 
     -- Tm again
     q[⁺]∙  : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → PathP (λ i → Tm∙ (Δ∙ ▹∙ A∙ [ γ∙ ]T∙) ([p][⁺]T∙ {A∙ = A∙} i) (q[⁺] i)) (q∙ [ γ∙ ⁺∙ ]t∙) q∙
-
     _[_]Π∙ : {Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{f : Tm Γ (Π A B)}(f∙ : Tm∙ Γ∙ (Π∙ A∙ B∙) f)(γ∙ : Sub∙ Δ∙ Γ∙ γ) → Tm∙ Δ∙ (Π∙ (A∙ [ γ∙ ]T∙) (B∙ [ γ∙ ⁺∙ ]T∙)) (f [ γ ]Π)
     []Π∙   : {Γ∙ : Con∙ Γ}{Δ∙ : Con∙ Δ}{A∙ : Ty∙ Γ∙ A}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{γ∙ : Sub∙ Δ∙ Γ∙ γ}{t∙ : Tm∙ Γ∙ (Π∙ A∙ B∙) t} → PathP (λ i → Tm∙ Δ∙ (Π[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} i) ([]Π {A = A} {B = B} {γ = γ} {t = t} i)) (t∙ [ γ∙ ]t∙) (t∙ [ γ∙ ]Π∙)
     lam∙   : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}(t∙ : Tm∙ (Γ∙ ▹∙ A∙) B∙ t) → Tm∙ Γ∙ (Π∙ A∙ B∙) (lam t)
