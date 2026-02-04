@@ -49,7 +49,7 @@ ass∙ D {γ = γ} {δ} {θ} {γ∙ = γ∙} {δ∙} {θ∙} = implicitFunExt λ
     (γ∘[δ∘[θ∘ξ]] , ≡γ∘[δ∘[θ∘ξ]]) = γ∙ δ∘[θ∘ξ]
   in ΣPathP (refl , toPathP (SubSet (γ ∘ (δ ∘ θ) ∘ ξ) γ∘[δ∘[θ∘ξ]] (transport (λ i → ass {γ = γ} {δ = δ} {θ = θ} i ∘ ξ ≡ γ∘[δ∘[θ∘ξ]]) (ass ∙ congS (γ ∘ δ ∘_) ≡θ∘ξ ∙ ass ∙ congS (γ ∘_) ≡δ∘[θ∘ξ] ∙ ≡γ∘[δ∘[θ∘ξ]])) (ass ∙ congS (γ ∘_) (ass ∙ congS (δ ∘_) ≡θ∘ξ ∙ ≡δ∘[θ∘ξ]) ∙ ≡γ∘[δ∘[θ∘ξ]])))
 id∙ D γ = γ , idl
-idl∙ D {γ = γ} {γ∙ = γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+idl∙ D {Γ = Γ} {γ = γ} {γ∙ = γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
   let
     (γ∘δ , ≡γ∘δ) = γ∙ δ
   in ΣPathP (refl , toPathP (SubSet (γ ∘ δ) γ∘δ (transport (λ i → idl {γ = γ} i ∘ δ ≡ γ∘δ) (ass ∙ congS (id ∘_) ≡γ∘δ ∙ idl)) ≡γ∘δ))
@@ -87,11 +87,58 @@ _[_]T∙ D {Δ} {Γ} {A} {γ} A∙ γ∙ {Θ} δ = let (γ∘δ , e) = γ∙ δ 
   let
     (δ∘θ , ≡δ∘θ) = δ∙ θ
     (γ∘[δ∘θ] , ≡γ∘[δ∘θ]) = γ∙ δ∘θ
-  in ΣPathP (congS (A [_]T) (sym ≡γ∘[δ∘θ]) ∙ [∘]T , toPathP {!!})
-[id]T∙ D {Γ} {A} {A∙ = A∙} = {!!}
-[p][⟨⟩]T∙ D {Γ} {A} {B} {b} {A∙ = A∙} {B∙} {b∙} = {!!}
+  in ΣPathP (congS (A [_]T) (sym ≡γ∘[δ∘θ]) ∙ [∘]T , toPathP (TySet (A [ γ ]T [ δ ]T [ θ ]T) (A [ γ ]T [ δ∘θ ]T) (transport (λ i → ([∘]T {A = A} {γ = γ} {δ = δ}) i [ θ ]T ≡ ((λ i₁ → A [ ≡γ∘[δ∘θ] (~ i₁) ]T) ∙ [∘]T) i) ((λ i → [∘]T {A = A} {γ = γ ∘ δ} {δ = θ} (~ i)) ∙ (λ i → A [ (ass ∙ (λ i₁ → γ ∘ ≡δ∘θ i₁) ∙ ≡γ∘[δ∘θ]) i ]T))) ((λ i → [∘]T {A = A [ γ ]T} {γ = δ} {δ = θ} (~ i)) ∙ (λ i → A [ γ ]T [ ≡δ∘θ i ]T))))
+[id]T∙ D {Γ} {A} {A∙ = A∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  let
+    (A[γ]T , eA) = A∙ γ
+  in ΣPathP (eA , toPathP (TySet (A [ γ ]T) A[γ]T (transport (λ i → ([id]T {A = A}) i [ γ ]T ≡ eA i) (sym ([∘]T {A = A} {γ = id} {δ = γ}) ∙ congS (A [_]T) idl)) eA ))
+[p][⟨⟩]T∙ D {Γ} {A} {B} {b} {A∙ = A∙} {B∙} {b∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  let
+    (A[γ]T , eA) = A∙ γ
+    (B[γ]T , eB) = B∙ γ
+    (b[γ]t , eb) = b∙ γ
+    γ⁺ = subst (λ z → Sub (Δ ▹ z) (Γ ▹ B)) eB (γ ⁺)
+    pr : p ∘ (γ⁺ ∘ ⟨ b[γ]t ⟩) ≡ γ
+    pr = sym ass
+       ∙ congS (_∘ ⟨ b[γ]t ⟩) (subst-∘ᵣ {Γ} {δ = γ ⁺} {e = congS (Δ ▹_) eB})
+       ∙ congS (λ x → subst (λ z → Sub z Γ) (congS (Δ ▹_) eB) x ∘ ⟨ b[γ]t ⟩) p∘⁺
+       ∙ congS (_∘ ⟨ b[γ]t ⟩) (sym (subst-∘ᵣ {γ = γ} {δ = p} {e = congS (Δ ▹_) eB}))
+       ∙ congS (λ x → γ ∘ x ∘ ⟨ b[γ]t ⟩) (subst-p {e = eB})
+       ∙ ass
+       ∙ congS (γ ∘_) p∘⟨⟩
+       ∙ idr
+  in ΣPathP (sym ([∘]T {A = A} {γ = p} {δ = γ⁺ ∘ ⟨ b[γ]t ⟩})
+           ∙ congS (A [_]T) pr
+           ∙ eA , toPathP (TySet (A [ γ ]T) A[γ]T (transport
+      (λ i →
+         [p][⟨⟩]T {B = B} {A = A} {b = b} i [ γ ]T ≡
+         (sym ([∘]T) ∙ (λ i₁ →
+             A [
+             ((λ i₂ → ass {γ = p} {δ = γ⁺} {θ = ⟨ b[γ]t ⟩} (~ i₂)) ∙
+              (λ i₂ → subst-∘ᵣ {γ = p} {δ = γ ⁺} {e = congS (Δ ▹_) eB} i₂ ∘ ⟨ b[γ]t ⟩) ∙
+              (λ i₂ → subst (λ z → Sub z Γ) (λ i₃ → Δ ▹ eB i₃) (p∘⁺ i₂) ∘ ⟨ b[γ]t ⟩) ∙
+              (λ i₂ → subst-∘ᵣ {γ = γ} {δ = p} {e = congS (Δ ▹_) eB} (~ i₂) ∘ ⟨ b[γ]t ⟩) ∙
+              (λ i₂ → γ ∘ subst-p {e = eB} i₂ ∘ ⟨ b[γ]t ⟩) ∙
+              ass ∙ (λ i₂ → γ ∘ p∘⟨⟩ {a = b[γ]t} i₂) ∙ idr)
+             i₁
+             ]T)
+          ∙ eA)
+         i)
+      ((λ i → [∘]T {A = A [ p ]T} {γ = ⟨ b ⟩} {δ = γ} (~ i)) ∙
+       (λ i →
+          A [ p ]T [
+          (⟨⟩∘ ∙
+           (λ i₁ →
+              γ ⁺ ∘
+              ((λ i₂ → ⟨ fromPathP⁻ eb i₂ ⟩) ∙ (λ i₂ → subst-⟨⟩ {t = b[γ]t} {e = sym eB} (~ i₂))) i₁)
+           ∙ subst-∘ₘ {δ = ⟨ b[γ]t ⟩} {e = congS (Δ ▹_) eB})
+          i
+          ]T))) eA))
 U∙ D _ = U , U[]
-U[]∙ D {Δ} {Γ} {γ} {γ∙ = γ∙} = {!!}
+U[]∙ D {Δ} {Γ} {γ} {γ∙ = γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  let
+    (γ∘δ , ≡γ∘δ) = γ∙ δ
+  in ΣPathP (U[] , toPathP (TySet (U [ δ ]T) U (transport (λ i → U[] i [ δ ]T ≡ U[] i) (sym ([∘]T {A = U} {γ = γ} {δ = δ}) ∙ (λ i → U [ ≡γ∘δ i ]T))) U[]))
 El∙ D {Γ = Γ} {Â} Âₛ {Δ} γ = let (Â[γ]t* , e) = Âₛ γ in El Â[γ]t* , El[] ∙ congS El (sym (fromPathP []U) ∙ fromPathP e)
 Π∙ D {Γ = Γ} {A} {B} A∙ B∙ {Δ} γ = let (A[γ]T* , e1) = A∙ γ
                                        (B[γ⁺]T* , e2) = B∙ (subst (λ z → Sub (Δ ▹ z) (Γ ▹ A)) e1 (γ ⁺))
@@ -101,30 +148,51 @@ _[_]t∙ D {A = A} {a = a} {γ = γ} {A∙ = A∙} a∙ γ∙ {Θ} δ =
     (γ∘*δ , e3) = γ∙ δ
   in a [ γ∘*δ ]t , toPathP (substComposite (Tm Θ) (sym ([∘]T {A = A} {γ = γ})) (λ i → A [ e3 i ]T) (a [ γ ]t [ δ ]t) ∙ cong (transport (λ i → Tm Θ (A [ e3 i ]T))) (sym (fromPathP⁻ ([∘]t {a = a}))) ∙ fromPathP (cong (a [_]t) e3))
 q∙ D {Γ = Γ} {A} {A∙ = A∙} {Δ} γ = subst (Tm Δ) (sym ([∘]T {A = A} {γ = p})) (q [ γ ]t) , toPathP (subst (λ x → subst (Tm Δ) x (q [ γ ]t) ≡ subst (Tm Δ) (λ i → [∘]T {A = A} {γ = p} {δ = γ} (~ i)) (q [ γ ]t)) (rUnit (sym ([∘]T {A = A} {γ = p} {δ = γ}))) refl)
-q[⟨⟩]∙ D {Γ} {A} {a} {A∙ = A∙} {a∙} = {!!}
-[∘]t∙ D {Δ} {Γ} {Θ} {A} {γ} {δ} {a} {A∙ = A∙} {γ∙} {δ∙} {a∙} = {!!}
-[id]t∙ D {Γ} {A} {a} {A∙ = A∙} {a∙} = {!!}
+q[⟨⟩]∙ D {Γ} {A} {a} {A∙ = A∙} {a∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  ΣPathP ({!!} , {!!})
+[∘]t∙ D {Δ} {Γ} {Θ} {A} {γ} {δ} {a} {A∙ = A∙} {γ∙} {δ∙} {a∙} = implicitFunExt λ {Ξ} → funExt λ θ →
+  ΣPathP ({!!} , {!!})
+[id]t∙ D {Γ} {A} {a} {A∙ = A∙} {a∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  ΣPathP ({!!} , {!!})
 _[_]U∙ D {Δ = Δ} {Γ} {Â} {γ} Â∙ γ∙ {Θ} δ =
   let (γ∘*δ , e) = γ∙ δ
   in Â [ γ∘*δ ]U , toPathP (fromPathP ([]U {γ = δ} {Â = Â [ γ ]U}) ∙ sym ([∘]U {Â = Â} {γ} {δ}) ∙ congS (Â [_]U) e)
-[]U∙ D {Δ} {Γ} {γ} {Â} {γ∙ = γ∙} {Â∙} = {!!}
+[]U∙ D {Δ} {Γ} {γ} {Â} {γ∙ = γ∙} {Â∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ([]U , {!!})
 _⁺∙ D {γ = γ} γ∙ δ = γ ⁺ ∘ δ , refl
-∘⁺∙ D {Δ} {Γ} {Θ} {γ} {δ} {A} {γ∙ = γ∙} {δ∙} {A∙} = {!!}
-id⁺∙ D {Γ} {A} {A∙ = A∙} = {!!}
-p∘⁺∙ D {Δ} {Γ} {γ} {A} {γ∙ = γ∙} {A∙} = {!!}
-⟨⟩∘∙ D {Δ} {Γ} {A} {a} {γ} {A∙ = A∙} {a∙} {γ∙} = {!!}
-p⁺∘⟨q⟩∙ D {Γ} {A} {A∙ = A∙} = {!!}
-[p][⁺]T∙ D {Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {γ∙} = {!!}
-[p⁺][⟨q⟩]T∙ D {Γ} {B} {A} {B∙ = B∙} {A∙} = {!!}
-[⟨⟩][]T∙ D {Δ} {Γ} {B} {A} {a} {γ} {B∙ = B∙} {A∙} {a∙} {γ∙} = {!!}
-El[]∙ D {Δ} {Γ} {Â} {γ} {Â∙ = Â∙} {γ∙} = {!!}
-Π[]∙ D {Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {γ∙} = {!!}
-q[⁺]∙ D {Δ} {Γ} {A} {γ} {A∙ = A∙} {γ∙} = {!!}
+∘⁺∙ D {Δ} {Γ} {Θ} {γ} {δ} {A} {γ∙ = γ∙} {δ∙} {A∙} = implicitFunExt λ {Ξ} → funExtDep λ {θ₀} {θ₁} θ₀₁ →
+
+  ΣPathP ({!!} , {!!})
+id⁺∙ D {Γ} {A} {A∙ = A∙} = implicitFunExt λ {Δ} → funExtDep λ {γ₀} {γ₁} γ₀₁ →
+  ΣPathP ({!!} , {!!})
+p∘⁺∙ D {Δ} {Γ} {γ} {A} {γ∙ = γ∙} {A∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+⟨⟩∘∙ D {Δ} {Γ} {A} {a} {γ} {A∙ = A∙} {a∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+p⁺∘⟨q⟩∙ D {Γ} {A} {A∙ = A∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+[p][⁺]T∙ D {Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+[p⁺][⟨q⟩]T∙ D {Γ} {B} {A} {B∙ = B∙} {A∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  ΣPathP ({!!} , {!!})
+[⟨⟩][]T∙ D {Δ} {Γ} {B} {A} {a} {γ} {B∙ = B∙} {A∙} {a∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+El[]∙ D {Δ} {Γ} {Â} {γ} {Â∙ = Â∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP (El[] , {!!})
+Π[]∙ D {Δ} {Γ} {A} {B} {γ} {A∙ = A∙} {B∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!Π[]!} , {!!})
+q[⁺]∙ D {Δ} {Γ} {A} {γ} {A∙ = A∙} {γ∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
 _[_]Π∙ D {Δ = Δ} {Γ} {A} {B} {γ} {Δ∙} {Γ∙} {A∙} {B∙} {f} f∙ γ∙ {Θ} δ = _[_]Π∙' {Δ} {Γ} {A} {B} {γ} {Δ∙} {Γ∙} {A∙} {B∙} {f} f∙ γ∙ {Θ} δ
-[]Π∙ D {Γ} {Δ} {A} {B} {γ} {t} {A∙ = A∙} {B∙} {γ∙} {t∙} = {!!}
+[]Π∙ D {Γ} {Δ} {A} {B} {γ} {t} {A∙ = A∙} {B∙} {γ∙} {t∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
 lam∙ D {Γ} {A} {B} {t} {Γ∙} {A∙} {B∙} t∙ {Δ} γ = lam∙' {Γ} {A} {B} {t} {Γ∙} {A∙} {B∙} t∙ {Δ} γ
 app∙ D {Γ} {A} {B} {t} {a} {Γ∙} {A∙} {B∙} t∙ a∙ {Δ} γ = app∙' {Γ} {A} {B} {t} {a} {Γ∙} {A∙} {B∙} t∙ a∙ {Δ} γ
-Πβ∙ D {Γ} {A} {B} {b} {a} {A∙ = A∙} {B∙} {b∙} {a∙} = {!!}
-Πη∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} {t∙} = {!!}
-lam[]∙ D {Δ} {Γ} {A} {B} {γ} {b} {A∙ = A∙} {B∙} {γ∙} {b∙} = {!!}
-app[]∙ D {Δ} {Γ} {A} {B} {a} {γ} {t} {A∙ = A∙} {B∙} {a∙} {γ∙} {t∙} = {!!}
+Πβ∙ D {Γ} {A} {B} {b} {a} {A∙ = A∙} {B∙} {b∙} {a∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  ΣPathP ({!!} , {!!})
+Πη∙ D {Γ} {A} {B} {t} {A∙ = A∙} {B∙} {t∙} = implicitFunExt λ {Δ} → funExt λ γ →
+  ΣPathP ({!!} , {!!})
+lam[]∙ D {Δ} {Γ} {A} {B} {γ} {b} {A∙ = A∙} {B∙} {γ∙} {b∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
+app[]∙ D {Δ} {Γ} {A} {B} {a} {γ} {t} {A∙ = A∙} {B∙} {a∙} {γ∙} {t∙} = implicitFunExt λ {Θ} → funExt λ δ →
+  ΣPathP ({!!} , {!!})
