@@ -9,13 +9,6 @@ open import Cubical.Foundations.Prelude hiding (_,_; Sub)
 import mltt-minimal.Syntax as I
 
 record Sorts {ℓ}{ℓ'} : Type (lsuc (ℓ ⊔ ℓ')) where
-  -- infixl 4 _▹_
-  -- infixl 8 _∘_
-  -- infixl 10 _⁺
-  -- infixl 8 _∘_
-  -- infixl 6 _[_]T _[_]t 
-  -- infixl 4 _,[_]_ _▹_
-  -- infixl 5 _▹_
   field
     Con : Type ℓ
     Sub : Con → Con → Type ℓ'
