@@ -1,5 +1,5 @@
-{-# OPTIONS --cubical --guardedness #-}
-
+{-# OPTIONS --cubical  #-}
+-- --guardedness
 module mltt-minimal.Syntax where
 
 open import Cubical.Foundations.Prelude hiding (Sub)

@@ -17,8 +17,6 @@ module mltt-minimal.Canon2 where
 
 open DepModel
 
-
-
 Canon2 : DepModel 
 Canon2 = record
   {  Con∙ = λ Γ → Σ (hSet lzero) λ Γ* → fst Γ* → Sub ◇ Γ
