@@ -54,8 +54,10 @@ module _ {i j k l}(𝕊 : Sorts i j k l) where
       q[⁺]   : q [ γ ⁺ ]t ~[ cong (Tm _) $ (sym [∘]T ∙ cong (A [_]T) $ p∘⁺ ∙ [∘]T) ] q
       q[⟨⟩]  : q [ ⟨ a ⟩ ]t ~[ cong (Tm _) $ (sym [∘]T ∙ cong (A [_]T) $ p∘⟨⟩ ∙ [id]T) ] a
       ▹η     : id {Γ ▹ A} ≈ p ⁺ ∘ ⟨ q ⟩
-    []t : (A : Ty Γ) → Tm Γ A → (γ : Sub Δ Γ) → Tm Δ (A [ γ ]T)
-    []t = λ A a γ → _[_]t {A = A} a γ
+
+    []Tₑ = λ Γ Δ A γ → _[_]T {Γ} {Δ} A γ
+
+    []tₑ = λ Γ Δ A a γ → _[_]t {Γ = Γ} {A = A} {Δ = Δ} a γ
 
     [p][⟨⟩]T : A [ p ]T [ ⟨ a ⟩ ]T ≈ A
     [p][⟨⟩]T {A = A} = sym [∘]T ∙ cong (A [_]T) $ p∘⟨⟩ ∙ [id]T
@@ -129,7 +131,7 @@ module _ {i j k}(𝕊 : Sorts i j k j)(ℂ : CwF 𝕊)(⅀ : Sigma 𝕊 ℂ) whe
       un-◇   : K {Γ = Γ} ◇ ≈ ⊤
       un-▹   : K {Γ = Γ} (Ω ▹ A) ≈ Σ (K Ω) (A [ coe (cong (Tm _) $ K[] ∙ sym un-Sub) q ]T)
       un-,   : γ ⁺ ∘ ⟨ a ⟩ ~[ un-Sub ∙ cong (Tm _) $ un-▹ ]
-        (coe un-Sub γ , coe (cong (Tm _) $ (cong (A [_]T) $ ((sym coh ∙ sym q[⟨⟩] ∙ cong []t $ K[] $ (sym coh ∙ sym coh) $ refl) ∙ sym un-∘) ∙ [∘]T)) a)
+        (coe un-Sub γ , coe (cong (Tm _) $ (cong (A [_]T) $ ((sym coh ∙ sym q[⟨⟩] ∙ cong ([]tₑ _ _) $ K[] $ (sym coh ∙ sym coh) $ refl) ∙ sym un-∘) ∙ [∘]T)) a)
 
 record Model {i}{j}{k} : Set (lsuc (i ⊔ j ⊔ k)) where
   field

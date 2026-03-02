@@ -21,7 +21,7 @@ data _~_ {A : Set i}(a : A) : {B : Set i} → B → Prop i where
 sym : {a₀ : A₀}{a₁ : A₁} → a₀ ~ a₁ → a₁ ~ a₀
 sym refl = refl
 
-infixr 30 _∙_
+infixr 2 _∙_
 _∙_ : {a₀ : A₀}{a₁ : A₁}{a₂ : A₂} → a₀ ~ a₁ → a₁ ~ a₂ → a₀ ~ a₂
 refl ∙ e = e
 
@@ -57,9 +57,12 @@ _$'_ refl e {a} = congₕ (λ f → f a) e
 toTy~ : {a₀ : A₀}{a₁ : A₁} → a₀ ~ a₁ → A₀ ~ A₁
 toTy~ refl = refl
 
-infixl 50 _$_
+infixl 4.5 _$_
 _$_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π A₀ B₀}{f₁ : Π A₁ B₁} → f₀ ~ f₁ → ∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
 e $ refl = funext (Π-inj₂ (toTy~ e)) $' e
+
+infixl 4.5 _⠀_
+_⠀_ = _$_
 
 infix 4 _~[_]_
 _~[_]_ : {A₀ A₁ : Set i} → A₀ → A₀ ~ A₁ → A₁ → Prop i
@@ -71,6 +74,10 @@ a₀ ≈ a₁ = a₀ ~ a₁
 
 cong : (a : A) → a ~ a
 cong a = refl
+
+infixr 4.75 _∎
+_∎ : (a : A) → a ~ a
+_ ∎ = refl
 
 the : (A : Set i) → A → A
 the _ a = a
