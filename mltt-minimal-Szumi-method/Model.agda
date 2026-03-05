@@ -55,6 +55,8 @@ module _ {i j k l}(𝕊 : Sorts i j k l) where
       q[⟨⟩]  : q [ ⟨ a ⟩ ]t ~[ cong (Tm _) $ (sym [∘]T ∙ cong (A [_]T) $ p∘⟨⟩ ∙ [id]T) ] a
       ▹η     : id {Γ ▹ A} ≈ p ⁺ ∘ ⟨ q ⟩
 
+    ∘ₑ = λ Γ Δ Θ γ δ → _∘_ {Δ} {Γ} {Θ} γ δ
+
     []Tₑ = λ Γ Δ A γ → _[_]T {Γ} {Δ} A γ
 
     []tₑ = λ Γ Δ A a γ → _[_]t {Γ = Γ} {A = A} {Δ = Δ} a γ
@@ -181,6 +183,44 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
       true[]  : true [ γ ]t ~[ cong (Tm _) $ Bool[] ] true
       false[] : false [ γ ]t ~[ cong (Tm _) $ Bool[] ] false
       elim    : Tm Γ (A [ ⟨ true ⟩ ]T) → Tm Γ (A [ ⟨ false ⟩ ]T) → (b : Tm Γ Bool) → Tm Γ (A [ ⟨ b ⟩ ]T)
+      elim[]  :
+        {A : Ty (Γ ▹ Bool)} →
+        {a : Tm Γ (A [ ⟨ true ⟩ ]T)} {b : Tm Γ (A [ ⟨ false ⟩ ]T)} →
+        {c : Tm Γ Bool} {γ : Sub Δ Γ} →
+        elim {A = A} a b c [ γ ]t
+          ~[
+            cong (Tm _)
+              $ ( sym [∘]T ∙
+                  (cong (_ [_]T)
+                    $ ( ⟨⟩∘ ∙
+                        (cong ∘ₑ
+                          $ refl $ (cong (_ ▹_) $ Bool[]) $ refl
+                          $ sym coh $ (cong (⟨⟩ₑ _) $ Bool[] $ sym coh)))) ∙
+                  [∘]T) ]
+        elim
+          {A = A [ coe (cong Sub $ (cong (_ ▹_) $ Bool[]) $ refl) (γ ⁺) ]T}
+          (coe
+            (cong (Tm _)
+              $ ( sym [∘]T ∙
+                  (cong (_ [_]T)
+                    $ ( ⟨⟩∘ ∙
+                        (cong ∘ₑ
+                          $ refl $ (cong (_ ▹_) $ Bool[]) $ refl
+                          $ sym coh $ (cong (⟨⟩ₑ _) $ Bool[] $ true[])))) ∙
+                  [∘]T))
+            (a [ γ ]t))
+          (coe
+            (cong (Tm _)
+              $ ( sym [∘]T ∙
+                  (cong (_ [_]T)
+                    $ ( ⟨⟩∘ ∙
+                        (cong ∘ₑ
+                          $ refl $ (cong (_ ▹_) $ Bool[]) $ refl
+                          $ sym coh $ (cong (⟨⟩ₑ _) $ Bool[] $ false[])))) ∙
+                  [∘]T))
+            (b [ γ ]t))
+          (coe (cong (Tm _) $ Bool[]) (c [ γ ]t))
+{-
       elim[]  : elim a b c [ γ ]t ~[
                   cong (Tm _) $
                     ([⟨⟩][]T ∙
