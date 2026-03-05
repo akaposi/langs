@@ -59,6 +59,10 @@ module _ {i j k l}(𝕊 : Sorts i j k l) where
 
     []tₑ = λ Γ Δ A a γ → _[_]t {Γ = Γ} {A = A} {Δ = Δ} a γ
 
+    ⟨⟩ₑ = λ Γ A a → ⟨_⟩ {Γ} {A} a
+
+    ⁺ₑ = λ Γ Δ A γ → _⁺ {Δ} {Γ} {A} γ
+
     [p][⟨⟩]T : A [ p ]T [ ⟨ a ⟩ ]T ≈ A
     [p][⟨⟩]T {A = A} = sym [∘]T ∙ cong (A [_]T) $ p∘⟨⟩ ∙ [id]T
 
@@ -111,6 +115,87 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
     snd[] : snd a [ γ ]t ~[ cong (Tm _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) ] snd (coe (cong (Tm _) $ Σ[]) (a [ γ ]t))
     snd[] {a = a} {γ = γ} = sym (cong snd $ (coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) ∙ Σβ₂ ∙ coh)
 
+module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
+  open Sorts 𝕊
+  open CwF ℂ
+
+  private variable
+    Γ Δ Θ Ξ Ω : Con
+    γ δ θ ξ : Sub Δ Γ
+    A B C : Ty Γ
+    a b c d f : Tm Γ A
+
+  record Pi : Set (i ⊔ j ⊔ k ⊔ l) where
+    infixl 9 _[_]Π
+    field
+      Π     : (A : Ty Γ)(B : Ty (Γ ▹ A)) → Ty Γ
+      Π[]   :  Π A B [ γ ]T ≈ Π (A [ γ ]T) (B [ γ ⁺ ]T)
+    
+    _[_]Π : (f : Tm Γ (Π A B))(γ : Sub Δ Γ) → Tm Δ (Π (A [ γ ]T) (B [ γ ⁺ ]T))
+    f [ γ ]Π = coe (cong (Tm _) $ Π[]) (f [ γ ]t)
+
+    []Π   : a [ γ ]t ~[ cong (Tm _) $ Π[] ] a [ γ ]Π
+    []Π = sym coh
+      
+    field
+      lam   : (t : Tm (Γ ▹ A) B) → Tm Γ (Π A B)
+      app   : (f : Tm Γ (Π A B))(a : Tm Γ A) → Tm Γ (B [ ⟨ a ⟩ ]T)
+      Πβ    : app (lam b) a ≈ b [ ⟨ a ⟩ ]t
+      Πη    : lam (app (f [ p ]Π) q) ~[ cong (Tm _) $ (cong (Π _) $ sym [▹η]T) ] f
+      lam[] : lam b [ γ ]t ~[ cong (Tm _) $ Π[] ] lam (b [ γ ⁺ ]t)
+      app[] : app f a [ γ ]t ~[ cong (Tm _) $ [⟨⟩][]T ] app (f [ γ ]Π) (a [ γ ]t)
+
+module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
+  open Sorts 𝕊
+  open CwF ℂ
+
+  private variable
+    Γ Δ Θ Ξ Ω : Con
+    γ δ θ ξ : Sub Δ Γ
+    A B C : Ty Γ
+    a b c d f : Tm Γ A
+
+  record Empty : Set (i ⊔ j ⊔ k ⊔ l) where
+    field
+      ⊥         : Ty Γ
+      ⊥[]       : ⊥ [ γ ]T ≈ ⊥
+      exfalso   : Tm Γ ⊥ → Tm Γ A
+      exfalso[] : exfalso {A = A} a [ γ ]t ≈ exfalso (coe (cong (Tm _) $ ⊥[]) (a [ γ ]t))
+
+module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
+  open Sorts 𝕊
+  open CwF ℂ
+
+  private variable
+    Γ Δ Θ Ξ Ω : Con
+    γ δ θ ξ : Sub Δ Γ
+    A B C : Ty Γ
+    a b c d f : Tm Γ A
+
+  record BoolT : Set (i ⊔ j ⊔ k ⊔ l) where
+    field
+      Bool    : Ty Γ
+      Bool[]  : Bool [ γ ]T ≈ Bool
+      true    : Tm Γ Bool
+      false   : Tm Γ Bool
+      true[]  : true [ γ ]t ~[ cong (Tm _) $ Bool[] ] true
+      false[] : false [ γ ]t ~[ cong (Tm _) $ Bool[] ] false
+      elim    : Tm Γ (A [ ⟨ true ⟩ ]T) → Tm Γ (A [ ⟨ false ⟩ ]T) → (b : Tm Γ Bool) → Tm Γ (A [ ⟨ b ⟩ ]T)
+      elim[]  : elim a b c [ γ ]t ~[
+                  cong (Tm _) $
+                    ([⟨⟩][]T ∙
+                     cong []Tₑ $ (cong (_ ▹_) $ Bool[])
+                               $ refl
+                               $ (cong ([]Tₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ sym (coh {e = cong Sub $ (cong (_ ▹_) $ Bool[]) $ refl}))
+                               $ (cong (⟨⟩ₑ _) $ Bool[] $ sym coh)) ]
+                elim (coe (cong (Tm _) $ ([⟨⟩][]T ∙ cong []Tₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong ([]Tₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ sym (coh {e = cong Sub $ (cong (_ ▹_) $ Bool[]) $ refl})) $ (cong (⟨⟩ₑ _) $ Bool[] $ true[]))) (a [ γ ]t))
+                     (coe (cong (Tm _) $ ([⟨⟩][]T ∙ cong []Tₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong ([]Tₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ sym (coh {e = cong Sub $ (cong (_ ▹_) $ Bool[]) $ refl})) $ (cong (⟨⟩ₑ _) $ Bool[] $ false[]))) (b [ γ ]t))
+                     (coe (cong (Tm _) $ Bool[]) (c [ γ ]t))
+      Boolβ₁  : elim a b true ≈ a
+      Boolβ₂  : elim a b false ≈ b
+      Boolη   : f [ ⟨ true ⟩ ]t ≈ a → f [ ⟨ false ⟩ ]t ≈ b → f [ ⟨ c ⟩ ]t ≈ elim a b c 
+
+
 module _ {i j k}(𝕊 : Sorts i j k j)(ℂ : CwF 𝕊)(⅀ : Sigma 𝕊 ℂ) where
   open Sorts 𝕊
   open CwF ℂ
@@ -138,11 +223,17 @@ record Model {i}{j}{k} : Set (lsuc (i ⊔ j ⊔ k)) where
     sorts : Sorts i j k j
     cwf   : CwF sorts
     sigma : Sigma sorts cwf
+    pi    : Pi sorts cwf
+    empty : Empty sorts cwf
+    bool  : BoolT sorts cwf
     dem   : Dem sorts cwf sigma
 
   open Sorts sorts public
   open CwF cwf public
   open Sigma sigma public
+  open Pi pi public
+  open Empty empty public
+  open BoolT bool public
   open Dem dem public
 
 open Model public

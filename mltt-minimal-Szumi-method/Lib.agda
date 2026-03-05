@@ -25,10 +25,10 @@ infixr 2 _∙_
 _∙_ : {a₀ : A₀}{a₁ : A₁}{a₂ : A₂} → a₀ ~ a₁ → a₁ ~ a₂ → a₀ ~ a₂
 refl ∙ e = e
 
-Π : (A : Set i) → (A → Set j) → Set _
-Π A B = (a : A) → B a
+Π' : (A : Set i) → (A → Set j) → Set _
+Π' A B = (a : A) → B a
 
-congₕ : {B₀ : A₀ → Set j}(f : Π A₀ B₀) → a₀ ~ a₁ → f a₀ ~ f a₁
+congₕ : {B₀ : A₀ → Set j}(f : Π' A₀ B₀) → a₀ ~ a₁ → f a₀ ~ f a₁
 congₕ _ refl = refl
 
 postulate
@@ -44,21 +44,21 @@ opaque
   coh {e = refl} = refl
 
 postulate
-  Π-inj₁ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j} → Π A₀ B₀ ~ Π A₁ B₁ → A₀ ~ A₁
-  Π-inj₂ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j} → Π A₀ B₀ ~ Π A₁ B₁ → ∀{a₀ a₁} → (a₀ ~ a₁) → B₀ a₀ ~ B₁ a₁
-  coe'-Π : {A₀ A₁ : Set i}{B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{e : Π A₀ B₀ ~ Π A₁ B₁}{f₀ : Π A₀ B₀} →
+  Π-inj₁ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j} → Π' A₀ B₀ ~ Π' A₁ B₁ → A₀ ~ A₁
+  Π-inj₂ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j} → Π' A₀ B₀ ~ Π' A₁ B₁ → ∀{a₀ a₁} → (a₀ ~ a₁) → B₀ a₀ ~ B₁ a₁
+  coe'-Π : {A₀ A₁ : Set i}{B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{e : Π' A₀ B₀ ~ Π' A₁ B₁}{f₀ : Π' A₀ B₀} →
     coe' e f₀ ↝ λ a₁ → coe (Π-inj₂ e coh) (f₀ (coe (sym (Π-inj₁ e)) a₁))
   {-# REWRITE coe'-Π #-}
-  funext : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π A₀ B₀}{f₁ : Π A₁ B₁} → (∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁) → f₀ ~ f₁
+  funext : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → (∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁) → f₀ ~ f₁
 
-_$'_ : {B₀ B₁ : A → Set j} → B₀ ~ B₁ → {f₀ : Π A B₀}{f₁ : Π A B₁} → f₀ ~ f₁ → ∀{a} → f₀ a ~ f₁ a
+_$'_ : {B₀ B₁ : A → Set j} → B₀ ~ B₁ → {f₀ : Π' A B₀}{f₁ : Π' A B₁} → f₀ ~ f₁ → ∀{a} → f₀ a ~ f₁ a
 _$'_ refl e {a} = congₕ (λ f → f a) e
 
 toTy~ : {a₀ : A₀}{a₁ : A₁} → a₀ ~ a₁ → A₀ ~ A₁
 toTy~ refl = refl
 
 infixl 4.5 _$_
-_$_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π A₀ B₀}{f₁ : Π A₁ B₁} → f₀ ~ f₁ → ∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
+_$_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → f₀ ~ f₁ → ∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
 e $ refl = funext (Π-inj₂ (toTy~ e)) $' e
 
 infixl 4.5 _⠀_
