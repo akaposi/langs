@@ -48,7 +48,7 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l) where
       idr∙    : γ∙ ∘∙ id∙ ~[ cong (Sub∙ _ _) $ idr ] γ∙
       ◇∙      : Con∙ ◇
       ε∙      : Sub∙ Γ∙ ◇∙ ε
-      ◇η∙     : γ∙ ≈ ε∙
+      ◇η∙     : {γ : Sub Γ ◇}{γ∙ : Sub∙ Γ∙ ◇∙ γ} → γ∙ ~[ cong (Sub∙ _ _) $ ◇η ] ε∙
       _[_]T∙  : (A∙ : Ty∙ Γ∙ A)(γ∙ : Sub∙ Δ∙ Γ∙ γ) → Ty∙ Δ∙ (A [ γ ]T)
 
     []T∙ₑ = λ Δ Γ A Δ∙ Γ∙ A∙ γ γ∙ → _[_]T∙ {Γ} {Γ∙} {A} {Δ} {Δ∙} {γ} A∙ γ∙
@@ -408,5 +408,3 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
               → let e1 = Tm-inj₁ e
                     e2 = Tm-inj₂ e
                 in ⟦ coe e a ⟧Tm ↝ coe (cong Tm∙ₑ $ e1 $ e2 $ (cong ⟦_⟧Con $ e1) $ (cong ⟦⟧Tyₑ $ e1 $ e2) $ coh) ⟦ a ⟧Tm
-
-open DepModel public
