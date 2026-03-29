@@ -65,6 +65,10 @@ module _ {i j k l}(𝕊 : Sorts i j k l) where
 
     ⁺ₑ = λ Γ Δ A γ → _⁺ {Δ} {Γ} {A} γ
 
+    pₑ = λ Γ A → p {Γ} {A}
+
+    qₑ = λ Γ A → q {Γ} {A}
+
     weave : {γ : Sub Ξ Γ}{δ : Sub Θ Ξ}{γ' : Sub Δ Γ}{δ' : Sub Θ Δ} → γ ∘ δ ≈ γ' ∘ δ' → A [ γ ]T [ δ ]T ≈ A [ γ' ]T [ δ' ]T
     weave e = sym [∘]T ∙ cong (_ [_]T) $ e ∙ [∘]T
     -- Name inspired by 1Lab
