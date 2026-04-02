@@ -116,6 +116,12 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
       Σβ₂ : snd (a , b) ~[ cong (Tm _) $ (cong (B [_]T) $ (cong ⟨_⟩ $ Σβ₁)) ] b
       Ση  : {w : Tm Γ (Σ A B)} → w ≈ (fst w , snd w)
 
+    ,ₑ = λ Γ A B a b → _,_ {Γ} {A} {B} a b
+
+    fstₑ = λ Γ A B w → fst {Γ} {A} {B} w
+
+    sndₑ = λ Γ A B w → snd {Γ} {A} {B} w
+    
     tt[] : tt [ γ ]t ~[ cong (Tm _) $ ⊤[] ] tt
     tt[] {γ = γ} = coh ∙ ⊤η {a = coe (cong (Tm _) $ ⊤[]) (tt [ γ ]t)}
 
