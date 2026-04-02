@@ -146,7 +146,7 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l)(ℂ : CwF∙ 𝕊) where
              b∙
       Ση∙  : {w∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a} → w∙ ~[ cong (Tm∙ _ _ ) $ Ση ] (fst∙ w∙ ,∙ snd∙ w∙)
 
-    tt[]∙ : tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) ⠀ ⊤[] ⠀ Δ∙ ∎ ⠀ ⊤[]∙ ⠀ tt[] ] tt∙
+    tt[]∙ : tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ Δ∙ ∎ $ ⊤[]∙ $ tt[] ] tt∙
     tt[]∙ {γ∙ = γ∙} = coh ∙ ⊤η∙ {a∙ = coe (cong Tm∙ₑ $ refl $ ⊤[] $ refl $ ⊤[]∙ $ tt[]) (tt∙ [ γ∙ ]t∙)}
 
     infixr 4 _,≈∙_
@@ -163,7 +163,7 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l)(ℂ : CwF∙ 𝕊) where
 
     snd[]∙ : snd∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ ∙ cong ([]T∙ₑ _ _ _ _ _ _) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙)) $ snd[] ] snd∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
     snd[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
-      sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) ⠀ Ση ⠀ refl ⠀ refl ⠀ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
+      sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
 
 module _ {i j k l}(𝕊 : Sorts∙ i j k l)(ℂ : CwF∙ 𝕊) where
   open Sorts∙ 𝕊
