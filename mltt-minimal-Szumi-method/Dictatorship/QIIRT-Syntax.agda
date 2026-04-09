@@ -438,32 +438,45 @@ module QIIRT-Sorts where
         γ⁺ = coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺)
         (B[γ⁺]T ,ₚ ≈B[γ⁺]T) = ∣ B∙ ∣ γ⁺
         (b[γ]t ,ₚ ≈b[γ]t) = ∣ b∙ ∣ γ
-      in Σ-extₚ (sym coh ∙ Σβ₂ ∙ sym coh) (funextₕ {!!} λ e → {!!})}}
+      in Σ-extₚ
+           (sym coh ∙ Σβ₂ ∙ sym coh)
+           (funextₕ (cong (Tm Δ) $ (cong (λ y → L.fst (∣ B∙ ∣ (coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺) ∘ ⟨ y ⟩))) $ Σβ₁))
+                    λ e → cong ~ₑ $ (cong (λ x → Tm Δ (B [ ⟨ x ⟩ ]T [ γ ]T)) $ Σβ₁) $ (cong []tₑ $ refl $ refl $ (cong (λ x → B [ ⟨ x ⟩ ]T) $ Σβ₁) $ Σβ₂ $ refl) $ (cong (Tm Δ) $ (cong (λ y → L.fst (∣ B∙ ∣ (coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺) ∘ ⟨ y ⟩))) $ Σβ₁)) $ e)}}
 
-{-
-  Ση∙  : {w∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a} → w∙ ~[ cong (Tm∙ _ _ ) $ Ση ] (fst∙ w∙ ,∙ snd∙ w∙)
+  Ση∙ : {Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{a∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a} → a∙ ~[ cong (Tm∙ _ _ ) $ Ση ] (_,∙_ {A∙ = A∙} {B∙ = B∙} (fst∙ {B∙ = B∙} a∙) (snd∙ {A∙ = A∙} {B∙ = B∙} a∙))
+  Ση∙ {Γ} {A} {B} {a} {Γ∙} {A∙} {B∙} {a∙} = cong mkTm∙ $ refl $ Ση $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
+    let
+      (A[γ]T ,ₚ ≈A[γ]T) = ∣ A∙ ∣ γ
+      (a[γ]t ,ₚ ≈a[γ]t) = ∣ a∙ ∣ γ
+    in Σ-extₚ (Ση ∙ cong _,_ $ refl $ (coh ∙ coh)) (funext λ {z} → λ {refl → cong ~ₑ $ refl $ (cong _[ γ ]t $ Ση) $ refl $ refl})}}
+  -------- ⊤ Σ extra stuff --------
+  tt[]∙ : {Γ∙ : Con∙ Γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
+        → tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ Δ∙ ∎ $ ⊤[]∙ {γ∙ = γ∙} $ tt[] ] tt∙
+  tt[]∙ {γ∙ = γ∙} = coh ∙ ⊤η∙ {a∙ = coe (cong Tm∙ₑ $ refl $ ⊤[] $ refl $ ⊤[]∙ {γ∙ = γ∙} $ tt[]) (tt∙ [ γ∙ ]t∙)}
 
-    tt[]∙ : tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ Δ∙ ∎ $ ⊤[]∙ $ tt[] ] tt∙
-    tt[]∙ {γ∙ = γ∙} = coh ∙ ⊤η∙ {a∙ = coe (cong Tm∙ₑ $ refl $ ⊤[] $ refl $ ⊤[]∙ $ tt[]) (tt∙ [ γ∙ ]t∙)}
-
-    infixr 4 _,≈∙_
-    _,≈∙_ : (e1 : a∙ ≈ b∙) → c∙ ~[ cong Tm∙ₑ $ Γ ∎ $ B [ ⟨ a ⟩ ]T ∎ $ Γ∙ ∎ $ (cong (λ x → B∙ [ ⟨ x ⟩∙ ]T∙) $ e1) $ refl ] d∙ → a∙ ,∙ c∙ ≈ b∙ ,∙ d∙
-    e1 ,≈∙ e2 = cong _,∙_ $ e1 $ e2
-
-    fst∙ₑ = λ Γ Γ∙ A A∙ B B∙ a a∙ → fst∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {a} a∙
+  fst∙ₑ = λ Γ A B a Γ∙ A∙ B∙ a∙ → fst∙ {Γ} {A} {B} {a} {Γ∙} {A∙} {B∙} a∙
     
-    fst[]∙ : fst∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ _ _) $ fst[] ] fst∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
-    fst[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
-      sym (cong (fst∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ Δ ∎ $ Δ∙ ∎ $ γ ∎ $ Ση∙ $ γ∙ ∎ ∙ ,[]∙) ∙ Σβ₁∙)
+  fst[]∙ : {Γ∙ : Con∙ Γ}{Δ∙ : Con∙ Δ}{A∙ : Ty∙ Γ∙ A}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{a∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
+         → fst∙ {A∙ = A∙} {B∙ = B∙} a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ _ _) $ fst[] ] fst∙ {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} (coe (cong Tm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ coh) (a∙ [ γ∙ ]t∙))
+  fst[]∙ {Γ} {Δ} {A} {B} {a} {γ} {Γ∙} {Δ∙} {A∙} {B∙} {a∙} {γ∙} = cong mkTm∙ $ refl $ fst[] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+    let
+      (γ∘δ ,ₚ ≈γ∘δ) = ∣ γ∙ ∣ δ
+      (A[γ∘δ]T ,ₚ ≈A[γ∘δ]T) = ∣ A∙ ∣ γ∘δ
+      (a[γ∘δ]t ,ₚ ≈a[γ∘δ]t) = ∣ a∙ ∣ γ∘δ
+    in Σ-extₚ
+         (cong fstₑ $ refl $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh)) $ (sym ≈a[γ∘δ]t ∙ {!∣ a∙ [ γ∙ ]t∙ ∣ δ!}))
+         {!!}}}
+{-
+  --sym (cong (fst∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ Δ ∎ $ Δ∙ ∎ $ γ ∎ $ Ση∙ $ γ∙ ∎ ∙ ,[]∙) ∙ Σβ₁∙)
 
-    snd∙ₑ = λ Γ Γ∙ A A∙ B B∙ b b∙ → snd∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {b} b∙
+  snd∙ₑ = λ Γ Γ∙ A A∙ B B∙ b b∙ → snd∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {b} b∙
 
-    snd[]∙ : snd∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ ∙ cong ([]T∙ₑ _ _ _ _ _ _) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙)) $ snd[] ] snd∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
-    snd[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
-      sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
+  snd[]∙ : snd∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ ∙ cong ([]T∙ₑ _ _ _ _ _ _) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙)) $ snd[] ] snd∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
+  snd[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
+    sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
 
 
--- Π dolgok -------------------------------
+--------- Π dolgok -------------------------------
   Π∙     : (A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B) → Ty∙ Γ∙ (Π A B)
   Π[]∙   : Π∙ A∙ B∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Π[] ] Π∙ (A∙ [ γ∙ ]T∙) (B∙ [ γ∙ ⁺∙ ]T∙)
   lam∙   : (b∙ : Tm∙ (Γ∙ ▹∙ A∙) B∙ b) → Tm∙ Γ∙ (Π∙ A∙ B∙) (lam b)
