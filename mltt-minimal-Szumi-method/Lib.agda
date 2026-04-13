@@ -172,3 +172,6 @@ e1 ,Σ≈ e2 = cong L._,_ $ e1 $ e2
 
 _,Σ≈- : ∀{i j}{A : Set i}{B : A → Prop j}{a : A}{b : B a}{c : A}{d : B c}(e : a ≈ c) → (a L., mkₑ b) ≈ (c L., mkₑ d)
 refl ,Σ≈- = refl ,Σ≈ refl
+
+it : ∀{i}{A : Prop i} → ⦃ A ⦄ → A
+it ⦃ a ⦄ = a
