@@ -62,7 +62,8 @@ postulate
   {-# REWRITE coe'-Π #-}
   funextₕ : (e : A₀ ≈ A₁){B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → (∀{a₀ a₁} → a₀ ~[ e ] a₁ → f₀ a₀ ~ f₁ a₁) → f₀ ~ f₁
 
-funext = λ {i} {A₀} {j} {B₀} {B₁} {f₀} {f₁} → funextₕ {i} {A₀} {A₀} {j} refl {B₀} {B₁} {f₀} {f₁}
+funext : {B₀ B₁ : A₀ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₀ B₁} → (∀{a₀} → f₀ a₀ ~ f₁ a₀) → f₀ ~ f₁
+funext {i} {A₀} {j} {B₀} {B₁} {f₀} {f₁} f = funextₕ {i} {A₀} {A₀} {j} refl {B₀} {B₁} {f₀} {f₁} λ {a₀} → λ {refl → f {a₀}}
 
 _$'_ : {B₀ B₁ : A → Set j} → B₀ ~ B₁ → {f₀ : Π' A B₀}{f₁ : Π' A B₁} → f₀ ~ f₁ → ∀{a} → f₀ a ~ f₁ a
 _$'_ refl e {a} = congₕ (λ f → f a) e
@@ -72,7 +73,7 @@ toTy~ refl = refl
 
 infixl 4.5 _$_
 _$_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → f₀ ~ f₁ → ∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
-e $ refl = funext (Π-inj₂ (toTy~ e)) $' e
+e $ refl = funext (Π-inj₂ (toTy~ e) refl) $' e
 
 infixl 4.5 _⠀_
 _⠀_ = _$_
