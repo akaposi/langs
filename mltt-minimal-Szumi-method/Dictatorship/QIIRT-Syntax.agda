@@ -184,12 +184,11 @@ module QIIRT-CwF where
       → _⁺∙ {A∙ = A∙} (γ∙ ∘∙ δ∙) ~[ cong Sub∙ₑ $ (cong (Θ ▹_) $ [∘]T) $ cong (Γ ▹ A) $ (cong (λ x → _▹∙_ {A = x} Θ∙) $ [∘]T $ [∘]T∙ {A∙ = A∙} {γ∙ = γ∙} {δ∙ = δ∙}) $ cong (Γ∙ ▹∙ A∙) $ ∘⁺ ] _⁺∙ {A∙ = A∙} γ∙ ∘∙ _⁺∙ {A∙ = A∙ [ γ∙ ]T∙} δ∙
   ∘⁺∙ {Θ} = cong mkSub∙ₑ $ (cong (Θ ▹_) $ [∘]T) $ refl $ (cong mkCon∙ $ (cong (Θ ▹_) $ [∘]T)) $ refl $ ∘⁺ $ funext λ {Ξ} → funextₕ (cong (Sub Ξ) $ (cong (Θ ▹_) $ [∘]T)) λ {θ} {θ'} e →
     Σ-extₚ (cong (∘ₑ _) $ (cong (Θ ▹_) $ [∘]T) $ refl $ ∘⁺ $ e ∙ ass) (funext (cong ~ₑ $ refl $ (cong (∘ₑ _) $ (cong (Θ ▹_) $ [∘]T) $ refl $ ∘⁺ $ e) $ refl $ refl))
-{-
   
   id⁺∙ : ∀{Γ}{A : Ty Γ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}
        → _⁺∙ {A∙ = A∙} id∙ ~[ cong Sub∙ₑ $ (cong (Γ ▹_) $ [id]T) $ cong (Γ ▹ A) $ (cong mkCon∙ $ (cong (Γ ▹_) $ [id]T)) $ cong (Γ∙ ▹∙ A∙) $ id⁺ ] id∙
-  id⁺∙ = cong mkSub∙ₑ $ (cong (_ ▹_) $ [id]T) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ [id]T)) $ refl $ id⁺ $ funext λ {Δ} → λ {refl → funextₕ (cong (Sub _) $ (cong (_ ▹_) $ [id]T)) λ {δ} {δ'} e →
-    Σ-extₚ (cong (∘ₑ _) $ (cong (_ ▹_) $ [id]T) $ refl $ id⁺ $ e ∙ idl) (funext λ {δ₁} {δ₂} e1 → cong _≈_ $ (cong (∘ₑ _) $ (cong (_ ▹_) $ [id]T) $ refl $ id⁺ $ e) $ e1)}
+  id⁺∙ = cong mkSub∙ₑ $ (cong (_ ▹_) $ [id]T) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ [id]T)) $ refl $ id⁺ $ funext λ {Δ} → funextₕ (cong (Sub _) $ (cong (_ ▹_) $ [id]T)) λ {δ} {δ'} e →
+    Σ-extₚ (cong (∘ₑ _) $ (cong (_ ▹_) $ [id]T) $ refl $ id⁺ $ e ∙ idl) (funext λ {z} → cong (_≈ z) $ (cong (∘ₑ _) $ (cong (_ ▹_) $ [id]T) $ refl $ id⁺ $ e))
 
   ⟨_⟩∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{A : Ty Γ}{A∙ : Ty∙ Γ∙ A}{a : Tm Γ A}(a∙ : Tm∙ Γ∙ A∙ a) → Sub∙ Γ∙ (Γ∙ ▹∙ A∙) ⟨ a ⟩
   ⟨_⟩∙ {A} {A∙} {a} a∙ = Sub∙.constructor (λ {Δ} γ →
@@ -201,7 +200,7 @@ module QIIRT-CwF where
   ⟨⟩∘∙ : ∀{Γ}{A : Ty Γ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a : Tm Γ A}{a∙ : Tm∙ Γ∙ A∙ a}
          {Δ}{Δ∙ : Con∙ Δ}{γ : Sub Δ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
        → ⟨ a∙ ⟩∙ ∘∙ γ∙ ~[ cong (Sub∙ _ _) $ ⟨⟩∘ ] _⁺∙ {A∙ = A∙} γ∙ ∘∙ ⟨ a∙ [ γ∙ ]t∙ ⟩∙
-  ⟨⟩∘∙ {A} {A∙} {a∙} {γ∙} = cong mkSub∙ $ ⟨⟩∘ $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  ⟨⟩∘∙ {A} {A∙} {a∙} {γ∙} = cong mkSub∙ $ ⟨⟩∘ $ funext λ {Θ} → funext λ {δ} →
     let
       (γ∘δ ,ₚ ≈γ∘δ) = ∣ γ∙ ∣ δ
       (A[γ∘δ]T ,ₚ ≈A[γ∘δ]T) = ∣ A∙ ∣ γ∘δ
@@ -211,19 +210,19 @@ module QIIRT-CwF where
                  $ (cong ⟨⟩ₑ $ refl $ (sym ≈A[γ∘δ]T ∙ ≈A[γ∘δ]T) $ (sym ≈a[γ∘δ]t ∙ ≈a[γ∘δ]t))
               ∙ ass)
 
-              (funext λ {z} → λ {refl → cong (_≈ z) $ (cong (_∘ δ) $ ⟨⟩∘)})}}
+              (funext λ {z} → cong (_≈ z) $ (cong (_∘ δ) $ ⟨⟩∘))
 
   p∘⁺∙ : ∀{Δ Γ}{Γ∙ : Con∙ Γ}{γ : Sub Δ Γ}{Δ∙ : Con∙ Δ}
          {γ∙ : Sub∙ Δ∙ Γ∙ γ}{A : Ty Γ}{A∙ : Ty∙ Γ∙ A}
        → p∙ {A∙ = A∙} ∘∙ _⁺∙ {A∙ = A∙} γ∙  ~[ cong (Sub∙ (Δ∙ ▹∙ A∙ [ γ∙ ]T∙) _) $ p∘⁺ ] γ∙ ∘∙ p∙ {A∙ = A∙ [ γ∙ ]T∙}
-  p∘⁺∙ {γ∙} = cong mkSub∙ $ p∘⁺ $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  p∘⁺∙ {γ∙} = cong mkSub∙ $ p∘⁺ $ funext λ {Θ} → funext λ {δ} →
     let
       (_ ,-) = ∣ γ∙ ∣ (p ∘ δ)
-    in Σ-extₚ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ un) (funext λ {z} → λ {refl → cong (_≈ z) $ (cong (_∘ δ) $ p∘⁺)})}}
+    in Σ-extₚ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ un) (funext λ {z} → cong (_≈ z) $ (cong (_∘ δ) $ p∘⁺))
   
   p∘⟨⟩∙ : ∀{Γ}{A : Ty Γ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a : Tm Γ A}{a∙ : Tm∙ Γ∙ A∙ a}
         → p∙ {A∙ = A∙} ∘∙ ⟨ a∙ ⟩∙ ~[ cong (Sub∙ _ _) $ p∘⟨⟩ ] id∙
-  p∘⟨⟩∙ {A∙} {a∙} = cong mkSub∙ $ p∘⟨⟩ $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
+  p∘⟨⟩∙ {A∙} {a∙} = cong mkSub∙ $ p∘⟨⟩ $ funext λ {Δ} → funext λ {γ} →
     let
       (_ ,-) = ∣ A∙ ∣ γ
       (_ ,-) = ∣ a∙ ∣ γ
@@ -237,7 +236,7 @@ module QIIRT-CwF where
               ∙ ass
               ∙ cong (γ ∘_) $ p∘⟨⟩
               ∙ idr)
-              (funext λ {z} → λ {refl → cong (_≈ z) $ (cong (_∘ γ) $ p∘⟨⟩)})}}
+              (funext λ {z} → cong (_≈ z) $ (cong (_∘ γ) $ p∘⟨⟩))
 
   ----------------- extra -----------------
   weave∙ : {A : Ty Γ}{γ : Sub Ξ Γ}{δ : Sub Θ Ξ}{γ' : Sub Δ Γ}{δ' : Sub Θ Δ}
@@ -276,31 +275,31 @@ module QIIRT-CwF where
 
   q[⁺]∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{Δ}{γ : Sub Δ Γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}{A : Ty Γ}{A∙ : Ty∙ Γ∙ A}
         → q∙ {A∙ = A∙} [ _⁺∙ {A∙ = A∙} γ∙ ]t∙ ~[ cong Tm∙ₑ $ cong (Δ ▹ A [ γ ]T) $ [p][⁺]T $ cong (Δ∙ ▹∙ A∙ [ γ∙ ]T∙) $ [p][⁺]T∙ A∙ γ∙ $ q[⁺] ] q∙ {A∙ = A∙ [ γ∙ ]T∙}
-  q[⁺]∙ {γ∙} {A∙} = cong mkTm∙ₑ $ refl $ [p][⁺]T $ refl $ [p][⁺]T∙ A∙ γ∙ $ q[⁺] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  q[⁺]∙ {γ∙} {A∙} = cong mkTm∙ₑ $ refl $ [p][⁺]T $ refl $ [p][⁺]T∙ A∙ γ∙ $ q[⁺] $ funext λ {Θ} → funext λ {δ} →
     let
       (γ∘[p∘δ] ,ₚ ≈γ∘[p∘δ]) = ∣ γ∙ ∣ (p ∘ δ)
       (A[γ∘[p∘δ]]T ,ₚ ≈A[γ∘[p∘δ]]T) = ∣ A∙ ∣ γ∘[p∘δ]
-    in Σ-extₚ (sym coh ∙ [∘]t ∙ cong ([]tₑ _ _) $ [p][⁺]T $ q[⁺] $ refl ∙ coh) (funextₕ (cong (Tm Θ) $ (cong (λ x → L.fst (∣ A∙ ∣ x)) $ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ ≈γ∘[p∘δ]))) λ e → cong ~ₑ $ (cong (Tm Θ) $ (cong (_[ δ ]T) $ [p][⁺]T)) $ (cong []tₑ $ refl $ refl $ [p][⁺]T $ q[⁺] $ refl) $ (cong (Tm Θ) $ (cong (λ x → L.fst (∣ A∙ ∣ x)) $ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ ≈γ∘[p∘δ]))) $ e)}}
+    in Σ-extₚ (sym coh ∙ [∘]t ∙ cong ([]tₑ _ _) $ [p][⁺]T $ q[⁺] $ refl ∙ coh) (funextₕ (cong (Tm Θ) $ (cong (λ x → L.fst (∣ A∙ ∣ x)) $ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ ≈γ∘[p∘δ]))) λ e → cong ~ₑ $ (cong (Tm Θ) $ (cong (_[ δ ]T) $ [p][⁺]T)) $ (cong []tₑ $ refl $ refl $ [p][⁺]T $ q[⁺] $ refl) $ (cong (Tm Θ) $ (cong (λ x → L.fst (∣ A∙ ∣ x)) $ (sym ass ∙ cong (_∘ δ) $ p∘⁺ ∙ ass ∙ ≈γ∘[p∘δ]))) $ e)
 
   q[⟨⟩]∙ : ∀{Γ}{A : Ty Γ}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a : Tm Γ A}{a∙ : Tm∙ Γ∙ A∙ a}
          → q∙ {A∙ = A∙} [ ⟨ a∙ ⟩∙ ]t∙ ~[ cong (λ x → Tm∙ₑ _ x Γ∙) $ [p][⟨⟩]T $ [p][⟨⟩]T∙ A∙ a∙ $ q[⟨⟩] ] a∙
-  q[⟨⟩]∙ {A∙} {a∙} = cong mkTm∙ₑ $ refl $ [p][⟨⟩]T $ refl $ [p][⟨⟩]T∙ A∙ a∙ $ q[⟨⟩] $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
+  q[⟨⟩]∙ {A∙} {a∙} = cong mkTm∙ₑ $ refl $ [p][⟨⟩]T $ refl $ [p][⟨⟩]T∙ A∙ a∙ $ q[⟨⟩] $ funext λ {Δ} → funext λ {γ} →
     let
       (A[γ]T ,ₚ ≈A[γ]T) = ∣ A∙ ∣ γ
       (a[γ]t ,ₚ ≈a[γ]t) = ∣ a∙ ∣ γ
     in Σ-extₚ
          (sym coh ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ (cong []Tₑ $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ sym coh ∙ [p][⁺]T ∙ cong []Tₑ $ refl $ (cong (Δ ▹_) $ ≈A[γ]T) $ ≈A[γ]T $ (cong pₑ $ refl $ ≈A[γ]T)) $ (cong []tₑ $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ refl $ sym coh ∙ q[⁺] ∙ cong qₑ $ refl $ ≈A[γ]T) $ refl ∙ q[⟨⟩])
          (funextₕ (cong (Tm Δ) $ (cong (λ x y → L.fst (∣ A∙ ∣ {x} y)) $ refl $ (sym ass ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ (cong ∘ₑ $ refl $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ sym coh ∙ p∘⁺) $ (cong ⟨⟩ₑ $ refl $ sym ≈A[γ]T $ sym ≈a[γ]t) ∙ ass ∙ cong (γ ∘_) $ p∘⟨⟩ ∙ idr)))
-            λ e → cong ~ₑ $ (cong (Tm Δ) $ (cong _[ γ ]T $ annihilate p∘⟨⟩)) $ (cong []tₑ $ refl $ refl $ annihilate p∘⟨⟩ $ q[⟨⟩] $ refl) $ (cong (Tm Δ) $ (cong (λ x y → L.fst (∣ A∙ ∣ {x} y)) $ refl $ (sym ass ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ (cong ∘ₑ $ refl $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ sym coh ∙ p∘⁺) $ (cong ⟨⟩ₑ $ refl $ sym ≈A[γ]T $ sym ≈a[γ]t) ∙ ass ∙ cong (γ ∘_) $ p∘⟨⟩ ∙ idr))) $ e)}}
+            λ e → cong ~ₑ $ (cong (Tm Δ) $ (cong _[ γ ]T $ annihilate p∘⟨⟩)) $ (cong []tₑ $ refl $ refl $ annihilate p∘⟨⟩ $ q[⟨⟩] $ refl) $ (cong (Tm Δ) $ (cong (λ x y → L.fst (∣ A∙ ∣ {x} y)) $ refl $ (sym ass ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ (cong ∘ₑ $ refl $ refl $ (cong (Δ ▹_) $ sym ≈A[γ]T) $ refl $ sym coh ∙ p∘⁺) $ (cong ⟨⟩ₑ $ refl $ sym ≈A[γ]T $ sym ≈a[γ]t) ∙ ass ∙ cong (γ ∘_) $ p∘⟨⟩ ∙ idr))) $ e)
 
   ▹η∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{A : Ty Γ}{A∙ : Ty∙ Γ∙ A}
       → id∙ {Γ∙ = Γ∙ ▹∙ A∙} ~[ cong (Sub∙ _ _) $ ▹η ] _⁺∙ {A∙ = A∙} (p∙ {A∙ = A∙}) ∘∙ ⟨ q∙ {A∙ = A∙} ⟩∙
-  ▹η∙ {A∙} = cong mkSub∙ $ ▹η $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
+  ▹η∙ {A∙} = cong mkSub∙ $ ▹η $ funext λ {Δ} → funext λ {γ} →
     let
       (A[p∘γ]T ,ₚ ≈A[p∘γ]T) = ∣ A∙ ∣ (p ∘ γ)
     in Σ-extₚ
       (sym idl ∙ cong (_∘ γ) $ ▹η ∙ ass ∙ cong ∘ₑ $ refl $ refl $ refl $ refl $ (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ (sym [∘]T ∙ ≈A[p∘γ]T)) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ (sym [∘]T ∙ ≈A[p∘γ]T) $ coh)))
-      (funext λ {z} → λ {refl → cong (_≈ z) $ (cong (_∘ γ) $ ▹η)})}}
+      (funext λ {z} → cong (_≈ z) $ (cong (_∘ γ) $ ▹η))
 
   [▹η]T∙ : {Γ∙ : Con∙ Γ}(A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B)
          → B∙ ~[ cong (Ty∙ _) $ [▹η]T ] B∙ [ _⁺∙ {A∙ = A∙} (p∙ {A∙ = A∙}) ]T∙ [ ⟨ q∙ {A∙ = A∙} ⟩∙ ]T∙
@@ -320,16 +319,16 @@ module QIIRT-Sigma where
   ⊤∙ = Ty∙.constructor (λ _ → ⊤ ,ₚ ⊤[])
   
   ⊤[]∙ : ∀{Δ Γ}{Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → ⊤∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ ⊤[] ] ⊤∙
-  ⊤[]∙ {γ∙} = cong mkTy∙ $ ⊤[] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
-    Σ-extₚ refl (funext λ {z} → λ {refl → cong (_≈ z) $ (cong _[ δ ]T $ ⊤[])})}}
+  ⊤[]∙ {γ∙} = cong mkTy∙ $ ⊤[] $ funext λ {Θ} → funext λ {δ} →
+    Σ-extₚ refl (funext λ {z} → cong (_≈ z) $ (cong _[ δ ]T $ ⊤[]))
   
   tt∙ : {Γ∙ : Con∙ Γ} → Tm∙ Γ∙ ⊤∙ tt
   tt∙ = Tm∙.constructor (λ _ → tt ,ₚ tt[])
 
   ⊤η∙ : ∀{Γ a}{Γ∙ : Con∙ Γ}{a∙ : Tm∙ Γ∙ ⊤∙ a}
       → a∙ ~[ cong Tm∙ₑ $ Γ ∎ $ refl $ Γ∙ ∎ $ refl $ ⊤η ] tt∙
-  ⊤η∙ = cong mkTm∙ $ refl $ ⊤η $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
-    Σ-extₚ ⊤η (funext λ {z} → λ {refl → cong ~ₑ $ refl $ (cong _[ γ ]t $ ⊤η) $ refl $ refl})}}
+  ⊤η∙ = cong mkTm∙ $ refl $ ⊤η $ funext λ {Δ} → funext λ {γ} →
+    Σ-extₚ ⊤η (funext λ {z} → cong ~ₑ $ refl $ (cong _[ γ ]t $ ⊤η) $ refl $ refl)
 
   Σ∙ : ∀{Γ∙ : Con∙ Γ}{A B}(A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B) → Ty∙ Γ∙ (Σ A B)
   Σ∙ {B} A∙ B∙ = mkTy∙ _ λ Δ γ →
@@ -341,13 +340,13 @@ module QIIRT-Sigma where
 
   Σ[]∙ : ∀{Γ∙ : Con∙ Γ}{A}{A∙ : Ty∙ Γ∙ A}{B}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{Δ}{Δ∙ : Con∙ Δ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
        → Σ∙ A∙ B∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Σ[] ] Σ∙ (A∙ [ γ∙ ]T∙) (B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙)
-  Σ[]∙ {A} {A∙} {B∙} {γ∙} = cong mkTy∙ $ Σ[] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  Σ[]∙ {A} {A∙} {B∙} {γ∙} = cong mkTy∙ $ Σ[] $ funext λ {Θ} → funext λ {δ} →
     let
       (γ∘δ ,-) = ∣ γ∙ ∣ δ
       (A[γ∘δ]T ,-) = ∣ A∙ ∣ γ∘δ
     in Σ-extₚ
          (cong (Σ _) $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym un ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ un ∙ un)) $ refl $ coh)))
-         (funext λ {z} → λ {refl → cong (_≈ z) $ (cong _[ δ ]T $ Σ[])})}}
+         (funext λ {z} → cong (_≈ z) $ (cong _[ δ ]T $ Σ[]))
 
   _,∙_ : ∀{Γ∙ : Con∙ Γ}{A}{A∙ : Ty∙ Γ∙ A}{a B}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{b}
          (a∙ : Tm∙ Γ∙ A∙ a)(b∙ : Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) b)
@@ -365,7 +364,7 @@ module QIIRT-Sigma where
   ,[]∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a}{a∙ : Tm∙ Γ∙ A∙ a}{B b}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}
          {b∙ : Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) b}{Δ γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
        → (_,∙_ {B∙ = B∙} a∙ b∙) [ γ∙ ]t∙ ~[ cong Tm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ ,[] ] (_,∙_ {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} (a∙ [ γ∙ ]t∙) (coe (cong Tm∙ₑ $ refl $ [⟨⟩][]T $ refl $ [⟨⟩][]T∙ A∙ B∙ a∙ γ∙ $ coh) (b∙ [ γ∙ ]t∙)))
-  ,[]∙ {A} {A∙} {a∙} {b} {B∙} {b∙} {Δ} {γ} {γ∙} = cong mkTm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ ,[] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  ,[]∙ {A} {A∙} {a∙} {b} {B∙} {b∙} {Δ} {γ} {γ∙} = cong mkTm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ ,[] $ funext λ {Θ} → funext λ {δ} →
     let
       (γ∘δ ,ₚ ≈γ∘δ) = ∣ γ∙ ∣ δ
       (A[γ∘δ]T ,ₚ ≈A[γ∘δ]T) = ∣ A∙ ∣ γ∘δ
@@ -375,7 +374,7 @@ module QIIRT-Sigma where
     in Σ-extₚ
          (cong ,ₑ $ refl $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh)) $ refl $ (sym coh ∙ sym ≈b[γ∘δ]t ∙ cong (b [_]t) $ sym ≈γ∘δ ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ [⟨⟩][]T $ coh $ refl ∙ ≈b[γ][δ]t ∙ coh))
          (funextₕ (cong (Tm Θ) $ (cong Σ $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh))))
-                  λ e → cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Σ[])) $ (cong []tₑ $ refl $ refl $ Σ[] $ ,[] $ refl) $ (cong (Tm Θ) $ (cong Σ $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh)))) $ e)}}
+                  λ e → cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Σ[])) $ (cong []tₑ $ refl $ refl $ Σ[] $ ,[] $ refl) $ (cong (Tm Θ) $ (cong Σ $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh)))) $ e)
 
   fst∙ : ∀{Γ∙ : Con∙ Γ}{A}{A∙ : Ty∙ Γ∙ A}{B}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{a} → Tm∙ Γ∙ (Σ∙ A∙ B∙) a → Tm∙ Γ∙ A∙ (fst a)
   fst∙ {A∙ = A∙} {B∙} a∙ = Tm∙.constructor λ {Δ} γ →
@@ -395,12 +394,12 @@ module QIIRT-Sigma where
       (B[γ⁺]T ,ₚ ≈B[γ⁺]T) = ∣ B∙ ∣ γ⁺
       (B[γ⁺∘⟨⟩]T ,ₚ ≈B[γ⁺∘⟨⟩]T) = ∣ B∙ ∣ (γ⁺ ∘ ⟨ fst a[γ]t ⟩)
     in coe (cong (Tm Δ) $ (cong _[ ⟨ fst a[γ]t ⟩ ]T $ sym ≈B[γ⁺]T ∙ sym [∘]T ∙ ≈B[γ⁺∘⟨⟩]T)) (snd a[γ]t)
-    ,ₚ snd[] ∙ cong sndₑ $ refl $ ≈A[γ]T $ (cong []Tₑ $ refl $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl $ coh ∙ ≈B[γ⁺]T) $ (sym coh ∙ ≈a[γ]t) ∙ coh -- cong sndₑ $ refl $ ≈A[γ]T $ {!!} $ {!sym coh!} ∙ {!!}
+    ,ₚ snd[] ∙ cong sndₑ $ refl $ ≈A[γ]T $ (cong []Tₑ $ refl $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl $ coh ∙ ≈B[γ⁺]T) $ (sym coh ∙ ≈a[γ]t) ∙ coh
 
   Σβ₁∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ A}{a}{a∙ : Tm∙ Γ∙ A∙ a}{B b}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{b∙ : Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) b}
        → fst∙ {B∙ = B∙} (_,∙_ {B∙ = B∙} a∙ b∙) ~[ cong (Tm∙ _ _) $ Σβ₁ ] a∙
-  Σβ₁∙ {A∙} {a∙} = cong mkTm∙ $ refl $ Σβ₁ $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
-    Σ-extₚ Σβ₁ (funext λ {refl → cong ~ₑ $ refl $ (cong _[ γ ]t $ Σβ₁) $ refl $ refl})}}
+  Σβ₁∙ {A∙} {a∙} = cong mkTm∙ $ refl $ Σβ₁ $ funext λ {Δ} → funext λ {γ} →
+    Σ-extₚ Σβ₁ (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Σβ₁) $ refl $ refl))
 
   Σβ₂∙ : ∀{Γ∙ : Con∙ Γ}{A a B b}{A∙ : Ty∙ Γ∙ A}{a∙ : Tm∙ Γ∙ A∙ a}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{b∙ : Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) b}
        → snd∙ {A∙ = A∙} {B∙ = B∙} (_,∙_ {B∙ = B∙} a∙ b∙)
@@ -412,19 +411,20 @@ module QIIRT-Sigma where
     $ refl
     $ (cong ([]T∙ₑ Γ (Γ ▹ A) B Γ∙ (Γ∙ ▹∙ A∙) B∙) $ (cong ⟨_⟩ $ Σβ₁) $ (cong (⟨⟩∙ₑ _ _ _ A∙) $ Σβ₁ $ Σβ₁∙ {a∙ = a∙} {B∙ = B∙} {b∙ = b∙}))
     $ Σβ₂
-    $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
+    $ funext λ {Δ} → funext λ {γ} →
       let
         (A[γ]T ,ₚ ≈A[γ]T) = ∣ A∙ ∣ γ
         γ⁺ = coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺)
       in Σ-extₚ
            (sym coh ∙ Σβ₂ ∙ sym coh)
            (funextₕ (cong (Tm Δ) $ (cong (λ y → L.fst (∣ B∙ ∣ (γ⁺ ∘ ⟨ y ⟩))) $ Σβ₁))
-                    λ e → cong ~ₑ $ (cong (λ x → Tm Δ (B [ ⟨ x ⟩ ]T [ γ ]T)) $ Σβ₁) $ (cong []tₑ $ refl $ refl $ (cong (λ x → B [ ⟨ x ⟩ ]T) $ Σβ₁) $ Σβ₂ $ refl) $ (cong (Tm Δ) $ (cong (λ y → L.fst (∣ B∙ ∣ (coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺) ∘ ⟨ y ⟩))) $ Σβ₁)) $ e)}}
+                    λ e → cong ~ₑ $ (cong (λ x → Tm Δ (B [ ⟨ x ⟩ ]T [ γ ]T)) $ Σβ₁) $ (cong []tₑ $ refl $ refl $ (cong (λ x → B [ ⟨ x ⟩ ]T) $ Σβ₁) $ Σβ₂ $ refl) $ (cong (Tm Δ) $ (cong (λ y → L.fst (∣ B∙ ∣ (coe (cong Sub $ (cong (Δ ▹_) $ ≈A[γ]T) $ refl) (γ ⁺) ∘ ⟨ y ⟩))) $ Σβ₁)) $ e)
 
   Ση∙ : ∀{Γ∙ : Con∙ Γ}{A}{A∙ : Ty∙ Γ∙ A}{B}{B∙ : Ty∙ (Γ∙ ▹∙ A∙) B}{a}{a∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a}
       → a∙ ~[ cong (Tm∙ _ _ ) $ Ση ] (_,∙_ {A∙ = A∙} {B∙ = B∙} (fst∙ {B∙ = B∙} a∙) (snd∙ {A∙ = A∙} {B∙ = B∙} a∙))
-  Ση∙ = cong mkTm∙ $ refl $ Ση $ funext λ {Δ} → λ {refl → funext λ {γ} → λ {refl →
-    Σ-extₚ (Ση ∙ cong _,_ $ refl $ (coh ∙ coh)) (funext λ {z} → λ {refl → cong ~ₑ $ refl $ (cong _[ γ ]t $ Ση) $ refl $ refl})}}
+  Ση∙ = cong mkTm∙ $ refl $ Ση $ funext λ {Δ} → funext λ {γ} →
+    Σ-extₚ (Ση ∙ cong _,_ $ refl $ (coh ∙ coh)) (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Ση) $ refl $ refl))
+
   -------- ⊤ Σ extra stuff --------
 
   tt[]∙ : ∀{Γ∙ : Con∙ Γ}{Δ γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
@@ -437,7 +437,7 @@ module QIIRT-Sigma where
          → fst∙ {A∙ = A∙} {B∙ = B∙} a∙ [ γ∙ ]t∙
              ~[ cong (Tm∙ _ _) $ fst[] ]
            fst∙ {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} (coe (cong Tm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ coh) (a∙ [ γ∙ ]t∙))
-  fst[]∙ {A} {A∙} {B∙} {a∙} {γ∙} = cong mkTm∙ $ refl $ fst[] $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+  fst[]∙ {A} {A∙} {B∙} {a∙} {γ∙} = cong mkTm∙ $ refl $ fst[] $ funext λ {Θ} → funext λ {δ} →
     let
       (γ∘δ ,ₚ ≈γ∘δ) = ∣ γ∙ ∣ δ
       (A[γ∘δ]T ,ₚ ≈A[γ∘δ]T) = ∣ A∙ ∣ γ∘δ
@@ -445,7 +445,7 @@ module QIIRT-Sigma where
       (a[γ][δ]t ,ₚ ≈a[γ][δ]t) = ∣ coe (cong Tm∙ₑ $ refl $ Σ[] $ refl $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ coh) (a∙ [ γ∙ ]t∙) ∣ δ
     in Σ-extₚ
          (cong fstₑ $ refl $ refl $ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym ≈γ∘δ ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ refl $ (cong (Θ ▹_) $ (sym [∘]T ∙ cong (A [_]T) $ ≈γ∘δ ∙ ≈A[γ∘δ]T)) $ refl $ coh)) $ (sym ≈a[γ∘δ]t ∙ cong []tₑ $ refl $ refl $ refl $ refl $ sym ≈γ∘δ ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ Σ[] $ coh $ refl ∙ ≈a[γ][δ]t))
-         (funext λ {z} → λ {refl → cong ~ₑ $ refl $ (cong []tₑ $ refl $ refl $ refl $ fst[] $ refl) $ refl $ refl})}}
+         (funext (cong ~ₑ $ refl $ (cong []tₑ $ refl $ refl $ refl $ fst[] $ refl) $ refl $ refl))
 
   snd∙ₑ = λ Γ Γ∙ A A∙ B B∙ b b∙ → snd∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {b} b∙
 
@@ -459,14 +459,14 @@ module QIIRT-Sigma where
       $ refl
       $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[])
       $ refl
-      $ (cong mkTy∙ₑ $ refl $ refl $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl →
+      $ (cong mkTy∙ₑ $ refl $ refl $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ funext λ {Θ} → funext λ {δ} →
           let
             (γ∘δ ,-) = ∣ γ∙ ∣ δ
             (A[γ∘δ]T ,-) = ∣ A∙ ∣ γ∘δ
             (a[γ∘δ]t ,-) = ∣ a∙ ∣ γ∘δ
-          in Σ-extₚ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (cong ∘ₑ $ refl $ (cong (Θ ▹_) $ (sym un ∙ cong (A [_]T) $ sym un)) $ refl $ {!!} $ {!!} ∙ {!!})) {!!}}})
+          in Σ-extₚ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (cong ∘ₑ $ refl $ (cong (Θ ▹_) $ (sym un ∙ cong (A [_]T) $ sym un)) $ refl $ {!!} $ {!!} ∙ {!!})) {!!})
       $ snd[]
-      $ funext λ {Θ} → λ {refl → funext λ {δ} → λ {refl → {!!}}}
+      $ funext λ {Θ} → funext λ {δ} → {!!}
     -- sym (cong (snd∙ₑ Δ Δ∙ (A [ γ ]T) (A∙ [ γ∙ ]T∙) (B [ γ ⁺ ]T) (B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙)) $ {!!} $ (sym coh ∙ {!!}) ∙ Σβ₂∙ {A∙ = A∙ [ γ∙ ]T∙} {a∙ = []t∙ₑ _ _ _ A∙ _ _ _ _ (fst∙ {B∙ = B∙} a∙) γ∙} {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} ∙ sym coh)
     -- sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
 
