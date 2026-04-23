@@ -326,7 +326,7 @@ module QIIRT-Sigma where
   tt∙ = Tm∙.constructor (λ _ → tt ,ₚ tt[])
 
   ⊤η∙ : ∀{Γ a}{Γ∙ : Con∙ Γ}{a∙ : Tm∙ Γ∙ ⊤∙ a}
-      → a∙ ~[ cong Tm∙ₑ $ Γ ∎ $ refl $ Γ∙ ∎ $ refl $ ⊤η ] tt∙
+      → a∙ ~[ cong Tm∙ₑ $ reflₑ Γ $ refl $ reflₑ Γ∙ $ refl $ ⊤η ] tt∙
   ⊤η∙ = cong mkTm∙ $ refl $ ⊤η $ funext λ {Δ} → funext λ {γ} →
     Σ-extₚ ⊤η (funext λ {z} → cong ~ₑ $ refl $ (cong _[ γ ]t $ ⊤η) $ refl $ refl)
 
@@ -428,7 +428,7 @@ module QIIRT-Sigma where
   -------- ⊤ Σ extra stuff --------
 
   tt[]∙ : ∀{Γ∙ : Con∙ Γ}{Δ γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
-        → tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ Δ∙ ∎ $ ⊤[]∙ {γ∙ = γ∙} $ tt[] ] tt∙
+        → tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ reflₑ Δ∙ $ ⊤[]∙ {γ∙ = γ∙} $ tt[] ] tt∙
   tt[]∙ {γ∙ = γ∙} = coh ∙ ⊤η∙ {a∙ = coe (cong Tm∙ₑ $ refl $ ⊤[] $ refl $ ⊤[]∙ {γ∙ = γ∙} $ tt[]) (tt∙ [ γ∙ ]t∙)}
 
   fst∙ₑ = λ Γ Γ∙ A A∙ B B∙ a a∙ → fst∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {a} a∙
@@ -453,27 +453,39 @@ module QIIRT-Sigma where
            {Δ γ}{Δ∙ : Con∙ Δ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
          → snd∙ {A∙ = A∙} {B∙ = B∙} a∙ [ γ∙ ]t∙
              ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ A∙ B∙ (fst∙ {B∙ = B∙} a∙) γ∙ ∙ cong ([]T∙ₑ _ _ _ _ _ (B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙)) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙ {A∙ = A∙} {B∙ = B∙} {a∙ = a∙} {γ∙ = γ∙} )) $ snd[] ]
-           snd∙ {A∙ = A∙ [ γ∙ ]T∙} {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ coh) (a∙ [ γ∙ ]t∙))
-  snd[]∙ {A} {B} {A∙} {B∙} {a∙} {γ} {γ∙} =
-    cong mkTm∙ₑ
-      $ refl
-      $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[])
-      $ refl
-      $ (cong mkTy∙ₑ $ refl $ refl $ ([⟨⟩][]T ∙ cong (λ x → B [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ funext λ {Θ} → funext λ {δ} →
-          let
-            (γ∘δ ,-) = ∣ γ∙ ∣ δ
-            (A[γ∘δ]T ,-) = ∣ A∙ ∣ γ∘δ
-            (a[γ∘δ]t ,-) = ∣ a∙ ∣ γ∘δ
-          in Σ-extₚ (cong (λ x y → L.fst (∣ B∙ ∣ {x} y)) $ refl $ (cong ∘ₑ $ refl $ (cong (Θ ▹_) $ (sym un ∙ cong (A [_]T) $ sym un)) $ refl $ {!!} $ {!!} ∙ {!!})) {!!})
-      $ snd[]
-      $ funext λ {Θ} → funext λ {δ} → {!!}
-    -- sym (cong (snd∙ₑ Δ Δ∙ (A [ γ ]T) (A∙ [ γ∙ ]T∙) (B [ γ ⁺ ]T) (B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙)) $ {!!} $ (sym coh ∙ {!!}) ∙ Σβ₂∙ {A∙ = A∙ [ γ∙ ]T∙} {a∙ = []t∙ₑ _ _ _ A∙ _ _ _ _ (fst∙ {B∙ = B∙} a∙) γ∙} {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} ∙ sym coh)
-    -- sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
+           snd∙ {A∙ = A∙ [ γ∙ ]T∙} {B∙ = B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} (coe (cong Tm∙ₑ $ reflₑ Δ $ Σ[] $ reflₑ Δ∙ $ Σ[]∙ {A∙ = A∙} {B∙ = B∙} {γ∙ = γ∙} $ coh) (a∙ [ γ∙ ]t∙))
+  snd[]∙ {A} {B} {a} {A∙} {B∙} {a∙} {γ} {γ∙} =
+    let
+      (A[γ]T ,-) = ∣ A∙ ∣ γ
+    in sym (cong snd∙ₑ
+              $ refl
+              $ refl
+              $ refl
+              $ reflₑ (A∙ [ γ∙ ]T∙)
+              $ refl
+              $ reflₑ (B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙)
+              $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[])
+              $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _)
+                             $ Ση
+                             $ refl
+                             $ refl
+                             $ refl
+                             $ Ση∙ {A∙ = A∙} {B∙ = B∙} {a∙ = a∙}
+                             $ reflₑ γ∙ ∙ ,[]∙ {A∙ = A∙} {a∙ = fst∙ {B∙ = B∙} a∙} {B∙ = B∙} {b∙ = snd∙ {A∙ = A∙} {B∙ = B∙} a∙} {γ∙ = γ∙}) ∙ Σβ₂∙ {A = A [ γ ]T} {fst a [ γ ]t} {B [ γ ⁺ ]T} {coe (cong (Tm _) $ [⟨⟩][]T) (snd a [ γ ]t)} {A∙ [ γ∙ ]T∙} {fst∙ {A∙ = A∙} {B∙ = B∙} a∙ [ γ∙ ]t∙} {B∙ [ _⁺∙ {A∙ = A∙} γ∙ ]T∙} {coe (cong Tm∙ₑ $ refl $ [⟨⟩][]T $ refl $ [⟨⟩][]T∙ A∙ B∙ (fst∙ {B∙ = B∙} a∙) γ∙ $ coh) (snd∙ {A∙ = A∙} {B∙ = B∙} a∙ [ γ∙ ]t∙)} ∙ sym coh)
 
 {-
 --------- Π dolgok -------------------------------
+module QIIRT-Pi where
+  infixl 9 _[_]Π∙
   Π∙     : (A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B) → Ty∙ Γ∙ (Π A B)
   Π[]∙   : Π∙ A∙ B∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Π[] ] Π∙ (A∙ [ γ∙ ]T∙) (B∙ [ γ∙ ⁺∙ ]T∙)
+      _[_]Π∙ : (f∙ : Tm∙ Γ∙ (Π∙ A∙ B∙) f)(γ∙ : Sub∙ Δ∙ Γ∙ γ) → Tm∙ Δ∙ (Π∙ (A∙ [ γ∙ ]T∙) (B∙ [ γ∙ ⁺∙ ]T∙)) (f [ γ ]Π)
+    f∙ [ γ∙ ]Π∙ = coe (cong (Tm∙ₑ _) $ Π[] $ refl $ Π[]∙ $ []Π) (f∙ [ γ∙ ]t∙)
+
+    []Π∙   : a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ Π[] $ refl $ Π[]∙ $ []Π ] a∙ [ γ∙ ]Π∙
+    []Π∙ = coh
+
+    Π∙ₑ = λ Γ Γ∙ A A∙ B B∙ → Π∙ {Γ} {Γ∙} {A} {B} A∙ B∙
   lam∙   : (b∙ : Tm∙ (Γ∙ ▹∙ A∙) B∙ b) → Tm∙ Γ∙ (Π∙ A∙ B∙) (lam b)
   app∙   : (f∙ : Tm∙ Γ∙ (Π∙ A∙ B∙) f)(a∙ : Tm∙ Γ∙ A∙ a) → Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) (app f a)
   Πβ∙    : app∙ (lam∙ b∙) a∙ ~[ cong (Tm∙ _ _) $ Πβ ] b∙ [ ⟨ a∙ ⟩∙ ]t∙
@@ -482,10 +494,59 @@ module QIIRT-Sigma where
   app[]∙ : app∙ f∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ [⟨⟩][]T $ refl $ [⟨⟩][]T∙ $ app[] ] app∙ (f∙ [ γ∙ ]Π∙) (a∙ [ γ∙ ]t∙)
 
 -- ⊥ dolgok ----------------------------
+module QIIRT-Empty where
   ⊥∙         : Ty∙ Γ∙ ⊥
   ⊥[]∙       : {γ∙ : Sub∙ Δ∙ Γ∙ γ} → ⊥∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ ⊥[] ] ⊥∙ {Γ∙ = Δ∙}
   exfalso∙   : (a∙ : Tm∙ Γ∙ ⊥∙ a) → Tm∙ {A = A} Γ∙ A∙ (exfalso a)
   exfalso[]∙ : exfalso∙ {A∙ = A∙} a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ _ _) $ exfalso[] ] exfalso∙ (coe (cong (Tm∙ₑ _) $ ⊥[] $ refl $ ⊥[]∙ $ coh) (a∙ [ γ∙ ]t∙))
+
+----------- Bool dolgok -------------------------
+module QIIRT-Bool where
+  Bool∙    : Ty∙ Γ∙ Bool
+  Bool[]∙  : Bool∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Bool[] ] Bool∙
+  true∙    : Tm∙ Γ∙ Bool∙ true
+  false∙   : Tm∙ Γ∙ Bool∙ false
+  true[]∙  : true∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ $ true[] ] true∙
+  false[]∙ : false∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ $ false[] ] false∙
+  elim∙    : {Γ : Con} {A : Ty (Γ ▹ Bool)}
+             {a : Tm Γ (A [ ⟨ true ⟩ ]T)}
+             {b : Tm Γ (A [ ⟨ false ⟩ ]T)}
+             {c : Tm Γ Bool}
+             {Γ∙ : Con∙ Γ}
+             (A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A)
+             (a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a)
+             (b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b)
+             (c∙ : Tm∙ Γ∙ Bool∙ c)
+           → Tm∙ Γ∙ (A∙ [ ⟨ c∙ ⟩∙ ]T∙) (elim A a b c)
+  elim[]∙  :
+    {Γ Δ : Con}
+    {A : Ty (Γ ▹ Bool)} →
+    {a : Tm Γ (A [ ⟨ true ⟩ ]T)} {b : Tm Γ (A [ ⟨ false ⟩ ]T)} →
+    {c : Tm Γ Bool} {γ : Sub Δ Γ}
+    {Γ∙ : Con∙ Γ} {Δ∙ : Con∙ Δ}
+    {A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A} →
+    {a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a} {b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b} →
+    {c∙ : Tm∙ Γ∙ Bool∙ c} {γ∙ : Sub∙ Δ∙ Γ∙ γ} →
+    let wt = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ true[])
+        wf = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ false[])
+        wc = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ coh)
+    in
+    elim∙ A∙ a∙ b∙ c∙ [ γ∙ ]t∙
+      ~[ cong (Tm∙ₑ _) $ weave wc $ refl $ weave∙ wc (⟨⟩∘∙ ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ coh) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ $ coh $ coh)) $ elim[] ]
+    elim∙
+      (A∙ [ coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙) $ refl $ coh) (γ∙ ⁺∙) ]T∙)
+      (coe
+        (cong (Tm∙ₑ _) $ weave wt $ refl $ weave∙ wt (⟨⟩∘∙ ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ true[]) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ $ true[] $ true[]∙)) $ coh)
+        (a∙ [ γ∙ ]t∙))
+      (coe
+        (cong (Tm∙ₑ _) $ weave wf $ refl $ weave∙ wf (⟨⟩∘∙ ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ false[]) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ $ false[] $ false[]∙)) $ coh)
+        (b∙ [ γ∙ ]t∙))
+      (coe
+        (cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ $ coh)
+        (c∙ [ γ∙ ]t∙))
+  Boolβ₁∙  : elim∙ A∙ a∙ b∙ true∙ ~[ cong (Tm∙ _ _) $ Boolβ₁ ] a∙
+  Boolβ₂∙  : elim∙ A∙ a∙ b∙ false∙ ~[ cong (Tm∙ _ _) $ Boolβ₂ ] b∙
+
 -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -}
 {-
 D : DepModel {lzero} {lzero} {lzero}
