@@ -81,9 +81,8 @@ _⠀_ = _$_
 cong : (a : A) → a ~ a
 cong a = refl
 
-infixr 4.75 _∎
-_∎ : (a : A) → a ~ a
-_ ∎ = refl
+reflₑ : (a : A) → a ~ a
+reflₑ a = refl {a = a}
 
 the : (A : Set i) → A → A
 the _ a = a
@@ -113,6 +112,10 @@ module L where
 
   open Σ public
 
+  fstₑ = λ {(i)} {(j)} A B t → fst {i} {j} {A} {B} t
+
+  sndₑ = λ {(i)} {(j)} A B t → snd {i} {j} {A} {B} t
+  
 open L
 
 record Lift {i}(A : Prop i) : Set i where
