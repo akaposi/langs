@@ -87,7 +87,7 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l) where
     [p][⟨⟩]T∙ = annihilate∙ p∘⟨⟩ p∘⟨⟩∙
     
     field
-      q[⁺]∙   : q∙ [ γ∙ ⁺∙ ]t∙ ~[ cong Tm∙ₑ $ cong (Δ ▹ A [ γ ]T) $ [p][⁺]T $ cong (Δ∙ ▹∙ A∙ [ γ∙ ]T∙) $ [p][⁺]T∙ $ q[⁺] ] q∙
+      q[⁺]∙   : q∙ [ γ∙ ⁺∙ ]t∙ ~[ cong Tm∙ₑ $ reflₑ (Δ ▹ A [ γ ]T) $ [p][⁺]T $ reflₑ (Δ∙ ▹∙ A∙ [ γ∙ ]T∙) $ [p][⁺]T∙ $ q[⁺] ] q∙
       q[⟨⟩]∙  : q∙ [ ⟨ a∙ ⟩∙ ]t∙ ~[ cong (λ x → Tm∙ₑ _ x Γ∙) $ [p][⟨⟩]T $ [p][⟨⟩]T∙ $ q[⟨⟩] ] a∙
       ▹η∙     : id∙ {Γ∙ = Γ∙ ▹∙ A∙} ~[ cong (Sub∙ _ _) $ ▹η ] p∙ ⁺∙ ∘∙ ⟨ q∙ ⟩∙
       
@@ -132,11 +132,11 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l)(ℂ : CwF∙ 𝕊) where
       ⊤∙   : Ty∙ Γ∙ ⊤
       ⊤[]∙ : ⊤∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ ⊤[] ] ⊤∙
       tt∙  : Tm∙ Γ∙ ⊤∙ tt
-      ⊤η∙  : a∙ ~[ cong Tm∙ₑ $ Γ ∎ $ refl $ Γ∙ ∎ $ refl $ ⊤η ] tt∙
+      ⊤η∙  : a∙ ~[ cong Tm∙ₑ $ reflₑ Γ $ refl $ reflₑ Γ∙ $ refl $ ⊤η ] tt∙
       Σ∙   : (A∙ : Ty∙ Γ∙ A)(B∙ : Ty∙ (Γ∙ ▹∙ A∙) B) → Ty∙ Γ∙ (Σ A B)
       Σ[]∙ : Σ∙ A∙ B∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Σ[] ] Σ∙ (A∙ [ γ∙ ]T∙) (B∙ [ γ∙ ⁺∙ ]T∙)
       _,∙_ : (a∙ : Tm∙ Γ∙ A∙ a)(b∙ : Tm∙ Γ∙ (B∙ [ ⟨ a∙ ⟩∙ ]T∙) b) → Tm∙ Γ∙ (Σ∙ A∙ B∙) (a , b)
-      ,[]∙ : (a∙ ,∙ b∙) [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ Σ[] $ refl $ Σ[]∙ $ ,[] ] (a∙ [ γ∙ ]t∙ ,∙ coe (cong (Tm∙ₑ Δ) $ [⟨⟩][]T $ Δ∙ ∎ $ [⟨⟩][]T∙ $ coh) (b∙ [ γ∙ ]t∙))
+      ,[]∙ : (a∙ ,∙ b∙) [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ Σ[] $ refl $ Σ[]∙ $ ,[] ] (a∙ [ γ∙ ]t∙ ,∙ coe (cong (Tm∙ₑ Δ) $ [⟨⟩][]T $ reflₑ Δ∙ $ [⟨⟩][]T∙ $ coh) (b∙ [ γ∙ ]t∙))
       fst∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a → Tm∙ Γ∙ A∙ (fst a)
       snd∙ : (a∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a) → Tm∙ Γ∙ (B∙ [ ⟨ fst∙ a∙ ⟩∙ ]T∙) (snd a)
       Σβ₁∙ : fst∙ (a∙ ,∙ b∙) ~[ cong (Tm∙ _ _) $ Σβ₁ ] a∙
@@ -146,22 +146,22 @@ module _ {i j k l}(𝕊 : Sorts∙ i j k l)(ℂ : CwF∙ 𝕊) where
              b∙
       Ση∙  : {w∙ : Tm∙ Γ∙ (Σ∙ A∙ B∙) a} → w∙ ~[ cong (Tm∙ _ _ ) $ Ση ] (fst∙ w∙ ,∙ snd∙ w∙)
 
-    tt[]∙ : tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ Δ∙ ∎ $ ⊤[]∙ $ tt[] ] tt∙
+    tt[]∙ : tt∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ Δ) $ ⊤[] $ reflₑ Δ∙ $ ⊤[]∙ $ tt[] ] tt∙
     tt[]∙ {γ∙ = γ∙} = coh ∙ ⊤η∙ {a∙ = coe (cong Tm∙ₑ $ refl $ ⊤[] $ refl $ ⊤[]∙ $ tt[]) (tt∙ [ γ∙ ]t∙)}
 
     infixr 4 _,≈∙_
-    _,≈∙_ : (e1 : a∙ ≈ b∙) → c∙ ~[ cong Tm∙ₑ $ Γ ∎ $ B [ ⟨ a ⟩ ]T ∎ $ Γ∙ ∎ $ (cong (λ x → B∙ [ ⟨ x ⟩∙ ]T∙) $ e1) $ refl ] d∙ → a∙ ,∙ c∙ ≈ b∙ ,∙ d∙
+    _,≈∙_ : (e1 : a∙ ≈ b∙) → c∙ ~[ cong Tm∙ₑ $ reflₑ Γ $ reflₑ (B [ ⟨ a ⟩ ]T) $ reflₑ Γ∙ $ (cong (λ x → B∙ [ ⟨ x ⟩∙ ]T∙) $ e1) $ refl ] d∙ → a∙ ,∙ c∙ ≈ b∙ ,∙ d∙
     e1 ,≈∙ e2 = cong _,∙_ $ e1 $ e2
 
     fst∙ₑ = λ Γ Γ∙ A A∙ B B∙ a a∙ → fst∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {a} a∙
     
-    fst[]∙ : fst∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ _ _) $ fst[] ] fst∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
+    fst[]∙ : fst∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ _ _) $ fst[] ] fst∙ (coe (cong Tm∙ₑ $ reflₑ Δ $ Σ[] $ reflₑ Δ∙ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
     fst[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
-      sym (cong (fst∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ Δ ∎ $ Δ∙ ∎ $ γ ∎ $ Ση∙ $ γ∙ ∎ ∙ ,[]∙) ∙ Σβ₁∙)
+      sym (cong (fst∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ reflₑ Δ $ reflₑ Δ∙ $ reflₑ γ $ Ση∙ $ reflₑ γ∙ ∙ ,[]∙) ∙ Σβ₁∙)
 
     snd∙ₑ = λ Γ Γ∙ A A∙ B B∙ b b∙ → snd∙ {Γ} {Γ∙} {A} {A∙} {B} {B∙} {b} b∙
 
-    snd[]∙ : snd∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ ∙ cong ([]T∙ₑ _ _ _ _ _ _) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙)) $ snd[] ] snd∙ (coe (cong Tm∙ₑ $ Δ ∎ $ Σ[] $ Δ∙ ∎ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
+    snd[]∙ : snd∙ a∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ ([⟨⟩][]T ∙ cong (λ x → A [ γ ⁺ ]T [ ⟨ x ⟩ ]T) $ fst[]) $ refl $ ([⟨⟩][]T∙ ∙ cong ([]T∙ₑ _ _ _ _ _ _) $ (cong ⟨_⟩ $ fst[]) $ (cong (⟨⟩∙ₑ _ _ _ _) $ fst[] $ fst[]∙)) $ snd[] ] snd∙ (coe (cong Tm∙ₑ $ reflₑ Δ $ Σ[] $ reflₑ Δ∙ $ Σ[]∙ $ coh) (a∙ [ γ∙ ]t∙))
     snd[]∙ {Γ} {Γ∙} {A} {B} {a} {A∙} {B∙} {a∙} {Δ} {γ} {Δ∙} {γ∙} =
       sym (cong (snd∙ₑ _ _ _ _ _ _) $ (sym coh ∙ cong _[ γ ]t $ Ση ∙ ,[]) $ (sym coh ∙ cong ([]t∙ₑ _ _ _ _) $ Ση $ refl $ refl $ refl $ Ση∙ $ refl ∙ ,[]∙) ∙ Σβ₂∙ ∙ sym coh)
 
