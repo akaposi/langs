@@ -153,6 +153,8 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
     field
       Π            : (A : Ty Γ)(B : Ty (Γ ▹ A)) → Ty Γ
       instance Π[] : Π A B [ γ ]T ≈ Π (A [ γ ]T) (B [ γ ⁺ ]T)
+
+    Πₑ = λ Γ A B → Π {Γ} A B
     
     _[_]Π : (f : Tm Γ (Π A B))(γ : Sub Δ Γ) → Tm Δ (Π (A [ γ ]T) (B [ γ ⁺ ]T))
     f [ γ ]Π = coe (cong (Tm _) $ Π[]) (f [ γ ]t)
@@ -168,6 +170,10 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
       instance Πη    : lam (app (f [ p ]Π) q) ~[ cong (Tm _) $ (cong (Π _) $ sym [▹η]T) ] f
       instance lam[] : lam b [ γ ]t ~[ cong (Tm _) $ Π[] ] lam (b [ γ ⁺ ]t)
       instance app[] : app f a [ γ ]t ~[ cong (Tm _) $ [⟨⟩][]T ] app (f [ γ ]Π) (a [ γ ]t)
+
+    lamₑ = λ Γ A B t → lam {Γ} {A} {B} t
+    
+    appₑ = λ Γ A B f a → app {Γ} {A} {B} f a
 
 module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
   open Sorts 𝕊
@@ -185,6 +191,8 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
       instance ⊥[]       : ⊥ [ γ ]T ≈ ⊥
       exfalso            : Tm Γ ⊥ → Tm Γ A
       instance exfalso[] : exfalso {A = A} a [ γ ]t ≈ exfalso (coe (cong (Tm _) $ ⊥[]) (a [ γ ]t))
+
+    exfalsoₑ = λ Γ A a → exfalso {Γ} {A} a
 
 module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
   open Sorts 𝕊
@@ -232,6 +240,7 @@ module _ {i j k l}(𝕊 : Sorts i j k l)(ℂ : CwF 𝕊) where
       instance Boolβ₁  : elim A a b true ≈ a
       instance Boolβ₂  : elim A a b false ≈ b
       -- NOP -- Boolη   : f [ ⟨ true ⟩ ]t ≈ a → f [ ⟨ false ⟩ ]t ≈ b → f [ ⟨ c ⟩ ]t ≈ elim A a b c
+    elimₑ = λ Γ A a b c → elim {Γ} A a b c
 
 record BaseModel {i}{j}{k} : Set (lsuc (i ⊔ j ⊔ k)) where
   field
