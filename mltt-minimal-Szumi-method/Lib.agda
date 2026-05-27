@@ -75,6 +75,10 @@ infixl 4.5 _$_
 _$_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → f₀ ~ f₁ → ∀{a₀ a₁} → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
 e $ refl = funext (Π-inj₂ (toTy~ e) refl) $' e
 
+infixl 4.5 _$[_,_]_
+_$[_,_]_ : {B₀ : A₀ → Set j}{B₁ : A₁ → Set j}{f₀ : Π' A₀ B₀}{f₁ : Π' A₁ B₁} → f₀ ~ f₁ → ∀ a₀ a₁  → a₀ ~ a₁ → f₀ a₀ ~ f₁ a₁
+e1 $[ a₀ , a₁ ] e2 = e1 $ e2
+
 infixl 4.5 _⠀_
 _⠀_ = _$_
 
