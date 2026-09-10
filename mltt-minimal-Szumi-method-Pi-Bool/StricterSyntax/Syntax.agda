@@ -24,7 +24,7 @@ Iₛ : Model {lzero} {lzero} {lzero}
 Iₛ = record
       { sorts = record { Con = I.Con ; Sub = I.Sub ; Ty = I.Ty ; Tm = I.Tm }
       ; cwf = record
-               { _∘_ = λ {Δ} {Γ} {Θ} γ δ → Sub↓ (D._∘∙_ {Δ} {_} {Γ} {_} {γ} {Θ} {_} {δ} {!!} {!!})
+               { _∘_ = λ {Δ} {Γ} {Θ} γ δ → Sub↓ (D._∘∙_ {Δ} {_} {Γ} {_} {γ} {Θ} {_} {δ} ? ?)
                ; ass = {!!}
                ; id = {!!}
                ; idl = {!!}
