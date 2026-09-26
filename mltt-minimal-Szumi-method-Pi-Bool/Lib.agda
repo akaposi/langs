@@ -111,9 +111,11 @@ module L where
 
   open Σ public
 
-  fstₑ = λ {(i)} {(j)} A B t → fst {i} {j} {A} {B} t
+  fstₑ = λ i j A B t → fst {i} {j} {A} {B} t
 
-  sndₑ = λ {(i)} {(j)} A B t → snd {i} {j} {A} {B} t
+  sndₑ = λ i j A B t → snd {i} {j} {A} {B} t
+
+  open import Agda.Builtin.Unit public
   
 open L
 
@@ -150,6 +152,8 @@ infix 0 ∃P-syntax
 
 syntax ∃P-syntax A (λ x → B) = ∃[ x ∶ A ] B
 
+-- {-# DISPLAY ∃P-syntax = ∃P #-}
+
 ∃ : ∀ {a b}{A : Set a} → (A → Prop b) → Set (a ⊔ b)
 ∃ B = Σ _ (λ a → Liftₚ (B a))
 
@@ -159,6 +163,8 @@ infix 0 ∃-syntax
 ∃-syntax = ∃
 
 syntax ∃-syntax (λ x → B) = ∃[ x ] B
+
+-- {-# DISPLAY ∃-syntax = ∃ #-}
 
 Σ-extₕ :
   {B₀ : A₀ → Set i} {B₁ : A₁ → Set i} {t₀ : Σ A₀ B₀} {t₁ : Σ A₁ B₁} →

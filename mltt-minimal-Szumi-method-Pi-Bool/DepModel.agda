@@ -393,6 +393,8 @@ record DepModel {i}{j}{k} : Set (lsuc (i ⊔ j ⊔ k)) where
 
   open Sorts∙ sorts∙ public
   open CwF∙ cwf∙ public
+  open LiftT∙ liftT∙ public
+  open UT∙ uT∙ public
   open Pi∙ pi∙ public
   open BoolT∙ bool∙ public
 
@@ -423,11 +425,12 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
   ⟦⟧Tmₑ = λ Γ n A a → ⟦_⟧Tm {Γ} {n} {A} a
 
   postulate
+  ------------------------- CwF -------------------------
     ⟦◇⟧ : ⟦ ◇ ⟧Con     ↝ ◇∙
     ⟦▹⟧ : ⟦ Γ ▹ A ⟧Con ↝ ⟦ Γ ⟧Con ▹∙ ⟦ A ⟧Ty
 
     {-# REWRITE ⟦◇⟧ ⟦▹⟧ #-}
-{-
+
     ⟦∘⟧   : ⟦ γ ∘ δ ⟧Sub ↝ ⟦ γ ⟧Sub ∘∙ ⟦ δ ⟧Sub
     ⟦id⟧  : ⟦ id {Γ = Γ} ⟧Sub ↝ id∙
     ⟦ε⟧   : ⟦ ε {Γ = Γ} ⟧Sub ↝ ε∙
@@ -447,6 +450,27 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
     
     {-# REWRITE ⟦q⟧ ⟦⁺⟧ ⟦⟨⟩⟧ #-}
 
+  ------------------------ Lift -------------------------
+    ⟦Lift⟧   : ⟦ Lift {Γ = Γ} {n = n} A ⟧Ty ↝ Lift∙ ⟦ A ⟧Ty
+
+    {-# REWRITE ⟦Lift⟧ #-}
+    
+    ⟦lift⟧   : ⟦ lift {Γ = Γ} {A = A} a ⟧Tm ↝ lift∙ ⟦ a ⟧Tm
+    ⟦unlift⟧ : ⟦ unlift {Γ = Γ} {A = A} a ⟧Tm ↝ unlift∙ ⟦ a ⟧Tm
+
+    {-# REWRITE ⟦lift⟧ ⟦unlift⟧ #-}
+
+  -------------------------- U --------------------------
+    ⟦U⟧  : ⟦ U {Γ = Γ} n ⟧Ty ↝ U∙ n
+    
+    {-# REWRITE ⟦U⟧ #-}
+    
+    ⟦El⟧ : ⟦ El a ⟧Ty ↝ El∙ ⟦ a ⟧Tm
+    ⟦cd⟧ : ⟦ cd A ⟧Tm ↝ cd∙ ⟦ A ⟧Ty
+
+    {-# REWRITE ⟦El⟧ ⟦cd⟧ #-}
+
+  -------------------------- Π --------------------------
     ⟦Π⟧ : ⟦ Π A B ⟧Ty ↝ Π∙ ⟦ A ⟧Ty ⟦ B ⟧Ty
     
     {-# REWRITE ⟦Π⟧ #-}
@@ -456,6 +480,7 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
 
     {-# REWRITE ⟦lam⟧ ⟦app⟧ #-}
 
+  ------------------------ Bool -------------------------
     ⟦Bool⟧ : ⟦ Bool {Γ = Γ} ⟧Ty ↝ Bool∙
     
     {-# REWRITE ⟦Bool⟧ #-}
@@ -470,22 +495,29 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
     {-# REWRITE ⟦elim⟧ #-}
 
     -- Without democracy, Ty, Sub, Tm can be injective
-    Ty-inj : Ty Γ ≈ Ty Δ → Γ ≈ Δ
+    Ty-inj₁ : Ty Γ n ≈ Ty Δ m → Γ ≈ Δ
+    Ty-inj₂ : Ty Γ n ≈ Ty Δ m → n ≈ m
 
     Sub-inj₁ : Sub Δ Γ ≈ Sub Δ' Γ' → Δ ≈ Δ'
     Sub-inj₂ : Sub Δ Γ ≈ Sub Δ' Γ' → Γ ≈ Γ'
 
     Tm-inj₁ : Tm Γ A ≈ Tm Γ' B → Γ ≈ Γ'
-    Tm-inj₂ : (e : Tm Γ A ≈ Tm Γ' B) → A ~[ cong Ty $ Tm-inj₁ e ] B
+    Tm-inj₂ : Tm Γ {n} A ≈ Tm Γ' {m} B → n ≈ m
+    Tm-inj₃ : (e : Tm Γ {n} A ≈ Tm Γ' {m} B) → A ~[ cong Ty $ Tm-inj₁ e $ Tm-inj₂ e ] B
 
     -- Rules with coe
-    ⟦Ty-coe⟧  : {e : Ty Γ ≈ Ty Δ} → ⟦ coe e A ⟧Ty ↝ coe (cong Ty∙ₑ $ Ty-inj e $ (cong ⟦_⟧Con $ Ty-inj e) $ coh) ⟦ A ⟧Ty
+    ⟦Ty-coe⟧  : {e : Ty Γ n ≈ Ty Δ m} → ⟦ coe e A ⟧Ty ↝ coe (cong Ty∙ₑ $ Ty-inj₁ e $ (cong ⟦_⟧Con $ Ty-inj₁ e) $ Ty-inj₂ e $ coh) ⟦ A ⟧Ty
     ⟦Sub-coe⟧ : {e : Sub Δ Γ ≈ Sub Δ' Γ'}
               → let e1 = Sub-inj₁ e
                     e2 = Sub-inj₂ e
                 in ⟦ coe e γ ⟧Sub ↝ coe (cong Sub∙ₑ $ e1 $ e2 $ (cong ⟦_⟧Con $ e1) $ (cong ⟦_⟧Con $ e2) $ coh) ⟦ γ ⟧Sub
-    ⟦Tm-coe⟧  : {e : Tm Γ A ≈ Tm Δ B}
+
+    {-# REWRITE ⟦Ty-coe⟧ ⟦Sub-coe⟧ #-}
+
+    ⟦Tm-coe⟧  : {e : Tm Γ {n} A ≈ Tm Δ {m} B}
               → let e1 = Tm-inj₁ e
                     e2 = Tm-inj₂ e
-                in ⟦ coe e a ⟧Tm ↝ coe (cong Tm∙ₑ $ e1 $ e2 $ (cong ⟦_⟧Con $ e1) $ (cong ⟦⟧Tyₑ $ e1 $ e2) $ coh) ⟦ a ⟧Tm
--- -} -- -} -- -} -- -} -- -} -- -}
+                    e3 = Tm-inj₃ e
+                in ⟦ coe e a ⟧Tm ↝ coe (cong Tm∙ₑ $ e1 $ e2 $ e3 $ (cong ⟦_⟧Con $ e1) $ (cong ⟦⟧Tyₑ $ e1 $ e2 $ e3) $ coh) ⟦ a ⟧Tm
+
+    {-# REWRITE ⟦Tm-coe⟧ #-}

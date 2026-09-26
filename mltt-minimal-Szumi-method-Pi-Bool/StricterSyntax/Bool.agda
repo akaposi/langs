@@ -1,25 +1,25 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
 --------- Bool stuff -------------------------------
-module Dictatorship.QIIRT.Bool where
+module StricterSyntax.Bool where
 
 open import Lib
-open import Dictatorship.Syntax
-open import Dictatorship.DepModel
+open import Syntax
+open import DepModel
 open I
 
-open import Dictatorship.QIIRT.Sorts
+open import StricterSyntax.Sorts
 open Con∙
 open Sub∙
 open Ty∙
 open Tm∙
 
-open import Dictatorship.QIIRT.CwF
+open import StricterSyntax.CwF
 
-Bool∙ : ∀{Γ}{Γ∙ : Con∙ Γ} → Ty∙ Γ∙ Bool
+Bool∙ : ∀{Γ}{Γ∙ : Con∙ Γ} → Ty∙ Γ∙ 0 Bool
 Bool∙ = Ty∙.constructor λ _ → Bool ,ₚ Bool[]
 
-Bool[]∙ : ∀{Δ Γ}{Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → Bool∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _) $ Bool[] ] Bool∙
+Bool[]∙ : ∀{Δ Γ}{Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ} → Bool∙ [ γ∙ ]T∙ ~[ cong (Ty∙ _ _) $ Bool[] ] Bool∙
 Bool[]∙ {γ∙} = cong mkTy∙ $ Bool[] $ funext λ {Θ} → funext λ {δ} → Σ-extₚ refl (funext (cong (_≈ _) $ (cong _[ δ ]T $ Bool[])))
 
 true∙ : ∀{Γ}{Γ∙ : Con∙ Γ} → Tm∙ Γ∙ Bool∙ true
@@ -29,19 +29,14 @@ false∙ : ∀{Γ}{Γ∙ : Con∙ Γ} → Tm∙ Γ∙ Bool∙ false
 false∙ = Tm∙.constructor λ _ → false ,ₚ false[]
 
 true[]∙ : ∀{Δ Γ}{Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
-        → true∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ true[] ] true∙
-true[]∙ {γ∙} = cong mkTm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ true[] $ funext λ {Θ} → funext λ {δ} → Σ-extₚ refl (funext (cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Bool[])) $ (cong []tₑ $ refl $ refl $ Bool[] $ true[] $ refl) $ refl $ refl))
+        → true∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ true[] ] true∙
+true[]∙ {γ∙} = cong mkTm∙ₑ $ refl $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ true[] $ funext λ {Θ} → funext λ {δ} → Σ-extₚ refl (funext (cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Bool[])) $ (cong []tₑ $ refl $ refl $ refl $ Bool[] $ true[] $ refl) $ refl $ refl))
 
 false[]∙ : ∀{Δ Γ}{Δ∙ : Con∙ Δ}{Γ∙ : Con∙ Γ}{γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
-         → false∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ false[] ] false∙
-false[]∙ {γ∙} = cong mkTm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ false[] $ funext λ {Θ} → funext λ {δ} → Σ-extₚ refl (funext (cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Bool[])) $ (cong []tₑ $ refl $ refl $ Bool[] $ false[] $ refl) $ refl $ refl))
-                                                                                                                                                                                                                                                       
-elim∙    : {Γ : Con} {A : Ty (Γ ▹ Bool)}
-           {a : Tm Γ (A [ ⟨ true ⟩ ]T)}
-           {b : Tm Γ (A [ ⟨ false ⟩ ]T)}
-           {c : Tm Γ Bool}
-           {Γ∙ : Con∙ Γ}
-           (A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A)
+         → false∙ [ γ∙ ]t∙ ~[ cong (Tm∙ₑ _ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ false[] ] false∙
+false[]∙ {γ∙} = cong mkTm∙ₑ $ refl $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ false[] $ funext λ {Θ} → funext λ {δ} → Σ-extₚ refl (funext (cong ~ₑ $ (cong (Tm Θ) $ (cong _[ δ ]T $ Bool[])) $ (cong []tₑ $ refl $ refl $ refl $ Bool[] $ false[] $ refl) $ refl $ refl))
+                                                                                                                                                                                                                      
+elim∙    : ∀{n Γ A a b c}{Γ∙ : Con∙ Γ}(A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) n A)
            (a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a)
            (b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b)
            (c∙ : Tm∙ Γ∙ Bool∙ c)
@@ -65,42 +60,40 @@ elim∙ {A} {a} A∙ a∙ b∙ c∙ = Tm∙.constructor λ γ →
   ,ₚ elim[] ∙ cong elim $ un $ (sym coh ∙ un ∙ coh) $ (sym coh ∙ un ∙ coh) $ (sym coh ∙ un) ∙ coh
 
 elim[]∙  :
-  {Γ Δ : Con}
-  {A : Ty (Γ ▹ Bool)} →
-  {a : Tm Γ (A [ ⟨ true ⟩ ]T)} {b : Tm Γ (A [ ⟨ false ⟩ ]T)} →
-  {c : Tm Γ Bool} {γ : Sub Δ Γ}
-  {Γ∙ : Con∙ Γ} {Δ∙ : Con∙ Δ}
-  {A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A} →
+  ∀{n Γ Δ A a b c γ}{Γ∙ : Con∙ Γ}{Δ∙ : Con∙ Δ}
+  {A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) n A} →
   {a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a} {b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b} →
   {c∙ : Tm∙ Γ∙ Bool∙ c} {γ∙ : Sub∙ Δ∙ Γ∙ γ} →
-  let wt = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ true[])
-      wf = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ false[])
-      wc = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ coh)
+  let wt = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ true[])
+      wf = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ false[])
+      wc = ⟨⟩∘ ∙ cong (∘ₑ _) $ (cong (_ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ coh)
   in
   elim∙ A∙ a∙ b∙ c∙ [ γ∙ ]t∙
-    ~[ cong (Tm∙ₑ _) $ weave wc $ refl $ weave∙ A∙ ⟨ c∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙)) (⟨⟩∙ₑ Δ Δ∙ Bool Bool∙ (coe (cong (Tm Δ) $ Bool[]) (c [ γ ]t)) (coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙))) wc (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ coh) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ coh $ coh)) $ elim[] ]
+    ~[ cong (Tm∙ₑ _ _) $ weave wc $ refl $ weave∙ A∙ ⟨ c∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙)) (⟨⟩∙ₑ Δ Δ∙ 0 Bool Bool∙ (coe (cong (Tm Δ) $ Bool[]) (c [ γ ]t)) (coe (cong Tm∙ₑ $ refl $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙))) wc (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ coh) $ coh $ (cong (⟨⟩∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ coh $ coh)) $ elim[] ]
   elim∙
-    (A∙ [ coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙ ) ]T∙)
+    (A∙ [ coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong (▹∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙ ) ]T∙)
     (coe
-      (cong (Tm∙ₑ _) $ weave wt $ refl $ weave∙ A∙ ⟨ true∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙)) ⟨ true∙ ⟩∙ wt (⟨⟩∘∙ {a∙ = true∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ true[]) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ true[] $ true[]∙ {γ∙ = γ∙})) $ coh)
+      (cong (Tm∙ₑ _ _) $ weave wt $ refl $ weave∙ A∙ ⟨ true∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙)) ⟨ true∙ ⟩∙ wt (⟨⟩∘∙ {a∙ = true∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ true[]) $ coh $ (cong (⟨⟩∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ true[] $ true[]∙ {γ∙ = γ∙})) $ coh)
       (a∙ [ γ∙ ]t∙))
     (coe
-      (cong (Tm∙ₑ _) $ weave wf $ refl $ weave∙ A∙ ⟨ false∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙) ) ⟨ false∙ ⟩∙ wf (⟨⟩∘∙ {a∙ = false∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _) $ Bool[] $ false[]) $ coh $ (cong (⟨⟩∙ₑ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ false[] $ false[]∙ {γ∙ = γ∙})) $ coh)
+      (cong (Tm∙ₑ _ _) $ weave wf $ refl $ weave∙ A∙ ⟨ false∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (_ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (_ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙) ) ⟨ false∙ ⟩∙ wf (⟨⟩∘∙ {a∙ = false∙} {γ∙ = γ∙} ∙ cong (∘∙ₑ _ _) $ (cong (_ ▹_) $ Bool[]) $ (cong (▹∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ refl $ coh $ (cong (⟨⟩ₑ _ _) $ Bool[] $ false[]) $ coh $ (cong (⟨⟩∙ₑ _ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ false[] $ false[]∙ {γ∙ = γ∙})) $ coh)
       (b∙ [ γ∙ ]t∙))
     (coe
-      (cong (Tm∙ₑ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh)
+      (cong (Tm∙ₑ _ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh)
       (c∙ [ γ∙ ]t∙))
 elim[]∙ {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ∙} = cong mkTm∙ₑ
   $ refl
-  $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh))
+  $ refl
+  $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh))
   $ refl
   $ weave∙ A∙ ⟨ c∙ ⟩∙ γ∙
            (coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙))
-           ⟨ coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ⟩∙
-           (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh))
-           (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong ∘∙ₑ $ refl $ refl $ (cong (Δ ▹_) $ Bool[]) $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh) $ coh $ (cong ⟨⟩∙ₑ $ refl $ refl $ Bool[] $ (cong mkTy∙ $ Bool[] $ funext (funext λ {δ} → Σ-extₚ refl (funext (cong (_≈ _) $ (cong _[ δ ]T $ Bool[]))))) $ coh $ coh))
+           ⟨ coe (cong Tm∙ₑ $ refl $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ⟩∙
+           (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh))
+           (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong ∘∙ₑ $ refl $ refl $ (cong (Δ ▹_) $ Bool[]) $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh) $ coh $ (cong ⟨⟩∙ₑ $ refl $ refl $ refl $ Bool[] $ (cong mkTy∙ $ Bool[] $ funext (funext λ {δ} → Σ-extₚ refl (funext (cong (_≈ _) $ (cong _[ δ ]T $ Bool[]))))) $ coh $ coh))
   $ elim[]
-  $ funext λ {Θ} → funext λ {δ} →
+  $ funext λ {Θ} → funext λ {δ} → {!!} {-
+  $ 
       let
         (γ∘δ ,-) = ∣ γ∙ ∣ δ
         (A[γ∘δ⁺]T ,-) = ∣ A∙ ∣ (coe (cong Sub $ (cong (Θ ▹_) $ Bool[]) $ refl) (γ∘δ ⁺))
@@ -185,17 +178,18 @@ elim[]∙ {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ
                           $ (cong []tₑ $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)) $ elim[] $ reflₑ δ)
                           $ (cong (Tm Θ) $ (sym un ∙ cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)) ∙ un))
                           $ e)
-
+{-
 Boolβ₁∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A}
           {a}{a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a}
             {b}{b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b}
         → elim∙ A∙ a∙ b∙ true∙ ~[ cong (Tm∙ _ _) $ Boolβ₁ ] a∙
 Boolβ₁∙ {Γ} {A} {Γ∙} {A∙} {a} {a∙} {b} {b∙} = cong mkTm∙ $ refl $ Boolβ₁ $ funext λ {Δ} → funext λ {γ} →
   Σ-extₚ (sym coh ∙ Boolβ₁ ∙ sym coh) (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Boolβ₁) $ refl $ refl))
-
+{-
 Boolβ₂∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A}
           {a}{a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a}
             {b}{b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b}
         → elim∙ A∙ a∙ b∙ false∙ ~[ cong (Tm∙ _ _) $ Boolβ₂ ] b∙
 Boolβ₂∙ {Γ} {A} {Γ∙} {A∙} {a} {a∙} {b} {b∙} = cong mkTm∙ $ refl $ Boolβ₂ $ funext λ {Δ} → funext λ {γ} →
   Σ-extₚ (sym coh ∙ Boolβ₂ ∙ sym coh) (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Boolβ₂) $ refl $ refl))
+-- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -}
