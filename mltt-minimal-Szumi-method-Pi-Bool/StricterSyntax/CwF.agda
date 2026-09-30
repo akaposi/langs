@@ -68,13 +68,13 @@ _[_]T∙ {A} A∙ γ∙ = Ty∙.constructor λ {Θ} δ →
 
 []T∙ₑ = λ Γ Γ∙ n A Δ Δ∙ γ A∙ γ∙ → _[_]T∙ {Γ} {Γ∙} {n} {A} {Δ} {Δ∙} {γ} A∙ γ∙
 
-[∘]T∙ : ∀{Γ}{n}{A : Ty Γ n}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ n A}{Δ}{Δ∙ : Con∙ Δ}{γ : Sub Δ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
+[∘]T∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{n}{A : Ty Γ n}{A∙ : Ty∙ Γ∙ n A}{Δ}{Δ∙ : Con∙ Δ}{γ : Sub Δ Γ}{γ∙ : Sub∙ Δ∙ Γ∙ γ}
         {Θ}{Θ∙ : Con∙ Θ}{δ : Sub Θ Δ}{δ∙ : Sub∙ Θ∙ Δ∙ δ}
       → A∙ [ γ∙ ∘∙ δ∙ ]T∙ ~[ cong (Ty∙ _ _) $ [∘]T ] A∙ [ γ∙ ]T∙ [ δ∙ ]T∙
 [∘]T∙ = cong mkTy∙ $ [∘]T $ funext λ {Ξ} → funext λ {θ} →
   Σ-extₚ refl (funext (cong (_≈ _) $ (cong _[ θ ]T $ [∘]T)))
 
-[id]T∙ : ∀{Γ}{n}{A : Ty Γ n}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ Γ∙ n A}
+[id]T∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{n}{A : Ty Γ n}{A∙ : Ty∙ Γ∙ n A}
        → A∙ [ id∙ ]T∙ ~[ cong (Ty∙ _ _) $ [id]T ] A∙
 [id]T∙ {A∙} = cong mkTy∙ $ [id]T $ funext λ {Δ} → funext λ {γ} →
   Σ-extₚ refl (funext (cong (_≈ _) $ (cong (_[ γ ]T) $ [id]T)))

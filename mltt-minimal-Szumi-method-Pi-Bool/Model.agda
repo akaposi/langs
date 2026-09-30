@@ -56,6 +56,8 @@ module _ {i j k l}(𝕊 : Sorts i j k l) where
       instance q[⟨⟩] : q [ ⟨ a ⟩ ]t ~[ cong (Tm _) $ (sym [∘]T ∙ cong (A [_]T) $ p∘⟨⟩ ∙ [id]T) ] a
       instance ▹η    : id {Γ ▹ A} ≈ p ⁺ ∘ ⟨ q ⟩
 
+    ▹ₑ = λ n Γ A → _▹_ {n} Γ A
+    
     ∘ₑ = λ Γ Δ Θ γ δ → _∘_ {Δ} {Γ} {Θ} γ δ
 
     []Tₑ = λ Γ Δ n A γ → _[_]T {Γ} {Δ} {n} A γ

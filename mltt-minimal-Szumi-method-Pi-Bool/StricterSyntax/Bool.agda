@@ -81,7 +81,7 @@ elim[]∙  :
     (coe
       (cong (Tm∙ₑ _ _) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh)
       (c∙ [ γ∙ ]t∙))
-elim[]∙ {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ∙} = cong mkTm∙ₑ
+elim[]∙ {n} {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ∙} = cong mkTm∙ₑ
   $ refl
   $ refl
   $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh))
@@ -92,8 +92,7 @@ elim[]∙ {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ
            (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh))
            (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong ∘∙ₑ $ refl $ refl $ (cong (Δ ▹_) $ Bool[]) $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh) $ coh $ (cong ⟨⟩∙ₑ $ refl $ refl $ refl $ Bool[] $ (cong mkTy∙ $ Bool[] $ funext (funext λ {δ} → Σ-extₚ refl (funext (cong (_≈ _) $ (cong _[ δ ]T $ Bool[]))))) $ coh $ coh))
   $ elim[]
-  $ funext λ {Θ} → funext λ {δ} → {!!} {-
-  $ 
+  $ funext λ {Θ} → funext λ {δ} →
       let
         (γ∘δ ,-) = ∣ γ∙ ∣ δ
         (A[γ∘δ⁺]T ,-) = ∣ A∙ ∣ (coe (cong Sub $ (cong (Θ ▹_) $ Bool[]) $ refl) (γ∘δ ⁺))
@@ -102,94 +101,75 @@ elim[]∙ {Γ} {Δ} {A} {a} {b} {c} {γ} {Δ∙} {A∙} {a∙} {b∙} {c∙} {γ
         (a[γ∘δ]t ,-) = ∣ a∙ ∣ γ∘δ
         (b[γ∘δ]t ,-) = ∣ b∙ ∣ γ∘δ
         (c[γ∘δ]t ,-) = ∣ c∙ ∣ γ∘δ
-        (γδ ,-) = ∣ coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong (▹∙ₑ Δ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl}) (_⁺∙ {A∙ = Bool∙} γ∙) ∣ δ⁺
+        (γδ ,-) = ∣ coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong (▹∙ₑ Δ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙}) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl}) (_⁺∙ {A∙ = Bool∙} γ∙) ∣ δ⁺
         (a[γ][δ]t ,-) = ∣ coe
-                          (cong (Tm∙ₑ Δ)
-                            $ weave (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl} $ (cong (⟨⟩ₑ Δ) $ Bool[] $ true[]))
+                          (cong (Tm∙ₑ _ Δ)
+                            $ weave (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl} $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ true[]))
                             $ refl
                             $ weave∙ A∙ ⟨ true∙ ⟩∙ γ∙
                                 (coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙))
                                 ⟨ true∙ ⟩∙
-                                (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ Δ) $ Bool[] $ true[]))
+                                (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ true[]))
                                 (⟨⟩∘∙ {a∙ = true∙} {γ∙ = γ∙}
                                 ∙ cong (∘∙ₑ (Γ ▹ Bool) _)
                                     $ (cong (Δ ▹_) $ Bool[])
-                                    $ (cong (▹∙ₑ Δ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙})
+                                    $ (cong (▹∙ₑ Δ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙})
                                     $ refl
                                     $ refl
                                     $ coh
-                                    $ (cong (⟨⟩ₑ Δ) $ Bool[] $ true[])
+                                    $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ true[])
                                     $ coh
-                                    $ (cong (⟨⟩∙ₑ Δ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ true[] $ true[]∙ {γ∙ = γ∙}))
-                            $ coh {e = cong (Tm Δ) $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ true[]))})
+                                    $ (cong (⟨⟩∙ₑ Δ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ true[] $ true[]∙ {γ∙ = γ∙}))
+                            $ coh {e = cong (Tm Δ) $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ true[]))})
                           (a∙ [ γ∙ ]t∙) ∣ δ
         (b[γ][δ]t ,-) = ∣ coe
-                          (cong (Tm∙ₑ Δ)
-                            $ weave (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl} $ (cong (⟨⟩ₑ Δ) $ Bool[] $ false[]))
+                          (cong (Tm∙ₑ _ Δ)
+                            $ weave (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl} $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ false[]))
                             $ refl
                             $ weave∙ A∙ ⟨ false∙ ⟩∙ γ∙
                                 (coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙))
                                 ⟨ false∙ ⟩∙
-                                (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ Δ) $ Bool[] $ false[]))
+                                (⟨⟩∘ ∙ cong (∘ₑ (Γ ▹ Bool)) $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ false[]))
                                 (⟨⟩∘∙ {a∙ = false∙} {γ∙ = γ∙}
                                 ∙ cong (∘∙ₑ (Γ ▹ Bool) _)
                                     $ (cong (Δ ▹_) $ Bool[])
-                                    $ (cong (▹∙ₑ Δ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙})
+                                    $ (cong (▹∙ₑ Δ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙})
                                     $ refl
                                     $ refl
                                     $ coh
-                                    $ (cong (⟨⟩ₑ Δ) $ Bool[] $ false[])
+                                    $ (cong (⟨⟩ₑ Δ _) $ Bool[] $ false[])
                                     $ coh
-                                    $ (cong (⟨⟩∙ₑ Δ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ false[] $ false[]∙ {γ∙ = γ∙}))
-                            $ coh {e = cong (Tm Δ) $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ false[]))})
+                                    $ (cong (⟨⟩∙ₑ Δ _ _) $ Bool[] $ Bool[]∙ {γ∙ = γ∙} $ false[] $ false[]∙ {γ∙ = γ∙}))
+                            $ coh {e = cong (Tm Δ) $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ false[]))})
                           (b∙ [ γ∙ ]t∙) ∣ δ
-        (c[γ][δ]t ,-) = ∣ coe (cong (Tm∙ₑ Δ) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh {e = cong (Tm Δ) $ Bool[]}) (c∙ [ γ∙ ]t∙) ∣ δ
+        (c[γ][δ]t ,-) = ∣ coe (cong (Tm∙ₑ _ Δ) $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh {e = cong (Tm Δ) $ Bool[]}) (c∙ [ γ∙ ]t∙) ∣ δ
         (A[⟨c⟩][γ][δ]T ,-) = ∣ A∙ [ ⟨ c∙ ⟩∙ ]T∙ [ γ∙ ]T∙ ∣ δ
-        (A[γ⁺][⟨c⟩][δ]T ,-) = ∣ A∙ [ coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl}) (_⁺∙ {A∙ = Bool∙} γ∙) ]T∙ [ ⟨ coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh {e = cong (Tm Δ) $ Bool[]}) (c∙ [ γ∙ ]t∙) ⟩∙ ]T∙ ∣ δ
+        (A[γ⁺][⟨c⟩][δ]T ,-) = ∣ A∙ [ coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh {e = cong Sub $ (cong (Δ ▹_) $ Bool[]) $ refl}) (_⁺∙ {A∙ = Bool∙} γ∙) ]T∙ [ ⟨ coe (cong Tm∙ₑ $ refl $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh {e = cong (Tm Δ) $ Bool[]}) (c∙ [ γ∙ ]t∙) ⟩∙ ]T∙ ∣ δ
+
+        pr-funext = cong (Tm Θ) $ (sym un ∙ cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh)) ∙ un)
       in Σ-extₚ (sym coh
                 ∙ cong elim
-                  $ (cong (λ x y → L.fst (∣ A∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym un ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ (cong (Θ ▹_) $ ((cong _[ δ ]T $ Bool[]) ∙ Bool[])) $ coh $ (cong ⁺ₑ $ refl $ refl $ Bool[] $ refl ∙ coh) ∙ un))
-                    $ (sym coh ∙ sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ true[])) $ coh $ refl ∙ un ∙ coh)
-                    $ (sym coh ∙ sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ false[])) $ coh $ refl ∙ un ∙ coh)
-                    $ (sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ Bool[] $ coh $ refl ∙ un)
-                ∙ coh)
-                (funextₕ (cong (Tm Θ) $ (cong L.fstₑ $ refl $ (funext λ {z} → cong (λ x → Lift (x ≈ z)) $ (cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)))) $
-                  (
-                     cong Ty∙∣∣ₑ
-                       $ reflₑ Δ
-                       $ reflₑ Δ∙
-                       $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh))
-                       $[ A∙ [ ⟨ c∙ ⟩∙ ]T∙ [ γ∙ ]T∙ , A∙ [ coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙) ]T∙ [ ⟨ coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ⟩∙ ]T∙ ]
-                         weave∙ A∙ ⟨ c∙ ⟩∙ γ∙ (coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙)) ⟨ coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ⟩∙
-                           (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh))
-                           (⟨⟩∘∙ {a∙ = c∙} {γ∙ = γ∙} ∙ cong ∘∙ₑ $ refl $ refl $ (cong (Δ ▹_) $ Bool[])
-                                                         $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[]))
-                                                         $ refl
-                                                         $ refl
-                                                         $ coh
-                                                         $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)
-                                                         $[ _⁺∙ {A∙ = Bool∙} γ∙ , coe (cong Sub∙ₑ $ (cong (Δ ▹_) $ Bool[]) $ refl $ (cong mkCon∙ $ (cong (Δ ▹_) $ Bool[])) $ refl $ coh) (_⁺∙ {A∙ = Bool∙} γ∙) ] coh
-                                                         $[ ⟨ c∙ [ γ∙ ]t∙ ⟩∙ , ⟨ coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ⟩∙ ] (cong ⟨⟩∙ₑ $ refl $ refl $ Bool[] $[ Bool∙ [ γ∙ ]T∙ , Bool∙ ] Bool[]∙ {γ∙ = γ∙} $ coh $[ c∙ [ γ∙ ]t∙ , coe (cong Tm∙ₑ $ refl $ Bool[] $ refl $ Bool[]∙ {γ∙ = γ∙} $ coh) (c∙ [ γ∙ ]t∙) ] coh))
-                       $ reflₑ Θ
-                       $ reflₑ δ
-                  )))
-                  λ e → cong ~ₑ
-                          $ (cong (Tm Θ) $ (cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh))))
-                          $ (cong []tₑ $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)) $ elim[] $ reflₑ δ)
-                          $ (cong (Tm Θ) $ (sym un ∙ cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ Bool[] $ coh)) ∙ un))
-                          $ e)
-{-
-Boolβ₁∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A}
+                    $ (cong (λ x y → L.fst (∣ A∙ ∣ {x} y)) $ refl $ (sym coh ∙ cong _⁺ $ sym un ∙ ∘⁺ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ (cong (Θ ▹_) $ ((cong _[ δ ]T $ Bool[]) ∙ Bool[])) $ coh $ (cong ⁺ₑ $ refl $ refl $ refl $ Bool[] $ refl ∙ coh) ∙ un))
+                    $ (sym coh ∙ sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ true[])) $ coh $ refl ∙ un ∙ coh)
+                    $ (sym coh ∙ sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ false[])) $ coh $ refl ∙ un ∙ coh)
+                    $ (sym un ∙ cong []tₑ $ refl $ refl $ refl $ refl $ refl $ sym un ∙ [∘]t ∙ cong []tₑ $ refl $ refl $ refl $ Bool[] $ coh $ refl ∙ un)
+                ∙ coh) (funextₕ pr-funext
+                                λ e → cong ~ₑ
+                                        $ (cong (Tm Θ) $ (cong _[ δ ]T $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh))))
+                                        $ (cong []tₑ $ refl $ refl $ refl $ weave (⟨⟩∘ ∙ cong ∘ₑ $ refl $ (cong (Δ ▹_) $ Bool[]) $ refl $ coh $ (cong ⟨⟩ₑ $ refl $ refl $ Bool[] $ coh)) $ elim[] $ reflₑ δ)
+                                        $ pr-funext
+                                        $ e)
+
+Boolβ₁∙ : ∀{n Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) n A}
           {a}{a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a}
             {b}{b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b}
         → elim∙ A∙ a∙ b∙ true∙ ~[ cong (Tm∙ _ _) $ Boolβ₁ ] a∙
 Boolβ₁∙ {Γ} {A} {Γ∙} {A∙} {a} {a∙} {b} {b∙} = cong mkTm∙ $ refl $ Boolβ₁ $ funext λ {Δ} → funext λ {γ} →
   Σ-extₚ (sym coh ∙ Boolβ₁ ∙ sym coh) (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Boolβ₁) $ refl $ refl))
-{-
-Boolβ₂∙ : ∀{Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) A}
+
+Boolβ₂∙ : ∀{n Γ A}{Γ∙ : Con∙ Γ}{A∙ : Ty∙ (Γ∙ ▹∙ Bool∙) n A}
           {a}{a∙ : Tm∙ Γ∙ (A∙ [ ⟨ true∙ ⟩∙ ]T∙) a}
             {b}{b∙ : Tm∙ Γ∙ (A∙ [ ⟨ false∙ ⟩∙ ]T∙) b}
         → elim∙ A∙ a∙ b∙ false∙ ~[ cong (Tm∙ _ _) $ Boolβ₂ ] b∙
 Boolβ₂∙ {Γ} {A} {Γ∙} {A∙} {a} {a∙} {b} {b∙} = cong mkTm∙ $ refl $ Boolβ₂ $ funext λ {Δ} → funext λ {γ} →
   Σ-extₚ (sym coh ∙ Boolβ₂ ∙ sym coh) (funext (cong ~ₑ $ refl $ (cong _[ γ ]t $ Boolβ₂) $ refl $ refl))
--- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -} -- -}

@@ -398,7 +398,7 @@ record DepModel {i}{j}{k} : Set (lsuc (i ⊔ j ⊔ k)) where
   open Pi∙ pi∙ public
   open BoolT∙ bool∙ public
 
-module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
+module DM {i}{j}{k}(D : DepModel {i} {j} {k}) where
 
   open DepModel D
 
@@ -432,8 +432,8 @@ module _ {i}{j}{k}(D : DepModel {i} {j} {k}) where
     {-# REWRITE ⟦◇⟧ ⟦▹⟧ #-}
 
     ⟦∘⟧   : ⟦ γ ∘ δ ⟧Sub ↝ ⟦ γ ⟧Sub ∘∙ ⟦ δ ⟧Sub
-    ⟦id⟧  : ⟦ id {Γ = Γ} ⟧Sub ↝ id∙
-    ⟦ε⟧   : ⟦ ε {Γ = Γ} ⟧Sub ↝ ε∙
+    ⟦id⟧  : ⟦ id {Γ = Γ} ⟧Sub ↝ id∙ {Γ∙ = ⟦ Γ ⟧Con}
+    ⟦ε⟧   : ⟦ ε {Γ = Γ} ⟧Sub ↝ ε∙ {Γ∙ = ⟦ Γ ⟧Con}
 
     ⟦[]T⟧ : ⟦ A [ γ ]T ⟧Ty ↝ ⟦ A ⟧Ty [ ⟦ γ ⟧Sub ]T∙
 
