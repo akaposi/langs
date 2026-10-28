@@ -22,7 +22,7 @@ Iₛ : Model {lzero} {lzero} {lzero}
 Iₛ = record
       { sorts = record { Con = I.Con ; Sub = I.Sub ; Ty = I.Ty ; Tm = I.Tm }
       ; cwf = record
-               { _∘_ = λ {Δ} {Γ} {Θ} γ δ →  L.fst (∣ M.⟦ γ ⟧Sub ∣ δ)
+               { _∘_ = λ {Δ} {Γ} {Θ} γ δ → L.fst (∣ M.⟦ γ ⟧Sub ∣ δ)
                ; ass = λ {Δ} {Γ} {γ} {Θ} {δ} {Ξ} {θ} →
                        let
                          (γ∘δ ,-) = ∣ M.⟦ γ ⟧Sub ∣ δ
