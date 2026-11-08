@@ -1,20 +1,19 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
 --------- U stuff -------------------------------
-module StricterSyntax.U where
+module U where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
-open import StricterSyntax.Sorts
+open import Sorts
 open Con∙
 open Sub∙
 open Ty∙
 open Tm∙
 
-open import StricterSyntax.CwF
+open import CwF
 
 U∙ : ∀{Γ}{Γ∙ : Con∙ Γ}(n : ℕ) → Ty∙ Γ∙ (suc n) (U n)
 U∙ n = Ty∙.constructor λ _ → U n ,ₚ U[]

@@ -1,10 +1,9 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
-module StricterSyntax.Sorts where
+module Sorts where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
 private variable

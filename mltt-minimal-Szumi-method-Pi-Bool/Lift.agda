@@ -1,20 +1,19 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
 --------- Lift stuff -------------------------------
-module StricterSyntax.Lift where
+module Lift where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
-open import StricterSyntax.Sorts
+open import Sorts
 open Con∙
 open Sub∙
 open Ty∙
 open Tm∙
 
-open import StricterSyntax.CwF
+open import CwF
 
 Lift∙ : ∀{Γ}{Γ∙ : Con∙ Γ}{n A}(A∙ : Ty∙ Γ∙ n A) → Ty∙ Γ∙ (suc n) (Lift A)
 Lift∙ A∙ = Ty∙.constructor λ γ →

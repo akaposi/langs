@@ -8,3 +8,4 @@ open import Model
 postulate
   I : Model {lzero} {lzero} {lzero}
 
+module I = Model.Model I

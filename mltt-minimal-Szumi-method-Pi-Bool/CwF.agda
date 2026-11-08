@@ -1,13 +1,12 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
-module StricterSyntax.CwF where
+module CwF where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
-open import StricterSyntax.Sorts
+open import Sorts
 open Con∙
 open Sub∙
 open Ty∙

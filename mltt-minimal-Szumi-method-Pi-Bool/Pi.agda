@@ -1,20 +1,19 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
 --------- Π stuff -------------------------------
-module StricterSyntax.Pi where
+module Pi where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
-open import StricterSyntax.Sorts
+open import Sorts
 open Con∙
 open Sub∙
 open Ty∙
 open Tm∙
 
-open import StricterSyntax.CwF
+open import CwF
 
 infixl 9 _[_]Π∙
 

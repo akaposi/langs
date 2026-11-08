@@ -1,20 +1,19 @@
 {-# OPTIONS --prop --rewriting --with-K --confluence-check --no-postfix-projections --hidden-argument-puns #-}
 
 --------- Bool stuff -------------------------------
-module StricterSyntax.Bool where
+module Bool where
 
 open import Lib
 open import Syntax
-open import DepModel
 open I
 
-open import StricterSyntax.Sorts
+open import Sorts
 open Con∙
 open Sub∙
 open Ty∙
 open Tm∙
 
-open import StricterSyntax.CwF
+open import CwF
 
 Bool∙ : ∀{Γ}{Γ∙ : Con∙ Γ} → Ty∙ Γ∙ 0 Bool
 Bool∙ = Ty∙.constructor λ _ → Bool ,ₚ Bool[]
